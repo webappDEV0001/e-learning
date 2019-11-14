@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% load static crispy_forms_tags %}
+
+{% block content_header %}
+<section id="about-header" class="section" data-overlay="8">
+  <div class="container text-white">
+    <h3>E-learnings & Exams</h3>
+    <h6 class="text-light mb-5">Improve your knowledge or challenge your job applicant.</h6>
+  </div>
+</section>
+{% endblock content_header %}
+
+{% block content %}
+<div id="exam-list" class="container mt-7 mb-12">
+	<div class="row">
+		<div class="col-sm-3">
+	      <ul class="nav nav-pills flex-column" role="tablist">
+	    <li class="nav-item">
+	      <a class="nav-link active" data-toggle="tab" href="#tab-exams">Exams</a>
+	    </li>
+	    <li class="nav-item">
+	      <a class="nav-link" data-toggle="tab" href="#tab-el">E-Learnings</a>
+	    </li>
+	    <li class="nav-item">
+	      <a class="nav-link" data-toggle="tab" href="#tab-el-ns">E-Learnings (no slides)</a>
+	    </li>
+	  	</ul>
+		</div>
+		<div class="col-sm-9">
+	     <div class="tab-content">
+	        <div class="tab-pane fade show active" id="tab-exams">
+		        <div class="container-fluid">
+		        	<div class="row">
+		        		{% for obj in exams %}
+				        <div class="col-md-6 p-0">
+				            <div class="pricing-1">
+				            <p class="plan-name">{{ obj.name }}</p>
+				            <div class="text-muted"><small>{{ obj.description }}</small></div>
+			                <a class="mt-4 btn btn-block btn-primary" href="{% url 'exam' obj.pk obj.slug %}">Start</a>
+				          </div>
+				        </div>
+					    {% empty %}
+					    	No available exams found.
+				        {% endfor %}
+				    </div>
+				</div>
+		        <br />
+		        <a class="mt-3 btn btn-sm btn-warning" href="{% url 'exam-scores' %}">Show exam scores</a>
+	        </div>
+	        <div class="tab-pane fade" id="tab-el">
+		        <div class="container-fluid">
+		        	<div class="row">
+				        {% for obj in elearnings %}
+					        <div class="col-md-6 p-0">
+					            <div class="pricing-1">
+					            <p class="plan-name">{{ obj.name }}</p>
+					            <div style="min-height:70px" class="text-muted"><small>{{ obj.description }}</small></div>
+				            	<a class="mt-4 btn btn-block btn-primary" href="{% url 'elearning' obj.pk obj.slug %}">
+				            		{% if obj.pk in e_user_sessions %}
+				            			Continue
+				            		{% else %}
+				            			Start
+				            		{% endif %}
+				            	</a>
+					          </div>
+					        </div>
+					    {% empty %}
+					    	No available e-learnings found.
+				        {% endfor %}
+				    </div>
+				</div>
+		        <br />
+		        <a class="mt-3 btn btn-sm btn-warning" href="{% url 'elearning-progress' %}">Show e-Learnings progress</a>
+	        </div>
+	        <div class="tab-pane fade" id="tab-el-ns">
+	        	<div class="container-fluid">
+		        	<div class="row">
+				        {% for obj in elearnings_ns %}
+					        <div class="col-md-6 p-0">
+					            <div class="pricing-1">
+					            <p class="plan-name">{{ obj.name }}</p>
+					            <div class="text-muted"><small>{{ obj.description }}</small></div>
+				                <a class="mt-4 btn btn-block btn-primary" href="{% url 'exam' obj.pk obj.slug %}">Start</a>
+					          </div>
+					        </div>
+					    {% empty %}
+					    	No available e-learnings without slides found.
+				        {% endfor %}
+				    </div>
+				</div>
+		        <br />
+		        <a class="mt-3 btn btn-sm btn-warning" href="{% url 'elearning-progress' %}">Show E-Learnings progress</a>
+	        </div>
+	      </div>
+	    </div>
+	</div>
+</div>
+{% endblock content %}

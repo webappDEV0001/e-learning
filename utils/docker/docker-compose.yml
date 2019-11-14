@@ -1,0 +1,23 @@
+version: '3'
+services:
+  db:
+    hostname: db
+    image: postgres:11.4
+    expose:
+      - "5432"
+  web:
+    hostname: web
+    build:
+      context: ../..
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../../app:/code/app
+      - ../../assets:/code/assets
+      - ../../media:/code/media
+    depends_on:
+      - db
+    command: ["/code/utils/docker/web/wait-for-it.sh", "db:5432", "--",
+              "bash", "/code/utils/docker/web/docker-web-dev.sh"]
+    stdin_open: true
+    tty: true

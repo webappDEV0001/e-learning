@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+
+{% load static crispy_forms_tags %}
+
+{% block content %}
+<div id="exam-screen" data-url="{% url 'elearningsession-detail' object.pk %}" class="container mt-5 mb-12"></div>
+{% endblock content %}

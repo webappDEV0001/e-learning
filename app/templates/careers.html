@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content_header %}
+<section id="contact-header" class="section" data-overlay="8">
+	<div class="container text-white">
+	<h3>Careers</h3>
+	<h6 class="text-light mb-5">Join us and change your working experience 4ever.</h6>
+	</div>
+</section>
+{% endblock content_header %}
+
+{% block content %}
+<section id="contact" class="section">
+	<div class="container">
+
+		<div class="row">
+			<div class="col-md-6 align-self-center text-center text-md-left">
+				<h2><span class="text-warning">4</span> a better learning world</h2>
+				<p>Are you a free thinker, who wants to change the working world for better? Let's have a chat!</p>
+				<br>
+				<a class="btn btn-lg btn-round btn-primary shadow-3" href="#">Apply now</a>
+			</div>
+
+			<div class="col-md-5 mx-auto text-center mt-8 mt-md-0">
+				<img src="{% static 'img/logo_right.png' %}" alt="..." data-aos="fade-up">
+			</div>
+		</div>
+
+          <div class="row mt-7">
+
+            <div class="col-md-6 mx-auto col-lg-4 text-center text-lg-right">
+              <p class="text-info lead-6"><i class="icon-wallet"></i></p>
+              <h5>About our culture</h5>
+              <p class="feat-h">We believe that we can improve efficiency of our clients by helping them to learn in a effective way. We are global (we speak 10 languages), friendly 4 everyone and open 4 innovations. We have no application fix form. We don't ask hundreds of meaningless questions. We don't want to see your notes from university. It is you who matters. So just drop us an email, and let's have a chat!</p>
+              <br><br>
+
+              <p class="text-info lead-6"><i class="icon-linegraph"></i></p>
+              <h5>Work on new e-learnings and training materials</h5>
+              <p class="feat-h">Our mission is to help our clients learn more efficiently. Therefore we need to deliver new e-learnings on regular basis to cover all the needs our clients might have. So, if you are a content expert in any actuarial or accounting area, this is a perfect place for you. Let us know.</p>
+            </div>
+
+
+            <div class="col-lg-4 text-center px-5 py-7 py-lg-0">
+              <img src="{% static 'img/logo_middle.png' %}" alt="phone">
+            </div>
+
+
+            <div class="col-md-6 mx-auto col-lg-4 text-center text-lg-left">
+              <p class="text-info lead-6"><i class="icon-clipboard"></i></p>
+              <h5>Understand and help customers</h5>
+              <p class="feat-h">Customer service is a crucial department. Your knowledge and helpfulness determine the way customers perceive 4actuaries.com. The extensive training programs will help you develop quickly, both you and our customers will profit.</p>
+              <br><br>
+
+              <p class="text-info lead-6"><i class="icon-hourglass"></i></p>
+              <h5>Shape the future of our software</h5>
+              <p class="feat-h">We are constantly improving our customer expierence by proving better and better applications. Are you an expert in data bases, web applications or machine learning? Then we are a perfect place 4you.</p>
+            </div>
+
+          </div>
+
+	</div>
+</section>
+{% endblock content %}

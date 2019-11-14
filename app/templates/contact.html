@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content_header %}
+<section id="contact-header" class="section" data-overlay="8">
+  <div class="container text-white">
+    <h3>Contact Us</h3>
+    <h6 class="text-light mb-5">Please use form to send us a message.</h6>
+  </div>
+</section>
+{% endblock content_header %}
+
+{% block content %}
+<section id="contact" class="section">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+          <form method="POST" data-form="mailer">
+            <div class="alert alert-success d-on-success">We received your message and will contact you back soon.</div>
+
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <input class="form-control form-control-lg" type="text" name="name" placeholder="Name">
+              </div>
+
+              <div class="form-group col-md-6">
+                <input class="form-control form-control-lg" type="email" name="email" placeholder="Email">
+              </div>
+            </div>
+
+            <div class="form-group">
+                <input class="form-control form-control-lg" type="text" name="title" placeholder="Title">
+            </div>
+
+            <div class="form-group">
+              <textarea class="form-control form-control-lg" rows="4" placeholder="Message" name="message"></textarea>
+            </div>
+
+            <button class="btn btn-lg btn-primary" type="submit">Send message</button>
+          </form>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock content %}

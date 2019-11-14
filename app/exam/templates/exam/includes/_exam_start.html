@@ -1,0 +1,14 @@
+{% load static %}
+<div class="row">
+	<div class="mt-8 col-md-8 mx-auto text-center">
+		<h2>You're about to start an exam</h2>
+		<h4>{{ object }}</h4>
+		<br/>
+		{% if object.time_limit %}
+		<p>Time limit for this exam is set to {{ object.time_limit }} seconds.</p>
+		{% endif %}
+		<h5>Click on button below to start</h5>
+		<br/>
+		<button id="start-exam" class="btn btn-lg btn-primary btn-block">Start exam</button>
+	</div>
+</div>

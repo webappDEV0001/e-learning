@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% load static crispy_forms_tags %}
+
+{% block content %}
+<div id="score-screen" class="container mt-7 mb-12">
+	<div class="row">
+		<div class="col-sm-4 d-none d-sm-block">
+			<img src="{% static 'img/hat.png' %}" />
+		</div>
+		<div class="col-sm-8">
+			<h5>Exam: {{ session.exam }}</h5>
+			<h7><small>You've done this exam!</small></h7>
+			<h1 class="text-primary">Your score is <strong>{{ score }} %</strong></h1>
+			<p>You've started this test on <b>{{ session.started }}</b> and finished on <b>{{ session.finished }}</b>.<br />
+			You've answered correctly on <b>{{ correct }}</b> / <b>{{ questions }}</b> questions.</p>
+			<a class="btn btn-warning" href="{% url 'exam-scores' %}">Go to exam score list</a>
+		</div>
+	</div>
+</div>
+{% endblock content %}

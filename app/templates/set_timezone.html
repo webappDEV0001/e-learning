@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static tz %}
+
+{% block content_header %}
+{% get_current_timezone as TIME_ZONE %}
+<section id="contact-header" class="section" data-overlay="8">
+	<div class="container text-white">
+	<h3>Timezone</h3>
+	<h6 class="text-light mb-5">Current: {{ TIME_ZONE }}</h6>
+	</div>
+</section>
+{% endblock content_header %}
+
+{% block content %}
+{% get_current_timezone as TIME_ZONE %}
+<section id="contact" class="section">
+	<div class="container">
+
+		<div class="row">
+			<div class="col-md-6 align-self-center text-center text-md-left">
+
+                <form action="{% url 'set_timezone' %}" method="POST">
+                    {% csrf_token %}
+                    <span><small>
+                        Localtime: {{ now }}
+                    </small>
+                    </span>
+                    <br />
+                    <label for="timezone">Set your time zone:</label><br />
+                    <div class="form-group input-group">
+                        <select name="timezone" class="form-control">
+                            {% for tz in timezones %}
+                            <option value="{{ tz }}"{% if tz == TIME_ZONE %} selected{% endif %}>{{ tz }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="input-group-append">
+                            <input type="submit" value="Set" class="btn btn-primary">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock content %}

@@ -1,0 +1,35 @@
+{% load static %}
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light" data-navbar="fixed">
+  <div class="container">
+
+    <div class="navbar-left">
+      <button class="navbar-toggler" type="button">&#9776;</button>
+      <a class="navbar-brand" href="{% url 'index' %}">
+        <img class="logo-dark" src="{% static 'img/logo_small.png' %}" alt="logo">
+        <img class="logo-light" src="{% static 'img/logo_small.png' %}" alt="logo">
+      </a>
+    </div>
+
+    <section class="navbar-mobile">
+      <span class="navbar-divider d-mobile-none"></span>
+      <nav class="nav nav-navbar">
+        <a class="nav-link" href="{% url 'index' %}">Home</a>
+        <a class="nav-link" href="{% url 'about' %}">About</a>
+        <a class="nav-link" href="{% url 'solutions' %}">Solutions</a>
+        <a class="nav-link" href="{% url 'careers' %}">Careers</a>
+        <a class="nav-link" href="{% url 'contact' %}">Contact us</a>
+      </nav>
+    </section>
+
+    {% if request.user.is_authenticated %}
+      <a class="btn btn-sm btn-round btn-warning mr-4" href="{% url 'set_timezone' %}"><i class="fa fa-clock-o"></i></a>
+      <a class="btn btn-sm btn-round btn-warning" href="{% url 'account_logout' %}">Logout</a>
+    {% else %}
+      <a class="btn btn-sm btn-round btn-warning hidden-md-down" href="{% url 'account_login' %}">Login</a>
+    {% endif %}
+
+  </div>
+</nav>
+<!-- /.navbar -->

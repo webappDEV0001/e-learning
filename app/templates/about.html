@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content_header %}
+<section id="about-header" class="section" data-overlay="8">
+  <div class="container text-white">
+    <h3>About Us</h3>
+    <h6 class="text-light mb-5">Everything 4 an actuary in one place.</h6>
+  </div>
+</section>
+{% endblock content_header %}
+
+{% block content %}
+<section id="about" class="section">
+  <div class="container">
+    <div class="row pt-2">
+      <div class="col-sm-4">
+        <div class="text-center">
+          <p class="mb-6"><i class="icon-aperture text-primary lead-8"></i></p>
+          <h5><strong>E-learnings from IFRS 17, IFRS 9, Solvency II and many more</strong></h5>
+          <p>Actuarial e-learnings supported with space repetition algorithms optimized with AI.<br>IFRS 17 e-learning, Solvency II training, US GAAP for actuaries. All in one place. </p>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div class="text-center">
+          <p class="mb-6"><i class="icon-book-open text-primary lead-8"></i></p>
+          <h5><strong>A complete learning platform for actuaries</strong></h5>
+          <p>Forget how to forget.<br>Learn IFRS 17, improve Solvency 2 knowledge in a efficient and convenient way!</p>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div class="text-center">
+          <p class="mb-6"><i class="icon-linegraph text-primary lead-8"></i></p>
+          <h5><strong>Business cases, real life examples, explanations presenting market approaches</strong></h5>
+          <p>Stop spending millions on slides that do not give you answers. We don’t only give you insights and answers, we make you remember them.</p>
+        </div>
+      </div>
+    </div>
+    <div class="text-center mt-5 mb-7">
+        <a class="btn btn-round btn-warning mw-150" href="{% url 'exam-list' %}">See the base of courses</a>
+        {% if request.user.is_authenticated %}
+          <a class="btn btn-round btn-primary mw-150" href="{% url 'contact' %}">Request a demo</a>
+        {% endif %}
+    </div>
+  <hr />
+  </div>
+
+  <div class="container">
+
+  <div class="row">
+
+    <div class="col-md-6 ml-auto">
+        <p>Based on the input from many actuarial and accountant experts and with cooperation with best AI specialists we created the first e-learning platform that gives you or your employees a possibility to become experts in actuarial and accounting topics. The spaced repetition algorithm used in our e-learnings has been optimized with machine learning methods.<br/>
+        <br/>
+        Our experts have experience from consulting, life insurers, non-life insurers and reinsurers.</p>
+    </div>
+
+    <div class="col-md-5 mx-auto text-center">
+      <img src="{% static 'img/chart.png' %}"><br />
+      <small><i>Our learning method</i></small>
+    </div>
+
+  </div>
+</div>
+</section>
+
+{% endblock content %}

@@ -1,0 +1,95 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Actuarial & Accounting e-learnings supported with space repetition algorithms optimized with AI">
+    <meta name="keywords" content="actuarial learnings">
+
+    <title>Actuarial E-learnings</title>
+
+    <!-- Styles -->
+    <link href="{% static 'css/page.min.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Wruczek/Bootstrap-Cookie-Alert@gh-pages/cookiealert.css">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <!-- Favicons -->
+    <!--
+    <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+    <link rel="icon" href="assets/img/favicon.png">
+    -->
+
+    <!--  Open Graph Tags -->
+    <!-- <meta property="og:title" content="">
+    <meta property="og:description" content="">
+    <meta property="og:image" content="">
+    <meta property="og:url" content="">
+    <meta name="twitter:card" content="summary_large_image">
+    -->
+  </head>
+
+  <body>
+
+    {% include 'navbar.html' %}
+
+    <!-- START Bootstrap-Cookie-Alert -->
+    <div class="alert text-center cookiealert" role="alert">
+        We use cookies to ensure you get the best experience on our website. <a href="https://cookiesandyou.com/" target="_blank">Learn more</a>
+        <button type="button" class="btn btn-primary btn-sm acceptcookies" aria-label="Close">
+            I agree
+        </button>
+    </div>
+    <!-- END Bootstrap-Cookie-Alert -->
+
+    <!-- Main Content -->
+    <main class="main-content">
+      {% block content_header %}{% endblock content_header %}
+      {% block content %}{% endblock content %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer bg-light">
+      <div class="container">
+        <div class="row">
+          <div class="col-12">
+            <a href="#"><img style="max-width: 150px;" src="{% static 'img/logo_small_2.png' %}" alt="logo"></a>
+            <div class="social float-right">
+              <a class="social-linkedin" href="#"><i class="fa fa-linkedin"></i></a>
+              <a class="social-linkedin" href="#"><i class="fa fa-facebook"></i></a>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6 col-lg-3">
+            <p>
+              Address XXX<br>
+              Address YYY<br>
+              Duckburg
+            </p>
+            <p>
+              +1 (321) 654 9870<br>
+              +1 (987) 123 6548
+            </p>
+            <p>contact@dummywebsite.com</p>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="nav nav-bold nav-uppercase nav-trim justify-content-lg-center flex-column">
+              <a class="nav-link" href="{% url 'index' %}">Home</a>
+              <a class="nav-link" href="{% url 'about' %}">About</a>
+              <a class="nav-link" href="{% url 'solutions' %}">Solutions</a>
+              <a class="nav-link" href="{% url 'contact' %}">Contact Us</a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </footer><!-- /.footer -->
+
+    <!-- Scripts -->
+    <script src="{% static 'js/page.min.js' %}"></script>
+    <script src="{% static 'js/script.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Wruczek/Bootstrap-Cookie-Alert@gh-pages/cookiealert.js"></script>
+    {% block extendfoot %}{% endblock extendfoot %}
+  </body>
+</html>

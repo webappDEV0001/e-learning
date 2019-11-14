@@ -1,0 +1,31 @@
+<div class="row">
+	<div id="question-box" data-phase="" class="col-md-7">
+		<div class="row">
+			<div class="col">
+				<div class="card border shadow-4 mt-2 mb-2">
+					<div class="card-body">
+					  <h5 class="card-title">Question</h5>
+					  <p>{{ question.text }}</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				{% for answer in question.shuffled_answers %}
+				<button data-pk="{{ answer.pk }}" data-qpk="{{ question.pk }}" class="answer-btn btn btn-outline-primary btn-block p-4">{{ answer.text }}</button>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+	<div class="col-md-5">
+		{% if question.exam.time_limit %}
+		<div class="text-right">
+		  <div id="timer" class="mt-3"><small><div class="time"></div></small></div>
+		</div>
+		{% endif %}
+		<div id="explanation" class="d-none">
+			<h6>Explanation:</h6>
+			<p id="explanation-text" class="text-break"></div>
+		</div>
+</div>

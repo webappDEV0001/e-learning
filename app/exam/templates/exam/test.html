@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container mt-5 mb-12">
+	<div class="row">
+		<div class="col-md-8">
+			<div class="row">
+				<div class="col">
+					<div class="card border shadow-4 mt-2 mb-2">
+		                <div class="card-body">
+		                  <h5 class="card-title">Question</h5>
+		                  <p>ModuleNotFoundError: No module named 'elearning.urls' ?</p>
+		                </div>
+		            </div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col">
+					<button class="btn btn-outline-primary btn-block p-4">Odpowiedz nr 1</button>
+					<button class="btn btn-outline-primary btn-block p-4">Odpowiedz nr 2</button>
+					<button class="btn btn-outline-primary btn-block p-4">Odpowiedz nr 3</button>
+					<button class="btn btn-outline-primary btn-block p-4">Odpowiedz nr 4</button>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col mt-5">
+		              <div class="card text-center text-white bg-gradient-success">
+		                <div class="card-body">
+		                  <h1><i class="fa fa-smile-o" aria-hidden="true"></i></h1>
+		                  <h5 class="card-title">Congratulations!</h5>
+		                  <p class="text-dark">Your answer was correct.</p>
+		                  <button class="btn btn-block btn-lg btn-dark">Go to next question</button>
+		                </div>
+		              </div>
+
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="text-right">
+              Time limit: 3:43
+            </div>
+            	<h6>Explanation:</h6>
+            	<p class="text-break">https://files.pythonhosted.org/packages/96/75/92afb2d8912ac19646f67a2c69bb8683e5aab78db3b0791bfd3e7ed022bb/whitenoise-4.1.3-py2.py3-none-any.whl
+Collecting pytz (from Django==2.2.5->-r ../requirements.txt (line 1))
+  Downloading https://files.pythonhosted.org/packages/87/76/46d697698a143e05f77bec5a526bf4e56a0be61d63425b68f4ba553b51f2/pytz-2019.2-py2.py3-none-any.whl (508kB)
+Collecting sqlparse (from Django==2.2.5->-r ../requirements.txt (line 1))
+  Downloading https://files.pythonhosted.org/packages/ef/53/900f7d2a54557c6a37886585a91336520e5539e3ae2423ff1102daf4f3a7/sqlparse-0.3.0-py2.py3-none-any.whl
+Collecting python3-openid>=3.0.8 (from django-allauth==0.40.0->-r ../requirements.txt (line 2))
+  Downloading https://files.pythonhosted.org/packages/bd/de/52c5699f52dcee3037db587196dcaf63ffedf5fbeba3183afe9b21a3a89f/python3_openid-3.1.0-py3-none-any.whl (130kB)
+Collecting requests-oauthlib>=0.3.0 (from django-allauth==0.40.0->-r ../requirements.txt (line 2))
+  Downloading https://files.pythonhosted.org/packages/c2/e2/9fd03d55ffb70fe51f587f20bcf407a6927eb121de86928b34d162f0b1ac/requests_oauthlib-1.2.0-py2.py3-none-any.whl
+Collecting requests (from django-allauth==0.40.0->-r ../requirements.txt (line 2))
+  Downloading https://files.pythonhosted.org/packages/51/bd/23c926cd341ea6b7dd0b2a00aba99ae0f828be89d72b2190f27c11d4b7fb/requests-2.22.0-py2.py3-none-any.whl (57kB)
+Collecting defusedxml (from python3-openid>=3.0.8->django-allauth==0.40.0->-r ../requirements.txt (line 2))
+  Downloading https://files.pythonhosted.org/packages/06/74/9b387472866358ebc08732de3da6dc48e44b0aacd2ddaa5cb85ab7e986a2/defusedxml-0.6.0-py2.py3-none-any.whl
+Collecting oauthlib>=3.0.0 (from requests-oauthlib>=0.3.0->django-allauth==0.40.0->-r ../requirements.txt (line 2))
+  Downloading https://files.pythonhosted.org/packages/05/57/ce2e7a8fa7c0afb54a0581b14a65b56e62b5759dbc98e80627142b8a3704/oauthlib-3.1.0-py2.py3-none-any.whl (147kB)
+Collecting idna<2.9,>=2.5 (from requests->django-allauth==0.40.0->-r ../requirements.txt (line 2))
+  Downloading https://files.pythonhosted.org/packages/14/2c/cd551d81dbe15200be1cf41cd03869a46fe7226e7450af7a6545bfc474c9/idna-2.8-py2.py3-none-any.whl (58kB)
+Collecting certifi>=2017.4.17 (from requests->django-allauth==0.40.0->-r ../requirements.txt (line 2))
+  Downloading https://files.pythonhosted.org/packa</p>
+		</div>
+	</div>
+</div>
+{% endblock content %}

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <!-- Header -->
+    <header id="home" class="header text-white h-fullscreen" data-overlay="8">
+      <canvas class="constellation" data-color="#50a1ff"></canvas>
+      <div class="container position-static">
+        <div class="row align-items-center h-100">
+          <div class="col-lg-12 text-center">
+            <h1><span class="text-warning">We</span> use machine learning to do human teaching</h1>
+            <p class="lead mt-5 mb-8">Actuarial e-learnings supported with space repetition algorithms optimized with AI.<br>The best IFRS 17 e-learning in the world.</p>
+            <p class="gap-xy">
+              {% if request.user.is_authenticated %}
+                <a class="btn btn-round btn-primary mw-150" href="{% url 'exam-list' %}#elearnings">Continue learning</a>
+                <a class="btn btn-round btn-warning mw-150" href="{% url 'elearning-progress' %}">Your learning dashboard</a>
+              {% else %}
+                <a class="btn btn-round btn-primary mw-150" href="{% url 'exam-list' %}">See the base of courses</a>
+                <a class="btn btn-round btn-warning mw-150" href="#">Request a demo</a>
+              {% endif %}
+            </p>
+          </div>
+        </div>
+      </div>
+    </header><!-- /.header -->
+
+{% endblock content %}

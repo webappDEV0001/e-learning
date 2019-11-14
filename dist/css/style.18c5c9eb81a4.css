@@ -1,0 +1,76 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');
+
+h1,h2,h3,h4,h5,h6 {
+	font-family: 'Open Sans', sans-serif !important;
+}
+
+
+.navbar {
+	top: 0;
+}
+
+.navbar[data-navbar="fixed"], .navbar-scrolled [data-navbar="fixed"] {
+	background-color: rgb(32, 56, 100);
+}
+
+.navbar-brand img {
+	max-height: 30px;
+}
+
+[data-navbar="static"] {
+	border-bottom: none;
+}
+
+main.main-content {
+	margin-top: 56px;
+}
+
+header#home {
+	background-image: url("/static/img/adult.7457dc677f39.jpg");
+}
+
+.cookiealert {
+	background: black;
+}
+
+#references {
+	background-image: url("/static/img/agreement.1904d9a647e2.jpg");
+	background-position: center center;
+}
+
+
+section#about, section#contact, section#solutions {
+	padding-top: 4rem;
+}
+section#about-header, section#contact-header, section#solutions-header, section#questions-header {
+	padding-top: 2rem;
+	padding-bottom: 2rem;
+}
+
+section#about-header {
+	background-image: url("/static/img/startup.5d9210d47c2d.jpg");
+	background-position: center bottom;
+	background-size: cover;
+}
+section#solutions-header {
+	background-image: url("/static/img/businessman.74f011fe337f.jpg");	
+		background-position: center bottom;
+}
+section#contact-header {
+	background-image: url("/static/img/writing.16f316f048c6.jpg");
+}
+
+ #answer-alert {
+ 	width: 100%;
+ }
+
+ section#questions-header {
+ 	background-image: url("/static/img/tech.28b427e64481.jpg");
+ }
+ .btn-warning {
+ 	color: black;
+ }
+
+ img.slide {
+ 	width: 100%;
+ }
