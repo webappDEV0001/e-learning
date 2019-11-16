@@ -16,12 +16,12 @@ class ELearning(Exam):
 
 
 class Slide(models.Model):
-	elearning = models.ForeignKey(ELearning, on_delete=models.CASCADE)
+	elearning = models.ForeignKey(ELearning, on_delete=models.DO_NOTHING)
 	image = models.ImageField(upload_to='slides/')
 
 
 class ELearningSession(models.Model):
-	elearning = models.ForeignKey(ELearning, on_delete=models.CASCADE, related_name='sessions')
+	elearning = models.ForeignKey(ELearning, on_delete=models.DO_NOTHING, related_name='sessions')
 	number = models.PositiveIntegerField(default=0)
 	slides = models.ManyToManyField(Slide, blank=True)
 	questions = models.ManyToManyField(Question, blank=True)
@@ -86,3 +86,21 @@ class ELearningCorrection(models.Model):
 	created = models.DateTimeField(auto_now_add=True)
 	session = models.ForeignKey(ELearningUserSession, on_delete=models.CASCADE)
 	question = models.ForeignKey(Question, on_delete=models.CASCADE)
+
+class ImportExportELearning(models.Model):
+	""" 
+	This model is for only use Import/Export
+	"""
+	quiz = models.CharField(max_length=254, blank=False)
+	category = models.CharField(max_length=254, blank=False)
+	sub_category = models.CharField(max_length=254, blank=False)
+	figure = models.CharField(max_length=254, blank=False, default='n')
+	content = models.CharField(max_length=254, blank=True)
+	explanation = models.CharField(max_length=254, blank=True)
+	correct = models.CharField(max_length=254, blank=True)
+	answer1 = models.CharField(max_length=254, blank=True)
+	answer2 = models.CharField(max_length=254, blank=True)
+	answer3 = models.CharField(max_length=254, blank=True)	
+
+	def __str__(self):
+		return "%s(%d)" % (self.quiz, self.id)

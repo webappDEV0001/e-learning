@@ -7,8 +7,6 @@ from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 from import_export.results import Result
 from import_export.fields import Field
-from import_export.widgets import ForeignKeyWidget
-from import_export.widgets import CharWidget
 
 admin.site.register(Slide)
 admin.site.register(ELearningSession)
@@ -18,23 +16,21 @@ admin.site.register(ELearningCorrection)
 admin.site.register(ELearningRepetition)
   
 class ELearningResource(resources.ModelResource):
-
-	name = Field(column_name='quiz')
-	category = Field(attribute='category', column_name='category')
-	sub_category = Field(column_name='sub_category')
-	figure = Field(column_name='figure')
-	content = Field(column_name='content')
-	explanation = Field(column_name='explanation')
-	correct = Field(column_name='correct')
-	answer1 = Field(column_name='answer1')
-	answer2 = Field(column_name='answer2')
-	answer3 = Field(column_name='answer3')
-	
 	class Meta:
 		model = ELearning
-		fields = ('name', 'category', 'sub_category', 'figure', 'content', 'explanation', 'correct', 'answer1', 'answer2', 'answer3')
 
-	def import_data(self, dataset, dry_run=False, raise_errors=False, *args, **kwargs):
+class ELearningAdmin(ImportExportModelAdmin):
+	resource_class = ELearningResource
+
+admin.site.register(ELearning, ELearningAdmin)
+
+#e-learning import/export resource
+class ELearningImportExportResource(resources.ModelResource):
+	
+	class Meta:
+		model = ImportExportELearning
+
+	def before_import(self, dataset, result, using_transactions, dry_run = False, **kwargs):
 		session_no = 1
 		if len(dataset) > 1:
 			prev_exam_name = dataset[0][1]
@@ -47,10 +43,8 @@ class ELearningResource(resources.ModelResource):
 			exam, crt = ELearning.objects.get_or_create(name=exam_name, exam_type=Exam.ELEARNING)
 			if not figure == 'n' and prev_figure == 'n':
 				session_no += 1
-				print('decided session no: ', session_no, ' with exam name is: ', exam_name)
 			if not prev_exam_name == exam_name:
 				session_no = 1
-				print('session no is initialized as 1 with exam name: ', exam_name, 'prev name is: ', prev_exam_name)
 			prev_exam_name = exam_name
 			prev_figure = figure
 			session, crt = ELearningSession.objects.get_or_create(elearning=exam, number=session_no)
@@ -82,9 +76,67 @@ class ELearningResource(resources.ModelResource):
 
 		return Result()
 
+class ELearningImportExportAdmin(ImportExportModelAdmin):
+	resource_class = ELearningImportExportResource
+	def save_model(self, request, obj, form, change):
+		if change:
+			old_object = self.model.objects.get(id=obj.id)
+			old_elearning = ELearning.objects.filter(name=old_object.quiz)[0]
+			old_elearning.name = obj.quiz
+			old_elearning.save()
+			###Slide and Question can't be switched each other, but just figure's name is able to be updated.###
+			if not obj.figure == 'n': 
+				s = Slide.objects.get_or_create(elearning=old_elearning, image=old_object.figure)
+				s.figure = obj.figure #replace with new figure
+				s.save()
+			else:
+				question, created = Question.objects.get_or_create(exam=old_elearning, text=old_object.content)
+				question.text = obj.content
+				question.explanation = obj.explanation
+				question.category = obj.category
+				question.sub_category = obj.sub_category
+				question.save()
+				
+				correct_answer, created = Answer.objects.get_or_create(question=question, text=old_object.correct)
+				correct_answer.text = obj.correct
+				correct_answer.save()
+				answer1, created = Answer.objects.get_or_create(question=question, text=old_object.answer1)
+				answer1.text = obj.answer1
+				answer1.save()
+				answer2, created = Answer.objects.get_or_create(question=question, text=old_object.answer2)
+				answer2.text = obj.answer2
+				answer2.save()
+				answer3, created = Answer.objects.get_or_create(question=question, text=old_object.answer3)
+				answer3.text = obj.answer3
+				answer3.save()
+		else:
+			elearning, crt = ELearning.objects.get_or_create(name=obj.quiz, exam_type=Exam.ELEARNING)
+			###Slide and Question can't be switched each other, but just figure's name is able to be updated.###
+			session, crt = ELearningSession.objects.get_or_create(elearning=elearning, number=1)
+			if not obj.figure == 'n': 
+				s, created = Slide.objects.get_or_create(elearning=elearning, image=obj.figure)
+				session.slides.add(s)
+				session.save()
+			else:
+				question, created = Question.objects.get_or_create(exam=elearning, text=obj.content)
+				question.text = obj.content
+				question.explanation = obj.explanation
+				question.category = obj.category
+				question.sub_category = obj.sub_category
+				question.save()
+				session.questions.add(question)
+				session.save()
+				
+				correct_answer, created = Answer.objects.get_or_create(question=question, text=obj.correct)
+				correct_answer.save()
+				answer1, created = Answer.objects.get_or_create(question=question, text=obj.answer1)
+				answer1.save()
+				answer2, created = Answer.objects.get_or_create(question=question, text=obj.answer2)
+				answer2.save()
+				answer3, created = Answer.objects.get_or_create(question=question, text=obj.answer3)
+				answer3.save()
+		obj.user = request.user
+		super().save_model(request, obj, form, change)
 
-class ELearningAdmin(ImportExportModelAdmin):
-	resource_class = ELearningResource
-	# list_display = ('quiz', 'category')
+admin.site.register(ImportExportELearning, ELearningImportExportAdmin)
 
-admin.site.register(ELearning, ELearningAdmin)

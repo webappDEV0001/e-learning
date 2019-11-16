@@ -173,7 +173,7 @@ class ExamListView(LoginRequiredMixin, ListView):
 	    context['e_user_sessions'] = list(ELearningUserSession.objects.filter(user=self.request.user) \
 	    	.values_list('elearning', flat=True))
 	    context['elearnings'] = self.get_queryset().filter(exam_type=Exam.ELEARNING)
-	    context['elearnings_ns'] = self.get_queryset().filter(exam_type=Exam.ELEARNING_NS)
+	    # context['elearnings_ns'] = self.get_queryset().filter(exam_type=Exam.ELEARNING_NS)
 	    return context
 
 

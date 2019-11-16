@@ -35,14 +35,18 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
 
 	def get_queryset(self):
 		qs = super(ELearningUserSessionViewSet, self).get_queryset()
+		# qs = qs.filter(exam_id=self.kwargs['pk'], user=self.request.user)\
+		#   .filter(exam__exam_type__in=[Exam.ELEARNING, Exam.ELEARNING_NS])
 		qs = qs.filter(exam_id=self.kwargs['pk'], user=self.request.user)\
-		  .filter(exam__exam_type__in=[Exam.ELEARNING, Exam.ELEARNING_NS])
+		.filter(exam__exam_type__in=[Exam.ELEARNING])
 		return qs
 
 	def retrieve(self, request, pk=None):
 		""" GET: Get or create exam user session """
+		# eus, crt = ELearningUserSession.objects.get_or_create(exam_id=pk, elearning_id=pk, user=request.user)
+		# get_object_or_404(Exam, pk=pk, exam_type__in=[Exam.ELEARNING, Exam.ELEARNING_NS])
 		eus, crt = ELearningUserSession.objects.get_or_create(exam_id=pk, elearning_id=pk, user=request.user)
-		get_object_or_404(Exam, pk=pk, exam_type__in=[Exam.ELEARNING, Exam.ELEARNING_NS])
+		get_object_or_404(Exam, pk=pk, exam_type__in=[Exam.ELEARNING])
 		if not eus.started:
 			response = {
 				'state': 'init',

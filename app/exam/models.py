@@ -17,12 +17,12 @@ class Exam(models.Model):
 	"""
 	EXAM = 'exam'
 	ELEARNING = 'elearning'
-	ELEARNING_NS = 'elearning_ns'
+	# ELEARNING_NS = 'elearning_ns'
 
 	TYPES = [
 		(EXAM, 'Exam'),
-		(ELEARNING, 'E-learning'),
-		(ELEARNING_NS, 'E-learning (no slides)')
+		(ELEARNING, 'E-learning')
+		# (ELEARNING_NS, 'E-learning (no slides)')
 	]
 
 	name = models.CharField(max_length=255)
@@ -47,3 +47,21 @@ class Exam(models.Model):
 	def save(self, *args, **kwargs):
 		self.slug = slugify(self.name, allow_unicode=True)
 		super().save(*args, **kwargs)
+
+class ImportExportExam(models.Model):
+	"""
+	This model is for only use Import/Export
+	"""
+	quiz = models.CharField(max_length=254, blank=False)
+	category = models.CharField(max_length=254, blank=False)
+	sub_category = models.CharField(max_length=254, blank=False)
+	figure = models.CharField(max_length=254, blank=False, default='n')
+	content = models.CharField(max_length=254, blank=True)
+	explanation = models.CharField(max_length=254, blank=True)
+	correct = models.CharField(max_length=254, blank=True)
+	answer1 = models.CharField(max_length=254, blank=True)
+	answer2 = models.CharField(max_length=254, blank=True)
+	answer3 = models.CharField(max_length=254, blank=True)	
+
+	def __str__(self):
+		return "%s(%d)" % (self.quiz, self.id)

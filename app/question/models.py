@@ -9,7 +9,7 @@ from exam.models import Exam
 
 
 class Question(models.Model):
-	exam = models.ForeignKey(Exam, on_delete=models.CASCADE, related_name='questions')
+	exam = models.ForeignKey(Exam, on_delete=models.DO_NOTHING, related_name='questions')
 	explanation = models.TextField(blank=True)
 	text = models.TextField()
 	category = models.CharField(max_length=254, blank=True)
