@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'import_export'
 ]
 
+IMPORT_EXPORT_USE_TRANSACTIONS = True
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -77,20 +79,20 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-DATABASES = {
-    'default': env.db('DATABASE_URL', default='sqlite://./db.sqlite3')
-}
+# DATABASES = {
+#     'default': env.db('DATABASE_URL', default='sqlite://./db.sqlite3')
+# }
 
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#        'NAME': 'elearning',
-#        'USER': 'postgres',
-#        'PASSWORD': 'postgres',
-#        'HOST': 'localhost',
-#        'PORT': '',
-#    }
-#}
+DATABASES = {
+   'default': {
+       'ENGINE': 'django.db.backends.postgresql_psycopg2',
+       'NAME': 'elearning',
+       'USER': 'postgres',
+       'PASSWORD': 'postgres',
+       'HOST': 'localhost',
+       'PORT': '',
+   }
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
