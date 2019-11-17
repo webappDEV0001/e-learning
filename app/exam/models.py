@@ -28,7 +28,7 @@ class Exam(models.Model):
 	name = models.CharField(max_length=255)
 	slug = models.SlugField(max_length=255, default='', editable=False)
 	author = models.ForeignKey(settings.AUTH_USER_MODEL, models.SET_NULL, blank=True, null=True)
-	time_limit = models.IntegerField(default=0)
+	time_limit = models.IntegerField(default=30)
 	n_questions = models.PositiveIntegerField(default=5)
 	public = models.BooleanField(default=False)
 	description = models.TextField(blank=True)
