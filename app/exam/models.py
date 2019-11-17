@@ -33,6 +33,7 @@ class Exam(models.Model):
 	public = models.BooleanField(default=False)
 	description = models.TextField(blank=True)
 	exam_type = models.CharField(max_length=15, default=EXAM, choices=TYPES)
+	show_answers = models.BooleanField(default=True)
 
 	def __str__(self):
 		return self.name

@@ -1,6 +1,14 @@
 import datetime
+import os
+import time
+
+import pdfkit
+from django.core.files.storage import FileSystemStorage
+from django.http import HttpResponse
+from django.template import loader
 from django.utils import timezone
 import random
+from django.views.generic.base import View
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 from django.views.generic.detail import DetailView
@@ -11,6 +19,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from rest_framework import viewsets, mixins
 from rest_framework.response import Response
 
+from config.settings import TEMP_DIR
 from .models import ELearning, ELearningUserSession, ELearningRepetition, ELearningCorrection, ELearningSession
 from exam.models import Exam
 from elearning.models import ELearningUserAnswer
@@ -61,13 +70,20 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
 			repetition = ELearningRepetition.objects.filter(session=eus, repeat_after__lte=rep_date_from, answered=False)
 
 			if repetition:
+				# repetition get correct answers count
+				correct_answered_count = ELearningRepetition.objects.filter(session=eus,
+																			question=repetition.first().question,
+																			answered=True).count()
 				eus.phase = 1
 				eus.save()
+				exam_obj = Exam.objects.get(id=pk)
 				context = {
 					'object': eus,
 					'question': repetition.first().question,
 					'phase': 'repetitions',
-					'left': repetition.count()
+					'left': repetition.count(),
+					'show_answers': exam_obj.show_answers,
+					'correct_answered_count':correct_answered_count
 				}
 				response = {
 					'state': 'question',
@@ -82,9 +98,14 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
 			slides = eus.active_session.slides
 			if eus.seen_slides < slides.count():
 				slide_to_show = list(slides.all())[eus.seen_slides]
+				if eus.seen_slides == 0 :
+					previous_slide=0
+				else:
+					previous_slide=1
+
 				response = {
 					'state': 'slide',
-					'content': render_to_string('elearning/includes/_slide.html', {'slide': slide_to_show})
+					'content': render_to_string('elearning/includes/_slide.html', {'slide': slide_to_show,'previous_slide':previous_slide})
 				}
 				return Response(response)
 
@@ -103,10 +124,12 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
 				if correction:
 					eus.phase = 0
 					eus.save()
+					exam_obj = Exam.objects.get(id=pk)
 					context = {
 						'object': eus,
 						'question': correction.first().question,
 						'phase': 'corrections',
+						'show_answers': exam_obj.show_answers,
 						'left': correction.count()
 					}
 					response = {
@@ -143,6 +166,7 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
 
 			eus.phase = 2
 			eus.save()
+			exam_obj = Exam.objects.get(id=pk)
 			# Clean all answered repetitions
 			ELearningRepetition.objects.filter(session=eus, answered=True).delete()
 
@@ -150,6 +174,7 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
 				'object': eus,
 				'question': question,
 				'phase': 'new_questions',
+				'show_answers': exam_obj.show_answers,
 				'left': int(eus.n_questions - len(already_answered))
 			}
 			response = {
@@ -217,7 +242,27 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
 			}
 			return Response(response)
 
+		elif data.get('slide', None) == 'previous_seen':
+			eus.seen_slides -= 1
+			eus.save()
+			response = {
+				'state': 'start',
+				'session': self.serializer_class(eus).data,
+			}
+			return Response(response)
+
 		correct = False
+
+		#Delete that questions from repetitions
+		if data.get('forget-question',None) != None:
+			question_id = int(data.get('question', None))
+			ELearningRepetition.objects.filter(session=eus, question_id=question_id).delete()
+
+			response = {
+				'status':"Forget question successfully",
+			}
+			return Response(response)
+
 		answer_id = int(data.get('answer', None))
 		answer = get_object_or_404(Answer, pk=answer_id)
 		question_id = int(data.get('question', None))
@@ -289,3 +334,94 @@ class ELearningProgressListView(LoginRequiredMixin, ListView):
 	    context = super().get_context_data(**kwargs)
 	    context['elearning_sessions'] = ELearningUserSession.objects.filter(user=self.request.user)
 	    return context
+
+
+
+class DownloadCertificateView(View):
+    template_name = "elearning/download-certificate.html"
+
+    # -------------------------------------------------------------------------------
+    # confirm_dir_exists
+    # -------------------------------------------------------------------------------
+    def confirm_dir_exists(self, dir_path):
+        """
+        Makes sure whether the directory path given exists. If it does not,
+        then it creates one and returns the path.
+        """
+        if not os.path.exists(dir_path):
+            os.makedirs(dir_path)
+
+        return dir_path
+
+    def confirm_file_exists(self, file_path):
+        """
+        Makes sure whether the file path given exists. If it does not, then it
+        creates one and returns the path.
+        """
+
+        if not os.path.exists(file_path):
+            with open(file_path, "w+") as f:
+                f.write('')
+
+        return file_path
+
+
+    def get_temp_path(self, filename_initials):
+        self.confirm_dir_exists(TEMP_DIR)
+
+        ts = time.time()
+        timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y%m%d-%H%M%S')
+        temp_file_path = os.path.join(TEMP_DIR, '%s-%s.pdf' % (filename_initials, timestamp))
+
+        self.confirm_file_exists(temp_file_path)
+
+        return temp_file_path
+
+    def create_pdf(self, context, template, filename_initials, request):
+        options = {
+            'page-size': 'A4',
+            'margin-top': '0in',
+            'margin-right': '0in',
+            'margin-bottom': '0in',
+            'margin-left': '0in',
+            'encoding': "UTF-8",
+            'page-height': '50in',
+            'custom-header': [
+                ('Accept-Encoding', 'gzip')
+            ],
+            'orientation': 'landscape'
+        }
+        template = loader.get_template(self.template_name)
+        html_string = template.render(context=context, request=request)
+        file_path = self.get_temp_path(filename_initials)
+        # TODO: use exception handling here. and catch in `get` method to redirect to error page in case of some error
+        pdfkit.from_string(html_string, file_path,
+                           options=options)
+
+        return file_path
+
+    # ---------------------------------------------------------------------------
+    # render_to_pdf_response
+    # ---------------------------------------------------------------------------
+    def render_to_pdf_response(self, context, template, filename_initials, request=None):
+        file = self.create_pdf(context, template, filename_initials, request=request)
+        filename = os.path.basename(file)
+
+        fs = FileSystemStorage(file)
+
+        with fs.open(file) as pdf:
+            response = HttpResponse(pdf, content_type='application/pdf')
+            response['Content-Disposition'] = 'attachment; filename="%s"' % filename
+            return response
+
+    def get(self, request, *args, **kwargs):
+
+        user_session = ELearningUserSession.objects.get(user=self.request.user, elearning__slug=kwargs.get('slug'))
+        context = {
+            "email": user_session.user.email,
+            "training_name": kwargs.get('slug'),
+            #TODO: add leftout information to pdf context
+            # "completed_on": user_session.finished.date().strftime("%m.%d.%y"),
+            # "total_hours": int((user_session.finished - user_session.started).total_seconds()//3600),
+        }
+        return self.render_to_pdf_response(context, self.template_name, kwargs.get('slug'))

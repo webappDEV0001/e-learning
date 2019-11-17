@@ -1,0 +1,78 @@
+{% load staticfiles %}
+{% load get_base64 %}
+<html>
+<head>
+    <meta name="pdfkit-page-size" content="Legal"/>
+    <meta name="pdfkit-orientation" content="Landscape"/>
+</head>
+<body>
+<!-- logo -->
+<table width="100%" align="center" border="0" cellpadding="0" cellspacing="0" bgcolor="#eef2ef" id="backgroundTable"
+       class="devicewidth" style="display: table;">
+    <tbody>
+    <tr style="vertical-align: middle;">
+        <td align="center"
+            style="width: 30%; vertical-align: middle; background: #bf9000;">
+            <div class="imgpop">
+                <a target="_blank" href="#"><img
+                        src="{{ 'https://i.ibb.co/bs53zgX/user-logo-img.png' | get64 }}"
+                        alt="logo"></a>
+            </div>
+        </td>
+        <td style="width: 70%; padding: 113px 80px; background: url('{{ 'https://i.ibb.co/vDLkQcq/body-bg.jpg' | get64 }}');">
+            <h1 style="font-size: 64px; color: #000; font-weight: bold; font-style: italic; text-align: center; margin-top: 0px;">
+                Statement of Accomplishment</h1>
+            <p style="font-size: 30px; color: #7f7f7f; font-style: italic; font-weight: bold;">
+                #369</p>
+            <h4 style="font-size: 30px; color: #7f7f7f; font-style: italic; font-weight: bold; margin-bottom: 0px;">
+                has been awarded to:</h4>
+            <h2 style="color: #002060; font-size: 40px; font-weight: bold; font-style: italic; margin-top: 20px;">
+                {{email}}</h2>
+            <h4 style="font-size: 30px; color: #7f7f7f; font-style: italic; font-weight: bold; margin-bottom: 0px;">
+                for successfully completing:</h4>
+            <h2 style="color: #002060; font-size: 40px; font-weight: bold; font-style: italic; margin-top: 20px;">
+                {{training_name}}</h2>
+            <table width="100%" cellpadding="0" cellspacing="0" border="0"
+                   align="center">
+                <tbody>
+                <tr style="display: table;">
+                    <td style="padding-right: 100px;">
+                        <h4 style="font-size: 30px; color: #7f7f7f; font-style: italic; font-weight: bold; margin-bottom: 0px; margin-top: 5px;">
+                            Completed on:</h4>
+                        <h2 style="color: #002060; font-size: 40px; font-weight: bold; font-style: italic; margin-top: 20px;">
+                            XX.XX.XX</h2>
+                    </td>
+                    <td>
+                        <h4 style="font-size: 30px; color: #7f7f7f; font-style: italic; font-weight: bold; margin-bottom: 0px; margin-top: 5px;">
+                            Length:</h4>
+                        <h2 style="color: #002060; font-size: 40px; font-weight: bold; font-style: italic; margin-top: 20px;">
+                            XX hours</h2>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <table width="100%" cellpadding="0" cellspacing="0" border="0"
+                   align="center">
+                <tbody>
+                <tr>
+                    <td>
+                        <a href="javascript:void(0);"><img
+                                src="{{ 'https://i.ibb.co/16JfDpM/logo.png' | get64 }}"
+                                alt="logo"></a>
+                    </td>
+                    <td align="right">
+                        <a href="javascript:void(0);"><img
+                                src="{{ 'https://i.ibb.co/n1yQwjW/user-image.png' | get64 }}"
+                                alt="user image"></a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<!-- end of logo -->
+
+</body>
+</html>

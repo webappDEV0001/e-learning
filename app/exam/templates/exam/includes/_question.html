@@ -13,7 +13,7 @@
 		<div class="row">
 			<div class="col">
 				{% for answer in question.shuffled_answers %}
-				<button data-pk="{{ answer.pk }}" data-qpk="{{ question.pk }}" class="answer-btn btn btn-outline-primary btn-block p-4">{{ answer.text }}</button>
+				<button data-pk="{{ answer.pk }}" data-qpk="{{ question.pk }}" data-rpk="{{ show_answers }}" class="answer-btn btn btn-outline-primary btn-block p-4">{{ answer.text }}</button>
 				{% endfor %}
 			</div>
 		</div>
@@ -29,3 +29,14 @@
 			<p id="explanation-text" class="text-break"></div>
 		</div>
 </div>
+
+<script>
+	$(".answer-btn").on('click', function () {
+			$(".answer-btn").css('display','none');
+	});
+
+	$(".next-question").on('click', function () {
+			$(".answer-btn").css('display','block');
+	});
+
+</script>

@@ -14,6 +14,7 @@
 				<thead>
 					<tr class="bg-primary text-white font-weight-bold">
 						<th class="font-weight-bold">Name</th>
+						<th class="font-weight-bold">Certificate</th>
 						<th class="font-weight-bold">Progress</th>
 					</tr>
 				</thead>
@@ -22,8 +23,11 @@
 					<tr>
 						<td><a href="{% url 'elearning' object.elearning.pk object.elearning.slug %}">{{ object.elearning.name }}</a></td>
 						<td>
+								<a href="{% url 'generate-certificate' object.elearning.slug %}" class="btn btn-warning">Download</a>
+						</td>
+						<td>
 							{{ object.user_progress }}%
-							<a class="pb-2 btn btn-sm btn-link pull-right" href="{% url 'elearning' object.elearning.pk object.elearning.slug %}">Continue ></a></td>
+							<a class="pb-2 btn btn-sm btn-lin k pull-right" href="{% url 'elearning' object.elearning.pk object.elearning.slug %}">Continue ></a></td>
 					</tr>
 					{% endfor %}
 				</tbody>

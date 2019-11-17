@@ -15,7 +15,7 @@
 						 ({{ left }} remaining)
 					</small></div>
 					  <h5 class="card-title">Question</h5>
-					  <p>{{ question.text }}</p>
+					  <p id="question_text">{{ question.text }}</p>
 					</div>
 				</div>
 			</div>
@@ -23,14 +23,48 @@
 		<div class="row">
 			<div class="col">
 				{% for answer in question.shuffled_answers %}
-				<button data-pk="{{ answer.pk }}" data-qpk="{{ question.pk }}" class="answer-btn btn btn-outline-primary btn-block p-4">{{ answer.text }}</button>
+				<button data-pk="{{ answer.pk }}" data-qpk="{{ question.pk }}" data-rpk="{{ show_answers }}" class="answer-btn btn btn-outline-primary btn-block p-4">{{ answer.text }}</button>
 				{% endfor %}
 			</div>
 		</div>
+
 	</div>
+
+	<div id="forget_class" class="col-sm-5">
+		{% if correct_answered_count >= 2 %}
+		<button type="button" class="Forget-question btn btn-primary" data-toggle="modal" data-target="#popUpModal" data-whatever="@getbootstrap">Forget this Question Forever</button>
+		{% endif %}
+	</div>
+
 	<div class="col-md-5">
 		<div id="explanation" class="d-none">
 			<h6>Explanation:</h6>
 			<p id="explanation-text" class="text-break"></div>
-		</div>
+	</div>
 </div>
+
+<div class="modal fade" id="popUpModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <div class="modal-body">
+			<h6>Are you sure that you remember that question perfectly and you do not want to see it again?</h6>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="confirm_forget btn btn-primary" data-pk="{{ question }}" data-qpk="{{ question.pk }}" data-dismiss="modal">Confirm</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+	$(".answer-btn").on('click', function () {
+			$(".answer-btn").css('display','none');
+	});
+
+	$(".next-question").on('click', function () {
+			$(".answer-btn").css('display','block');
+	});
+
+</script>

@@ -29,7 +29,7 @@ def contact(request):
 
 def careers(request):
     return render(request, 'careers.html')
-	
+
 
 class ExamView(DetailView):
 	model = Exam
@@ -55,6 +55,7 @@ class ExamUserSessionViewSet(viewsets.GenericViewSet):
 		""" GET: Get active exam user session """
 		exam = get_object_or_404(Exam, pk=pk, exam_type=Exam.EXAM)
 		eus = ExamUserSession.objects.filter(exam_id=pk, finished=None)
+		exam_obj = Exam.objects.get(id=pk)
 
 		if not eus.exists():
 			response = {
@@ -100,6 +101,7 @@ class ExamUserSessionViewSet(viewsets.GenericViewSet):
 
 			context = {
 				'object': eus,
+				'show_answers': exam_obj.show_answers,
 				'question': question
 			}
 			response = {
