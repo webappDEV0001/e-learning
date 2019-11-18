@@ -106,10 +106,40 @@ section#contact-header {
    width: 100%;
 }
 
+/*18 nov Our Base css start here*/
+
+.ourbase_text h5 {
+    margin-top: 20px;
+}
+.footer_menu_items {
+    height: 100%;
+    padding-left: 40px;
+}
+
+
+
+
+
+
+
+
 
 @media (max-width: 767px) {
 div#exam-screen {
     margin-bottom: 20px !important;
 }
+.footer_menu_items {
+    padding-left: 0;
+    padding-top: 40px;
+    align-content: center;
+    text-align: center;
+}
+.social.float-right {
+    float: unset !important;
+    text-align: center;
+    margin-top: 10px;
+}
 
 }
+
+
