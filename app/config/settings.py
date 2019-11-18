@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'question',
     'exam',
     'elearning',
-    'import_export'
+    'import_export',
 ]
 
 IMPORT_EXPORT_USE_TRANSACTIONS = True
@@ -79,20 +79,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-# DATABASES = {
-#     'default': env.db('DATABASE_URL', default='sqlite://./db.sqlite3')
-# }
-
 DATABASES = {
-   'default': {
-       'ENGINE': 'django.db.backends.postgresql_psycopg2',
-       'NAME': 'elearning',
-       'USER': 'postgres',
-       'PASSWORD': 'postgres',
-       'HOST': 'localhost',
-       'PORT': '',
-   }
+    'default': env.db('DATABASE_URL', default='sqlite://./db.sqlite3')
 }
+
+#Email Settings
+EMAIL_HOST = 'mail.privateemail.com'
+EMAIL_HOST_USER = 'contact@4actuaries.com'
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = 'Lechpoznan1'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
@@ -114,7 +111,7 @@ STATIC_URL = env('STATIC_URL', default='/static/')
 STATIC_ROOT = os.path.join(BASE_DIR, '..', 'dist')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, '..', 'assets')]
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
+TEMP_DIR = os.path.join(STATICFILES_DIRS[0], 'temp')
 #### Authentication
 
 AUTH_USER_MODEL = 'users.User'
