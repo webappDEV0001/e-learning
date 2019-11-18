@@ -26,7 +26,7 @@ main.main-content {
 }
 
 header#home {
-	background-image: url('/static/img/adult.jpg');
+	background-image: url("/static/img/adult.7457dc677f39.jpg");
 }
 
 .cookiealert {
@@ -34,7 +34,7 @@ header#home {
 }
 
 #references {
-	background-image: url('/static/img/agreement.jpg');
+	background-image: url("/static/img/agreement.1904d9a647e2.jpg");
 	background-position: center center;
 }
 
@@ -48,16 +48,16 @@ section#about-header, section#contact-header, section#solutions-header, section#
 }
 
 section#about-header {
-	background-image: url('/static/img/startup.jpg');
+	background-image: url("/static/img/startup.5d9210d47c2d.jpg");
 	background-position: center bottom;
 	background-size: cover;
 }
 section#solutions-header {
-	background-image: url('/static/img/businessman.jpg');
+	background-image: url("/static/img/businessman.74f011fe337f.jpg");
 		background-position: center bottom;
 }
 section#contact-header {
-	background-image: url('/static/img/writing.jpg');
+	background-image: url("/static/img/writing.16f316f048c6.jpg");
 }
 
  #answer-alert {
@@ -65,7 +65,7 @@ section#contact-header {
  }
 
  section#questions-header {
- 	background-image: url('/static/img/tech.jpg');
+ 	background-image: url("/static/img/tech.28b427e64481.jpg");
  }
  .btn-warning {
  	color: black;

@@ -9,6 +9,7 @@ In order to run this containers you'll need docker and docker-compose installed.
 
 * [Install Docker](https://docs.docker.com/install)
 * [Install Docker-compose](https://docs.docker.com/compose/install/)
+* [Install wkhtmltopdf](https://pypi.org/project/pdfkit/)
 
 
 ## Getting Started
@@ -38,3 +39,4 @@ After couple of minutes app should start and you will have access to http://loca
 ```shell
 $ docker-compose exec web python manage.py createsuperuser
 ```
+

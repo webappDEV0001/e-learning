@@ -53,7 +53,7 @@ section#about-header {
 	background-size: cover;
 }
 section#solutions-header {
-	background-image: url('/static/img/businessman.jpg');	
+	background-image: url('/static/img/businessman.jpg');
 		background-position: center bottom;
 }
 section#contact-header {
@@ -74,3 +74,42 @@ section#contact-header {
  img.slide {
  	width: 100%;
  }
+
+/*15 nov css start here */
+
+.bottom_pagination {
+    background: #646464;
+    padding: 15px;
+    display: flex;
+    justify-content: center;
+}
+.bottom_pagination button {
+    background: unset !important;
+    border: navajowhite;
+    width: auto;
+    margin: 0 !important;
+    padding: 0px 20px;
+    height: auto;
+    font-size: 45px;
+    transition: all 0.5s ease-in-out 0s;
+    box-shadow: none;
+    line-height: 20px;
+}
+.bottom_pagination button:hover {
+    color: #21375f;
+    box-shadow: none;
+}
+.ppt_info_slide {
+    border: 2px solid #646464;
+}
+.ppt_info_slide img {
+   width: 100%;
+}
+
+
+@media (max-width: 767px) {
+div#exam-screen {
+    margin-bottom: 20px !important;
+}
+
+}
