@@ -3,7 +3,7 @@ from django.urls import path, include
 from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
-from exam.views import ExamListView, about, contact, careers, solutions
+from exam.views import ExamListView, about, contact, careers, solutions, OurBaseView
 from users.views import set_timezone
 from users.views import ViewContact
 
@@ -20,6 +20,7 @@ urlpatterns = [
     path('set_timezone/', set_timezone, name='set_timezone'),
 
     path('list/', ExamListView.as_view(), name='exam-list'),
+    path('ourbase/', OurBaseView.as_view(), name='ourbase'),
 	path('exam/', include('exam.urls')),
 	path('elearning/', include('elearning.urls')),
 

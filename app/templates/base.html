@@ -88,34 +88,35 @@
     <!-- Footer -->
     <footer class="footer bg-light">
       <div class="container">
+<!--        <div class="row">-->
+<!--          <div class="col-12">-->
+
+<!--            <div class="social float-right">-->
+<!--              <a class="social-linkedin" href="#"><i class="fa fa-linkedin"></i></a>-->
+<!--              <a class="social-linkedin" href="#"><i class="fa fa-facebook"></i></a>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
         <div class="row">
-          <div class="col-12">
-            <a href="#"><img style="max-width: 150px;" src="{% static 'img/logo_small_2.png' %}" alt="logo"></a>
-            <div class="social float-right">
-              <a class="social-linkedin" href="#"><i class="fa fa-linkedin"></i></a>
-              <a class="social-linkedin" href="#"><i class="fa fa-facebook"></i></a>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-6 col-lg-3">
-            <p>
-              4actuaries.com Ltd<br>
-              Gdanska 1<br>
-              Bromberg, PL (EU)
-            </p>
-            <p>
-              +48 123 456 789<br>
-            </p>
-            <p>contact@4actuaries.com</p>
+          <div class="col-lg-3">
+
+            {% block footer-image %}<img src="{%static 'img/certificate/user_logo_img.png' %}">{% endblock footer-image %}
+            {% block footer-content %}
+            {% endblock footer-content %}
           </div>
 
-          <div class="col-lg-6">
-            <div class="nav nav-bold nav-uppercase nav-trim justify-content-lg-center flex-column">
+          <div class="col-lg-4">
+            <div class="nav nav-bold nav-uppercase nav-trim justify-content-lg-center flex-column footer_menu_items">
               <a class="nav-link" href="{% url 'index' %}">Home</a>
               <a class="nav-link" href="{% url 'about' %}">About</a>
               <a class="nav-link" href="{% url 'solutions' %}">Solutions</a>
               <a class="nav-link" href="{% url 'contact' %}">Contact Us</a>
+            </div>
+          </div>
+          <div class="col-lg-5 text-right">
+            <div class="social float-right">
+              <a class="social-linkedin" href="#"><i class="fa fa-linkedin"></i></a>
+              <a class="social-linkedin" href="#"><i class="fa fa-facebook"></i></a>
             </div>
           </div>
 

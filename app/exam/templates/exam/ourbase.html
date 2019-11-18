@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content_header %}
+<section id="about-header" class="section" data-overlay="8">
+  <div class="container text-white">
+    <h3>Our E-learnings and Exams</h3>
+    <h6 class="text-light mb-5">Constantly growing 4 you.</h6>
+  </div>
+</section>
+{% endblock content_header %}
+
+{% block content %}
+<section id="about" class="section">
+  <div class="container">
+    <div class="row pt-2">
+      <div class="col-sm-4">
+        <div class="text-center ourbase_text">
+          <img src="{% static 'img/T9_pic.png' %}" alt="t9 image">
+          <h5><strong>E-learnings from IFRS 17, IFRS 9, Solvency II and many more</strong></h5>
+          <p>Actuarial e-learnings supported with space repetition algorithms optimized with AI. IFRS 17 e-learning, Solvency II training, US GAAP for actuaries. All in one place.</p>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div class="text-center ourbase_text">
+          <img src="{% static 'img/T9_pic.png' %}" alt="t9 image">
+          <h5><strong>A complete learning platform for actuaries</strong></h5>
+          <p>Forget how to forget. Learn IFRS 17, improve Solvency 2 knowledge in a efficent and conivenient way!</p>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div class="text-center ourbase_text">
+          <img src="{% static 'img/T9_pic.png' %}" alt="t9 image">
+          <h5><strong>Business cases, real life examples, explanations presenting market approaches</strong></h5>
+          <p>Stop spending million on slides that do not give you answers.  We don't only give you insights and answers, we make you remember them.</p>
+        </div>
+      </div>
+	  
+
+    </div>
+
+  <hr />
+  </div>
+</section>
+
+{% endblock content %}

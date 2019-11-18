@@ -1,6 +1,8 @@
 import random
 from django.db.models import Count
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.views import View
 from django.views.generic import TemplateView
 from django.views.generic.detail import DetailView
@@ -30,6 +32,8 @@ def contact(request):
 def careers(request):
     return render(request, 'careers.html')
 
+class OurBaseView(TemplateView):
+	template_name = "exam/ourbase.html"
 
 class ExamView(DetailView):
 	model = Exam
@@ -164,6 +168,11 @@ class ExamUserSessionViewSet(viewsets.GenericViewSet):
 class ExamListView(LoginRequiredMixin, ListView):
 	model = Exam
 	template_name = 'exam/exam_list.html'
+
+	def get(self, request, *args, **kwargs):
+
+		if request.user.is_authenticated:
+			return HttpResponseRedirect(reverse('/ourbase'))
 
 	def get_queryset(self):
 		qs = super(ExamListView, self).get_queryset()
