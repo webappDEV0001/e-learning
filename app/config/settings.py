@@ -80,7 +80,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
-    'default': env.db('DATABASE_URL', default='sqlite://./db.sqlite3')
+    'default': env.db('DATABASE_URL', default='postgresql://super:0a98swe%uf08a^fh08(&w4tr4UEUYR@olgierdbar-1228.postgres.pythonanywhere-services.com:11228/actuaries')
 }
 
 #Email Settings
