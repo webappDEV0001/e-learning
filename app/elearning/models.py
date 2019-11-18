@@ -94,12 +94,12 @@ class ImportExportELearning(models.Model):
 	category = models.CharField(max_length=254, blank=False)
 	sub_category = models.CharField(max_length=254, blank=False)
 	figure = models.CharField(max_length=254, blank=False, default='n')
-	content = models.CharField(max_length=254, blank=True)
-	explanation = models.CharField(max_length=254, blank=True)
-	correct = models.CharField(max_length=254, blank=True)
-	answer1 = models.CharField(max_length=254, blank=True)
-	answer2 = models.CharField(max_length=254, blank=True)
-	answer3 = models.CharField(max_length=254, blank=True)	
+	content = models.TextField(blank=True)
+	explanation = models.TextField(blank=True)
+	correct = models.TextField(blank=True)
+	answer1 = models.TextField(blank=True)
+	answer2 = models.TextField(blank=True)
+	answer3 = models.TextField(blank=True)	
 
 	def __str__(self):
 		return "%s(%d)" % (self.quiz, self.id)
