@@ -169,11 +169,6 @@ class ExamListView(LoginRequiredMixin, ListView):
 	model = Exam
 	template_name = 'exam/exam_list.html'
 
-	def get(self, request, *args, **kwargs):
-
-		if request.user.is_authenticated:
-			return HttpResponseRedirect(reverse('/ourbase'))
-
 	def get_queryset(self):
 		qs = super(ExamListView, self).get_queryset()
 		return qs
