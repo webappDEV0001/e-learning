@@ -116,11 +116,49 @@ section#contact-header {
     padding-left: 40px;
 }
 
+/*19 Nov 2019*/
 
-
-
-
-
+.plan_detail .dropdown {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+.plan_detail {
+    position: relative;
+}
+.plan_detail .dropdown .btn.btn-primary {
+    background: unset;
+    border: none;
+    color:
+    #333;
+    font-size: 20px;
+    box-shadow: none;
+}
+.change_btns {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+.change_btns .btn.btn-primary {
+    border: 2px solid #333;
+    background: unset;
+    color: #333;
+    font-size: 14px;
+    width: 100%;
+    margin-top: 10px;
+    transition: all 0.5s ease-in-out 0s;
+}
+.change_btns .btn.btn-primary i {
+    margin-right: 5px;
+}
+.change_btns .btn.btn-primary:hover {
+    background: #333;
+    color: #fff;
+    transition: all 0.5s ease-in-out 0s;
+}
+.puzzle_img img {
+    max-width: 120px;
+}
 
 
 

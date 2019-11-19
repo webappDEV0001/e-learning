@@ -31,6 +31,16 @@
 				<a class="nav-link active" href="{% url 'account_change_password' %}">Change Password</a>
 			</li>
 		</ul>
+
+			<ul class="change_btns">
+				<li><a href="#" class="btn btn-primary"><i class="fa fa-cog" aria-hidden="true"></i>Change Password</a></li>
+				<li><a href="#" class="btn btn-primary"><i class="fa fa-cog" aria-hidden="true"></i>Change Timezone</a></li>
+			</ul>
+
+
+
+
+
 		</div>
 		<div class="col-sm-9">
 	     <div class="tab-content">
@@ -59,15 +69,27 @@
 				        {% for obj in elearnings %}
 					        <div class="col-md-6 p-0">
 					            <div class="pricing-1">
-					            <p class="plan-name">{{ obj.name }}</p>
-					            <div style="min-height:70px" class="text-muted"><small>{{ obj.description }}</small></div>
-				            	<a class="mt-4 btn btn-block btn-primary" href="{% url 'elearning' obj.pk obj.slug %}">
-				            		{% if obj.pk in e_user_sessions %}
-				            			Continue
-				            		{% else %}
-				            			Start
-				            		{% endif %}
-				            	</a>
+									<div class="plan_detail">
+										<p class="plan-name">{{ obj.name }}</p>
+										<div class="dropdown">
+											<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+											  <i class="fa fa-cog" aria-hidden="true"></i>
+											</button>
+											<div class="dropdown-menu">
+											  <a class="dropdown-item" href="#">Low</a>
+											  <a class="dropdown-item" href="#">Medium</a>
+											  <a class="dropdown-item" href="#">High</a>
+											</div>
+										</div>
+									</div>
+									<div style="min-height:70px" class="text-muted"><small>{{ obj.description }}</small></div>
+									<a class="mt-4 btn btn-block btn-primary" href="{% url 'elearning' obj.pk obj.slug %}">
+										{% if obj.pk in e_user_sessions %}
+											Continue
+										{% else %}
+											Start
+										{% endif %}
+									</a>
 					          </div>
 					        </div>
 					    {% empty %}
