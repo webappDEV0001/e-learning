@@ -418,10 +418,12 @@ class DownloadCertificateView(View):
 
         user_session = ELearningUserSession.objects.get(user=self.request.user, elearning__slug=kwargs.get('slug'))
         context = {
-            "email": user_session.user.email,
+            "username": user_session.user.username,
+			"surname": user_session.user.surname,
             "training_name": kwargs.get('slug'),
+
             #TODO: add leftout information to pdf context
-            # "completed_on": user_session.finished.date().strftime("%m.%d.%y"),
-            # "total_hours": int((user_session.finished - user_session.started).total_seconds()//3600),
+            "completed_on": user_session.finished.date().strftime("%m.%d.%y"),
+            "total_hours": int((user_session.finished - user_session.started).total_seconds()//3600),
         }
         return self.render_to_pdf_response(context, self.template_name, kwargs.get('slug'))
