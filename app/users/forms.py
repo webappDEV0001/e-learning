@@ -1,7 +1,7 @@
 from django.urls import reverse
 from django.utils.translation import ugettext as _
 from django import forms
-from allauth.account.forms import LoginForm
+from allauth.account.forms import LoginForm, ChangePasswordForm
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import HTML
@@ -39,6 +39,25 @@ class LoginForm(LoginForm):
 
         self.helper.label_class = 'col-xs-2 hide'
         self.helper.field_class = 'col-xs-8'
+
+
+class ChangePasswordForm(ChangePasswordForm):
+    def __init__(self, *args, **kwargs):
+        super(ChangePasswordForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        # Add magic stuff to redirect back.
+
+        # Add submit button like in original form.
+        self.helper.layout.append(
+            HTML(
+                '<button class="btn btn-primary btn-block" type="submit">'
+                '%s</button>' % _('Change Password')
+            )
+        )
+
+        self.helper.label_class = 'col-xs-2 hide'
+        self.helper.field_class = 'col-xs-6'
+
 
 
 class ConatctForm(forms.Form):
