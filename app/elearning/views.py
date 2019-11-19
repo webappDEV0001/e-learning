@@ -423,10 +423,9 @@ class DownloadCertificateView(View):
             "surname": user_session.user.surname,
             "training_name": kwargs.get('slug'),
             "number": user_session.elearning.certificate_count,
-            "completed_on": user_session.finished.date().strftime("%m.%d.%y"),
-            "total_hours": int((user_session.finished - user_session.started).total_seconds()//3600),
+            "completed_on": timezone.now().date().strftime("%m.%d.%y"),  #TODO: user_session.finished.date().strftime("%m.%d.%y")
+            "total_hours": int((timezone.now() - user_session.started).total_seconds()//3600),
         }
-        print(user_session.elearning.certificate_count)
         user_session.elearning.certificate_count += 1
         user_session.elearning.save()
         return self.render_to_pdf_response(context, self.template_name, kwargs.get('slug'))
