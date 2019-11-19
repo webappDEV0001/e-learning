@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+{% block content %}
+<section class="section">
+	<div class="container">
+     <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+       {% csrf_token %}
+		<div class="row">
+			<div class="col-6 mx-auto">
+				{{ form.email|as_crispy_field }}
+			</div>
+		</div>
+      <div class="row">
+			<div class="col-6 mx-auto">
+				{{ form.username|as_crispy_field }}
+			</div>
+		</div>
+        {% if redirect_field_value %}
+          <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+        {% endif %}
+      <div class="row">
+			<div class="col-6 mx-auto">
+				{{ form.surname|as_crispy_field }}
+			</div>
+		</div>
+      <div class="row">
+			<div class="col-6 mx-auto">
+				{{ form.password1|as_crispy_field }}
+			</div>
+		</div>
+      <div class="row">
+			<div class="col-6 mx-auto">
+				{{ form.password2|as_crispy_field }}
+			</div>
+		</div>
+      <div class="row">
+			<div class="col-6 mx-auto">
+				<button type="submit" class="btn btn-primary">Sign up</button>
+              <p>{% blocktrans %}Already have an account? Then please <a href="{{ login_url }}">sign in</a>.{% endblocktrans %}</p>
+			</div>
+		</div>
+     </form>
+	</div>
+</section>
+{% endblock %}

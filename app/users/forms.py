@@ -1,10 +1,10 @@
 from django.urls import reverse
 from django.utils.translation import ugettext as _
 from django import forms
-from allauth.account.forms import LoginForm, ChangePasswordForm
+from allauth.account.forms import LoginForm, ChangePasswordForm, SignupForm
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import HTML
+from crispy_forms.layout import HTML, Fieldset, Layout, Row, Column
 
 
 class LoginForm(LoginForm):
@@ -58,6 +58,18 @@ class ChangePasswordForm(ChangePasswordForm):
         self.helper.label_class = 'col-xs-2 hide'
         self.helper.field_class = 'col-xs-6'
 
+
+
+class SignUpForm(SignupForm):
+
+    username = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Username'}))
+    surname  = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Surname'}))
+
+    def save(self, request):
+        user = super(SignUpForm, self).save(request)
+        user.surname = self.cleaned_data.get("surname")
+        user.save()
+        return user
 
 
 class ConatctForm(forms.Form):
