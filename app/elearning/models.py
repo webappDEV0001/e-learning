@@ -13,6 +13,7 @@ class ELearning(Exam):
 	"""
 	slides = models.BooleanField(default=False)
 	random_questions = models.BooleanField(default=True)
+	certificate_count = models.PositiveSmallIntegerField(default=369)
 
 
 class Slide(models.Model):
