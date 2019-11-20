@@ -169,6 +169,7 @@ class ExamListView(LoginRequiredMixin, ListView):
     model = Exam
     template_name = 'exam/exam_list.html'
 
+
     def get_queryset(self):
         qs = super(ExamListView, self).get_queryset()
         return qs
@@ -179,9 +180,10 @@ class ExamListView(LoginRequiredMixin, ListView):
         context['e_user_sessions'] = list(ELearningUserSession.objects.filter(user=self.request.user) \
             .values_list('elearning', flat=True))
 
-        context['memory_force'] =ELearningUserSession.objects.filter(user=self.request.user) \
-                                          .values_list('memory_force')
+        memory_force = ELearningUserSession.objects.filter(user=self.request.user) \
+                                          .values_list('exam__name','memory_force')
 
+        context['memory_force'] =  dict(memory_force)
         context['elearnings'] = self.get_queryset().filter(exam_type=Exam.ELEARNING)
         # context['memory_force'] = ELearningUserSession.objects.filter(user=self.request.user)
         # context['elearnings_ns'] = self.get_queryset().filter(exam_type=Exam.ELEARNING_NS)
