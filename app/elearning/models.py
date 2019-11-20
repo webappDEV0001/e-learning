@@ -34,10 +34,21 @@ class ELearningUserSession(ExamUserSession):
 		(2, 'New Questions'),
 		(3, 'Slides'),
 	)
+
+	MEMORY_FORCE_CHOICES = [
+		('low', 'Low'),
+		('medium', 'Medium'),
+		('high', 'High'),
+	]
 	elearning = models.ForeignKey(ELearning, on_delete=models.CASCADE)
 	active_session = models.ForeignKey(ELearningSession, on_delete=models.CASCADE, null=True)
 	seen_slides = models.PositiveIntegerField(default=0)
 	phase = models.IntegerField(choices=PHASES, default=2)
+	memory_force = models.CharField(
+		max_length=100,
+		choices=MEMORY_FORCE_CHOICES,
+		default='medium',
+	)
 
 	def save(self, *args, **kwargs):
 		if self.pk is None:
@@ -48,6 +59,10 @@ class ELearningUserSession(ExamUserSession):
 	@property
 	def active_session_number(self):
 		return self.active_session.number
+
+	@property
+	def memory_force_value(self):
+		return self.memory_force
 
 	@property
 	def user_progress(self):

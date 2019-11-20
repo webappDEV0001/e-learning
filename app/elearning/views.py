@@ -39,8 +39,10 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
 	pk_url_kwarg = 'elearning.pk'
 
 
+
 	def get_object(self):
 		return self.get_queryset().filter(exam__pk=self.kwargs['pk']).first()
+
 
 	def get_queryset(self):
 		qs = super(ELearningUserSessionViewSet, self).get_queryset()
@@ -50,7 +52,7 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
 		.filter(exam__exam_type__in=[Exam.ELEARNING])
 		return qs
 
-	def retrieve(self, request, pk=None):
+	def retrieve(self, request, pk=None,mf=None):
 		""" GET: Get or create exam user session """
 		# eus, crt = ELearningUserSession.objects.get_or_create(exam_id=pk, elearning_id=pk, user=request.user)
 		# get_object_or_404(Exam, pk=pk, exam_type__in=[Exam.ELEARNING, Exam.ELEARNING_NS])
@@ -208,13 +210,31 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
 
 	@staticmethod
 	def create_repetition(session, user_id, question_id):
-		interval_dict = {
-			0: 1,
-			1: 3,
-			2: 7,
-			3: 21,
-			4: 60
-		}
+		if session.memory_force == 'low':
+			interval_dict = {
+				0: 1,
+				1: 2,
+				2: 5,
+				3: 14,
+				4: 30
+			}
+		elif session.memory_force == 'high':
+			interval_dict = {
+				0: 1,
+				1: 4,
+				2: 10,
+				3: 30,
+				4: 90
+			}
+		else:
+			interval_dict = {
+				0: 1,
+				1: 3,
+				2: 7,
+				3: 21,
+				4: 60
+			}
+
 		correctly_answered = ELearningUserAnswer.objects.filter(
 			user_id=user_id, question_id=question_id, answer__correct=True).count()
 		interval = interval_dict[min(correctly_answered, max(0, 4))]
@@ -226,11 +246,18 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
 	def create_correction(session, question_id):
 		return ELearningCorrection.objects.get_or_create(session=session, question_id=question_id)
 
-	def update(self, request, pk=None):
+	def update(self, request, pk=None,mu=None):
 		""" PUT: Answer sent by user """
 
 		data = request.data
 		eus = self.get_object()
+
+		#Update memory force
+		if data.get('memory_force',None) == 'True':
+			# print(data.get('memory_force_value').lower(),'memory force value')
+			eus.memory_force = data.get('memory_force_value').lower()
+			eus.save()
+			return Response("Value Updated Successfully")
 
 		# Update seen_slides
 		if data.get('slide', None) == 'seen':
@@ -427,3 +454,4 @@ class DownloadCertificateView(View):
             "total_hours": int((user_session.finished - user_session.started).total_seconds()//3600),
         }
         return self.render_to_pdf_response(context, self.template_name, kwargs.get('slug'))
+
