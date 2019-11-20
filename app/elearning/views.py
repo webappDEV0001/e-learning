@@ -28,8 +28,8 @@ from question.serializers import ExamUserSessionSerializer, ELearningUserSession
 
 
 class ELearningView(DetailView):
-	model = ELearning
-	template_name = 'exam/elearning_detail.html'
+    model = ELearning
+    template_name = 'exam/elearning_detail.html'
 
 
 class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
@@ -349,18 +349,19 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
 		return Response(response)
 
 
+
 class ELearningProgressListView(LoginRequiredMixin, ListView):
-	model = ELearningUserSession
-	template_name = 'elearning/elearning_progress.html'
+    model = ELearningUserSession
+    template_name = 'elearning/elearning_progress.html'
 
-	def get_queryset(self):
-		qs = super(ELearningProgressListView, self).get_queryset().filter(user=self.request.user)
-		return qs
+    def get_queryset(self):
+        qs = super(ELearningProgressListView, self).get_queryset().filter(user=self.request.user)
+        return qs
 
-	def get_context_data(self, **kwargs):
-	    context = super().get_context_data(**kwargs)
-	    context['elearning_sessions'] = ELearningUserSession.objects.filter(user=self.request.user)
-	    return context
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['elearning_sessions'] = ELearningUserSession.objects.filter(user=self.request.user)
+        return context
 
 
 
@@ -444,14 +445,16 @@ class DownloadCertificateView(View):
     def get(self, request, *args, **kwargs):
 
         user_session = ELearningUserSession.objects.get(user=self.request.user, elearning__slug=kwargs.get('slug'))
+
         context = {
             "username": user_session.user.username,
-			"surname": user_session.user.surname,
+            "surname": user_session.user.surname,
             "training_name": kwargs.get('slug'),
-
-            #TODO: add leftout information to pdf context
-            "completed_on": user_session.finished.date().strftime("%m.%d.%y"),
-            "total_hours": int((user_session.finished - user_session.started).total_seconds()//3600),
+            "number": user_session.elearning.certificate_count,
+            "completed_on": timezone.now().date().strftime("%m.%d.%y"),  #TODO: user_session.finished.date().strftime("%m.%d.%y")
+            "total_hours": int((timezone.now() - user_session.started).total_seconds()//3600),
         }
+        user_session.elearning.certificate_count += 1
+        user_session.elearning.save()
         return self.render_to_pdf_response(context, self.template_name, kwargs.get('slug'))
 
