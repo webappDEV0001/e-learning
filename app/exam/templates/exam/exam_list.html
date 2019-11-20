@@ -62,10 +62,10 @@
 									<div class="plan_detail">
 										<p class="plan-name">{{ obj.name }}</p>
 										<div class="dropdown">
-											<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-												<i class="fa fa-exclamation-triangle" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="{{memory_force|memory_force_title:obj.name}}" style="color: {{memory_force|memory_force_value:obj.name}};"></i>
+											<button id="memory_force_dropdown{{obj.pk}}" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+												<i id="fa-exclamation-triangle{{obj.pk}}" class="fa fa-exclamation-triangle" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="{{memory_force|memory_force_title:obj.name}}" style="color: {{memory_force|memory_force_value:obj.name}};"></i>
 											</button>
-											<div id="memory_force" class="{{obj.pk}} dropdown-menu">
+											<div id="memory_force" class="{{obj.pk}} memory_force_adiv dropdown-menu">
 											  <a class="{{obj.pk}} dropdown-item" href="#">Low</a>
 											  <a class="{{obj.pk}} dropdown-item" href="#">Medium</a>
 											  <a class="{{obj.pk}} dropdown-item" href="#">High</a>
