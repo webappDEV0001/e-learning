@@ -61,6 +61,8 @@
 					            <div class="pricing-1">
 									<div class="plan_detail">
 										<p class="plan-name">{{ obj.name }}</p>
+									{% if obj.pk in e_user_sessions %}
+
 										<div class="dropdown">
 											<button id="memory_force_dropdown{{obj.pk}}" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
 												<i id="fa-exclamation-triangle{{obj.pk}}" class="fa fa-exclamation-triangle" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="{{memory_force|memory_force_title:obj.name}}" style="color: {{memory_force|memory_force_value:obj.name}};"></i>
@@ -71,6 +73,7 @@
 											  <a class="{{obj.pk}} dropdown-item" href="#">High</a>
 											</div>
 										</div>
+										{% endif %}
 									</div>
 									<div style="min-height:70px" class="text-muted"><small>{{ obj.description }}</small></div>
 									<a class="mt-4 btn btn-block btn-primary" href="{% url 'elearning' obj.pk obj.slug %}">
