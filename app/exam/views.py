@@ -179,17 +179,11 @@ class ExamListView(LoginRequiredMixin, ListView):
         context['exams'] = self.get_queryset().filter(exam_type=Exam.EXAM)
         context['e_user_sessions'] = list(ELearningUserSession.objects.filter(user=self.request.user) \
             .values_list('elearning', flat=True))
-        print(" check "*20)
-        print(context['e_user_sessions'])
-        print(" check "*20)
 
         memory_force = ELearningUserSession.objects.filter(user=self.request.user) \
                                           .values_list('exam__name','memory_force')
 
         context['memory_force'] =  dict(memory_force)
-        print(" check2 " * 20)
-        print(context['memory_force'])
-        print(" check2 " * 20)
         context['elearnings'] = self.get_queryset().filter(exam_type=Exam.ELEARNING)
         # context['memory_force'] = ELearningUserSession.objects.filter(user=self.request.user)
         # context['elearnings_ns'] = self.get_queryset().filter(exam_type=Exam.ELEARNING_NS)
