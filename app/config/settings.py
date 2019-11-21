@@ -79,8 +79,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
+# DATABASES = {
+#     'default': env.db('DATABASE_URL', default='sqlite://./db.sqlite3')
+# }
+
 DATABASES = {
-    'default': env.db('DATABASE_URL', default='sqlite://./db.sqlite3')
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'elearning',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+        'HOST': 'localhost',
+        'PORT': '',
+    }
 }
 
 #Email Settings
