@@ -1,0 +1,13 @@
+*.py[cod]
+venv/
+dist/
+.env
+*.sqlite3
+node_modules
+media/*
+.vscode
+package-lock.json
+.idea/
+*.sqlite
+assets/temp/
+env3/

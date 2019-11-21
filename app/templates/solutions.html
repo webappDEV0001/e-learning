@@ -38,7 +38,11 @@
               <iframe width="100%" height="315" src="https://www.youtube.com/embed/mgZ-JjTDf_s" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
           </div>
           <div class="col-sm-6 text-center mt-7 mb-7">
+             {% if request.user.is_authenticated %}
               <a class="btn btn-round btn-primary mw-150" href="{% url 'exam-list' %}">See the base of e-learnings and exams</a>
+            {% else %}
+              <a class="btn btn-round btn-primary mw-150" href="{% url 'ourbase' %}">See the base of e-learnings and exams</a>
+            {% endif %}
           </div>
         </div>
 
