@@ -77,6 +77,18 @@ html, body {
     margin-bottom: 20px;
 }
 
+.card-body pre {
+    font-family: "Open Sans",sans-serif;
+    font-size: .9375rem;
+    font-weight: 300;
+    line-height: 1.9;
+    color: #203864;
+    text-align: left;
+    background-color: transparent;
+    padding: 0;
+    border: 0px;
+    box-shadow: none;
+}
 
 /*Responsive css start here*/
 
