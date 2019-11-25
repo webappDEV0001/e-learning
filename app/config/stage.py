@@ -6,11 +6,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 env = environ.Env()
 env.read_env(os.path.join(BASE_DIR, '..', '.env'))
 
-DEBUG = True
+DEBUG = env.bool('DEBUG', default=False)
 
 SECRET_KEY = env('SECRET_KEY', default='CHANGE_ME_IMPORTANT_!!!')
 
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS_LOCAL', default=['*'])
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS_STAGE', default=['*'])
 
 SITE_ID = 1
 
@@ -79,33 +79,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-# DATABASES = {
-#     'default': env.db('DATABASE_URL', default='sqlite://./db.sqlite3')
-# }
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'elearning',
-#         'USER': 'postgres',
-#         'PASSWORD': 'postgres',
-#         'HOST': 'localhost',
-#         'PORT': '',
-#     }
-# }
-
-
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'elearning',
-        'USER': 'postgres',
-        'PASSWORD': 'silver@123',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
+    'default': env.db('DATABASE_URL_STAGE', default=['*'])
 }
-
 
 #Email Settings
 EMAIL_HOST = 'mail.privateemail.com'
