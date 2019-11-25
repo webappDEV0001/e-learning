@@ -19,7 +19,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from rest_framework import viewsets, mixins
 from rest_framework.response import Response
 
-from config.settings import TEMP_DIR
+from config.common import TEMP_DIR
 from .models import ELearning, ELearningUserSession, ELearningRepetition, ELearningCorrection, ELearningSession
 from exam.models import Exam
 from elearning.models import ELearningUserAnswer
