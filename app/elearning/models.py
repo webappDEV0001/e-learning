@@ -73,12 +73,16 @@ class ELearningUserSession(ExamUserSession):
 		for q in all_correct_answers:
 			q_dict.setdefault(q['qcount'],[]).append(q['question'])
 
-		formula = 10 * self.answers.count() / no_of_all_questions
-		#formula = formula + 0.25 * q_dict.get(2, 0) / no_of_all_questions
-		#formula = formula + 0.15 * q_dict.get(3, 0) / no_of_all_questions
-		#formula = formula + 0.05 * q_dict.get(4, 0) / no_of_all_questions
-		#formula = formula + 0.05 * q_dict.get(5, 0) / no_of_all_questions
-		progress = min(formula, 1)
+		try:
+
+			formula = 10 * self.answers.count() / no_of_all_questions
+			#formula = formula + 0.25 * q_dict.get(2, 0) / no_of_all_questions
+			#formula = formula + 0.15 * q_dict.get(3, 0) / no_of_all_questions
+			#formula = formula + 0.05 * q_dict.get(4, 0) / no_of_all_questions
+			#formula = formula + 0.05 * q_dict.get(5, 0) / no_of_all_questions
+			progress = min(formula, 1)
+		except:
+			progress = 0
 		return round(progress * 100,2)
 
 class ELearningUserAnswer(models.Model):

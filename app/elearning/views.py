@@ -266,6 +266,7 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
 			response = {
 				'state': 'start',
 				'session': self.serializer_class(eus).data,
+				'full_screen_mode':data.get('full_screen_mode',False)
 			}
 			return Response(response)
 
@@ -275,6 +276,7 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
 			response = {
 				'state': 'start',
 				'session': self.serializer_class(eus).data,
+				'full_screen_mode': data.get('full_screen_mode', False)
 			}
 			return Response(response)
 

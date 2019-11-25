@@ -83,22 +83,35 @@ WSGI_APPLICATION = 'config.wsgi.application'
 #     'default': env.db('DATABASE_URL', default='sqlite://./db.sqlite3')
 # }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'elearning',
+#         'USER': 'postgres',
+#         'PASSWORD': 'postgres',
+#         'HOST': 'localhost',
+#         'PORT': '',
+#     }
+# }
+
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'elearning',
         'USER': 'postgres',
-        'PASSWORD': 'postgres',
+        'PASSWORD': 'silver@123',
         'HOST': 'localhost',
-        'PORT': '',
+        'PORT': '5432',
     }
 }
+
 
 #Email Settings
 EMAIL_HOST = 'mail.privateemail.com'
 EMAIL_HOST_USER = 'contact@4actuaries.com'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-EMAIL_HOST_PASSWORD = 'Lechpoznan1'
+EMAIL_HOST_PASSWORD = 'VanDerSaar1'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
@@ -129,13 +142,15 @@ AUTH_USER_MODEL = 'users.User'
 
 LOGIN_REDIRECT_URL = '/'
 
-ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+# ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 
 ACCOUNT_FORMS = {
-    "login": "users.forms.LoginForm"
+    "login": "users.forms.LoginForm",
+    "signup": "users.forms.SignUpForm",
+    "change_password": "users.forms.ChangePasswordForm"
 }
 
 AUTHENTICATION_BACKENDS = (
