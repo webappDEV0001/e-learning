@@ -171,7 +171,12 @@ class ExamListView(LoginRequiredMixin, ListView):
 
 
     def get_queryset(self):
-        qs = super(ExamListView, self).get_queryset()
+        if self.request.user.is_demo:
+            print("demo user")
+            qs = super(ExamListView, self).get_queryset().filter(demo=True)
+        else:
+            print("normal user")
+            qs = super(ExamListView, self).get_queryset()
         return qs
 
     def get_context_data(self, **kwargs):
@@ -184,6 +189,7 @@ class ExamListView(LoginRequiredMixin, ListView):
                                           .values_list('exam__name','memory_force')
 
         context['memory_force'] =  dict(memory_force)
+
         context['elearnings'] = self.get_queryset().filter(exam_type=Exam.ELEARNING)
         # context['memory_force'] = ELearningUserSession.objects.filter(user=self.request.user)
         # context['elearnings_ns'] = self.get_queryset().filter(exam_type=Exam.ELEARNING_NS)

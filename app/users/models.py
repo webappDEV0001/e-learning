@@ -44,6 +44,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 	last_login = models.DateTimeField(null=True, blank=True)
 	date_joined = models.DateTimeField(auto_now_add=True)
 	timezone = models.CharField(max_length=100, default='UTC')
+	is_demo = models.BooleanField(default=False)
 
 	USERNAME_FIELD = 'email'
 	EMAIL_FIELD = 'email'
