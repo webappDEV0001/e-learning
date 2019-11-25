@@ -131,6 +131,7 @@ $(function() {
 
 					if (data.session.stop_time) {
 						$("#timer").html(makeTimer(data.session.stop_time));
+						clearInterval(time_counter);
 						time_counter = setInterval(function() { $("#timer").html(makeTimer(data.session.stop_time)); }, 1000);
 					}
 
