@@ -27,7 +27,7 @@ html, body {
     display: flex;
     justify-content: center;
     flex-direction: column;
-    background: url(../img/body_bg.jpg);
+    background: url(../img/certificate/body_bg.jpg);
     background-position: center center;
 }
 .statement_content_sec h1 {

@@ -36,8 +36,6 @@ const dir = {
   font:   'assets/fonts/',
 }
 
-
-
 /*
 |--------------------------------------------------------------------------
 | Serve
@@ -53,7 +51,7 @@ function serve(done) {
   gulp.watch( file.scss, scss );
   gulp.watch( file.js, gulp.series(js, reload));
   gulp.watch( file.html, reload );
-  done();
+  // done();
 };
 
 

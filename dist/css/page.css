@@ -1,5 +1,8 @@
 @charset "UTF-8";
 @import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700|Dosis:200,400,500,600");
+@font-face {
+  font-family: "Arial Black";
+  src: url("../fonts/Arial Black.ttf"); }
 
 :root {
   --blue: #203864;
@@ -2801,11 +2804,13 @@ input[type="button"].btn-block {
     background-color: #203864;
     border: 0;
     border-radius: 1rem;
+    -webkit-transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     -webkit-appearance: none;
             appearance: none; }
     @media (prefers-reduced-motion: reduce) {
       .custom-range::-webkit-slider-thumb {
+        -webkit-transition: none;
         transition: none; } }
     .custom-range::-webkit-slider-thumb:active {
       background-color: #688ccf; }
@@ -2823,11 +2828,13 @@ input[type="button"].btn-block {
     background-color: #203864;
     border: 0;
     border-radius: 1rem;
+    -moz-transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     -moz-appearance: none;
          appearance: none; }
     @media (prefers-reduced-motion: reduce) {
       .custom-range::-moz-range-thumb {
+        -moz-transition: none;
         transition: none; } }
     .custom-range::-moz-range-thumb:active {
       background-color: #688ccf; }
@@ -2848,10 +2855,12 @@ input[type="button"].btn-block {
     background-color: #203864;
     border: 0;
     border-radius: 1rem;
+    -ms-transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     appearance: none; }
     @media (prefers-reduced-motion: reduce) {
       .custom-range::-ms-thumb {
+        -ms-transition: none;
         transition: none; } }
     .custom-range::-ms-thumb:active {
       background-color: #688ccf; }
@@ -3235,8 +3244,7 @@ input[type="button"].btn-block {
 
 .card-body {
   flex: 1 1 auto;
-  padding: 1.25rem; 
-}
+  padding: 1.25rem; }
 
 .card-title {
   margin-bottom: 0.75rem; }
@@ -3254,19 +3262,6 @@ input[type="button"].btn-block {
 .card-link + .card-link {
   margin-left: 1.25rem; }
 
-.card-body pre {
-    font-family: "Open Sans",sans-serif;
-    font-size: .9375rem;
-    font-weight: 300;
-    line-height: 1.9;
-    color: #203864;
-    text-align: left;
-    background-color: transparent;
-    padding: 0;
-    border: 0px;
-    box-shadow: none;
-}
-
 .card-header {
   padding: 0.75rem 1.25rem;
   margin-bottom: 0;
@@ -3276,6 +3271,7 @@ input[type="button"].btn-block {
     border-radius: calc(0.25rem - 0) calc(0.25rem - 0) 0 0; }
   .card-header + .list-group .list-group-item:first-child {
     border-top: 0; }
+
 .card-footer {
   padding: 0.75rem 1.25rem;
   background-color: rgba(0, 0, 0, 0.03);

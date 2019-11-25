@@ -25,18 +25,19 @@ $(function() {
 		var now = Date.parse(new Date(new Date().toUTCString().substr(0, 25)))
 
 		timeLeft = (endTime - now) / 1000;
-		console.log(timeLeft);
-		// if (timeLeft < 0) {
-		// 	manageUserSession("GET");
-		// }
+		console.log('test tes test ' + timeLeft);
+		if (timeLeft < 0) {
+			manageUserSession("GET");
+			return "";
+		}
 
 		var days = Math.floor(timeLeft / 86400); 
 		var hours = Math.floor((timeLeft - (days * 86400)) / 3600);
 		var minutes = Math.floor((timeLeft - (days * 86400) - (hours * 3600 )) / 60);
 		var seconds = Math.floor((timeLeft - (days * 86400) - (hours * 3600) - (minutes * 60)));
 
-		if (minutes < "10") { minutes = "0" + minutes; }
-		if (seconds < "10") { seconds = "0" + seconds; }
+		// if (minutes < "10") { minutes = "0" + minutes; }
+		// if (seconds < "10") { seconds = "0" + seconds; }
 
 		return "Time left: " + minutes + " minutes " + seconds + " seconds";
 	}
@@ -104,9 +105,10 @@ $(function() {
 
 		let csrftoken = getCookie('csrftoken');
 		let rtnData = undefined;
+		let url_container = $("#exam-screen").data('url');
 		$.ajax({
 			type: type,
-			url: $("#exam-screen").data('url'),
+			url: url_container,
 			beforeSend: function (xhr, settings) {
 				$('div.loading').show();
 				xhr.setRequestHeader("X-CSRFToken", csrftoken);
