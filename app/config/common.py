@@ -10,7 +10,7 @@ DEBUG = env.bool('DEBUG', default=False)
 
 SECRET_KEY = env('SECRET_KEY', default='CHANGE_ME_IMPORTANT_!!!')
 
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS_STAGE', default=['*'])
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS_LOCAL', default=['*'])
 
 SITE_ID = 1
 
@@ -78,10 +78,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'config.wsgi.application'
-
-DATABASES = {
-    'default': env.db('DATABASE_URL_STAGE', default='')
-}
 
 #Email Settings
 EMAIL_HOST = 'mail.privateemail.com'
