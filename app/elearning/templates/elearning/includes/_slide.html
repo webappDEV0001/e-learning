@@ -9,7 +9,28 @@
 				<button  class="previous-slide btn btn-lg btn-primary btn-block"><i class="fa fa-caret-left" aria-hidden="true"></i></button>
 				{% endifequal %}
 				<button id="start-exam" class="next-slide btn btn-lg btn-primary btn-block"><i class="fa fa-caret-right" aria-hidden="true"></i></button>
+				<button id="full-screen" class="full-screen-mode btn btn-lg btn-primary btn-block" Z><img src="https://img.icons8.com/wired/64/000000/full-screen.png"></button>
 			</div>
 		</div>
 	</div>
 </div>
+
+<script>
+
+
+	var device;
+
+	if(window.matchMedia("(max-width: 767px)").matches){
+           device="mobile";
+    } else{
+            device="desktop";
+     }
+
+	$("#full-screen").click(function(){
+		$(".ppt_info_slide").toggleClass("full_screen");
+
+	});
+
+
+</script>
+
