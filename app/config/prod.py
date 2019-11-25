@@ -80,7 +80,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
-    'default': env.db('DATABASE_URL_PROD', default=['*'])
+    'default': env.db('DATABASE_URL_PROD', default='')
 }
 
 #Email Settings
