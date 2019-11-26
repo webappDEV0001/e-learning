@@ -409,7 +409,7 @@ class DownloadCertificateView(View):
 
     def create_pdf(self, context, template, filename_initials, request):
         options = {
-            'page-size': 'Legal',
+            'page-size': 'A4',
             'margin-top': '0in',
             'margin-right': '0in',
             'margin-bottom': '0in',
@@ -419,7 +419,6 @@ class DownloadCertificateView(View):
             'custom-header': [
                 ('Accept-Encoding', 'gzip')
             ],
-            'orientation': 'landscape'
         }
         template = loader.get_template(self.template_name)
         html_string = template.render(context=context, request=request)
