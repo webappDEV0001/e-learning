@@ -1,12 +1,12 @@
 {% load static %}
 <div class="row">
 	<div class="col-md-12 mx-auto text-center">
-		<div class="ppt_info_slide">
+		<div id="full_screen_img" class="ppt_info_slide">
 			<img src="{{ slide.image.url }}" />
 			<div class="bottom_pagination">
 
 				{% ifequal previous_slide 1 %}
-				<button  class="previous-slide btn btn-lg btn-primary btn-block"><i class="fa fa-caret-left" aria-hidden="true"></i></button>
+				<button id="previous_slide" class="previous-slide btn btn-lg btn-primary btn-block"><i class="fa fa-caret-left" aria-hidden="true"></i></button>
 				{% endifequal %}
 				<button id="start-exam" class="next-slide btn btn-lg btn-primary btn-block"><i class="fa fa-caret-right" aria-hidden="true"></i></button>
 				<button id="full-screen" class="full-screen-mode btn btn-lg btn-primary btn-block" Z><img src="https://img.icons8.com/wired/64/000000/full-screen.png"></button>
@@ -18,19 +18,84 @@
 <script>
 
 
-	var device;
+function GoOutFullscreen() {
+	if(document.exitFullscreen)
+		document.exitFullscreen();
+	else if(document.mozCancelFullScreen)
+		document.mozCancelFullScreen();
+	else if(document.webkitExitFullscreen)
+		document.webkitExitFullscreen();
+	else if(document.msExitFullscreen)
+		document.msExitFullscreen();
+}
 
-	if(window.matchMedia("(max-width: 767px)").matches){
+
+function GoInFullscreen(elem) {
+	  elem = elem || document.documentElement;
+		if (elem.requestFullscreen) {
+		  elem.requestFullscreen();
+		} else if (elem.msRequestFullscreen) {
+		  elem.msRequestFullscreen();
+		} else if (elem.mozRequestFullScreen) {
+		  elem.mozRequestFullScreen();
+		} else if (elem.webkitRequestFullscreen) {
+		  elem.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+		}
+
+	  }
+
+function GoOutFullscreen(elem)  {
+		if (document.exitFullscreen) {
+		  document.exitFullscreen();
+		} else if (document.msExitFullscreen) {
+		  document.msExitFullscreen();
+		} else if (document.mozCancelFullScreen) {
+		  document.mozCancelFullScreen();
+		} else if (document.webkitExitFullscreen) {
+		  document.webkitExitFullscreen();
+		}
+}
+
+
+
+var device;
+
+if(window.matchMedia("(max-width: 767px)").matches){
            device="mobile";
     } else{
             device="desktop";
-     }
+}
 
-	$("#full-screen").click(function(){
-		$(".ppt_info_slide").toggleClass("full_screen");
+$("#full-screen").click(function(){
+	      check =$(".ppt_info_slide").hasClass("full_screen");
+	      if(check == true){
+	      	  	$(".ppt_info_slide").removeClass("full_screen");
+	      	  GoOutFullscreen();
+	      }
+	      else{
+	      	  $(".ppt_info_slide").addClass("full_screen");
+	      	  GoInFullscreen();
+    		}
 
-	});
+});
 
+var counter=0;
+
+document.onkeydown = checkKey;
+
+function checkKey(e) {
+
+    e = e || window.event;
+    event.preventDefault();
+
+    if (e.keyCode == '37') {
+       $(".previous-slide").click();
+    }
+    else if (e.keyCode == '39') {
+       $(".next-slide").click();
+    }
+
+}
 
 </script>
 

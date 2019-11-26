@@ -14,7 +14,7 @@ from rest_framework import viewsets, mixins
 from rest_framework.response import Response
 
 from .models import Exam
-from elearning.models import ELearningUserSession
+from elearning.models import ELearningUserSession,ELearning
 from question.models import Question, ExamUserSession, ExamUserAnswer
 from question.serializers import ExamUserSessionSerializer
 from exam.serializers import ExamSerializer
@@ -190,7 +190,7 @@ class ExamListView(LoginRequiredMixin, ListView):
 
         context['memory_force'] =  dict(memory_force)
 
-        context['elearnings'] = self.get_queryset().filter(exam_type=Exam.ELEARNING)
+        context['elearnings'] = ELearning.objects.all()
         # context['memory_force'] = ELearningUserSession.objects.filter(user=self.request.user)
         # context['elearnings_ns'] = self.get_queryset().filter(exam_type=Exam.ELEARNING_NS)
         return context
