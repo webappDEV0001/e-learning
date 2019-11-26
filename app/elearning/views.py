@@ -409,7 +409,7 @@ class DownloadCertificateView(View):
 
     def create_pdf(self, context, template, filename_initials, request):
         options = {
-            'page-size': 'A4',
+            'page-size': 'Legal',
             'margin-top': '0in',
             'margin-right': '0in',
             'margin-bottom': '0in',
