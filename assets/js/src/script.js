@@ -25,8 +25,7 @@ $(function() {
 		var now = Date.parse(new Date(new Date().toUTCString().substr(0, 25)))
 
 		timeLeft = (endTime - now) / 1000;
-		console.log('test tes test ' + timeLeft);
-		if (timeLeft < 0) {
+		if (timeLeft == -1) {
 			manageUserSession("GET");
 			return "";
 		}
@@ -36,8 +35,8 @@ $(function() {
 		var minutes = Math.floor((timeLeft - (days * 86400) - (hours * 3600 )) / 60);
 		var seconds = Math.floor((timeLeft - (days * 86400) - (hours * 3600) - (minutes * 60)));
 
-		// if (minutes < "10") { minutes = "0" + minutes; }
-		// if (seconds < "10") { seconds = "0" + seconds; }
+		if (minutes < "10") { minutes = "0" + minutes; }
+		if (seconds < "10") { seconds = "0" + seconds; }
 
 		return "Time left: " + minutes + " minutes " + seconds + " seconds";
 	}
@@ -103,6 +102,7 @@ $(function() {
 
 	function manageUserSession(type) {
 
+
 		let csrftoken = getCookie('csrftoken');
 		let rtnData = undefined;
 		let url_container = $("#exam-screen").data('url');
@@ -130,6 +130,7 @@ $(function() {
 				} else if (data.state == 'question') {
 
 					if (data.session.stop_time) {
+
 						$("#timer").html(makeTimer(data.session.stop_time));
 						clearInterval(time_counter);
 						time_counter = setInterval(function() { $("#timer").html(makeTimer(data.session.stop_time)); }, 1000);
