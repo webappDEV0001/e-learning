@@ -48,12 +48,15 @@
     </div>
     <!-- END Bootstrap-Cookie-Alert -->
 
+
+
     <!-- Main Content -->
     <main class="main-content">
       {% block content_header %}{% endblock content_header %}
       {% block content %}{% endblock content %}
 
       {% if not hide_references %}
+       {% block subfooter %}
       <section id="references" class="bg-primary pt-7 pb-7" data-overlay-light="9">
         <div class="container">
           <div class="slider-dots-fill-warning" data-provide="slider" data-dots="true">
@@ -82,11 +85,14 @@
           </div>
         </div>
       </section>
+       {% endblock subfooter %}
       {% endif %}
 
     </main>
 
     <!-- Footer -->
+
+    {% block footer %}
     <footer class="footer bg-light">
       <div class="container">
 <!--        <div class="row">-->
@@ -124,6 +130,7 @@
         </div>
       </div>
     </footer><!-- /.footer -->
+    {% endblock footer%}
     <script>
 
     //swipe slide code
