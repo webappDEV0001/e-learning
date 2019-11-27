@@ -22,11 +22,13 @@
 					{% for object in elearning_sessions %}
 					<tr>
 						<td><a href="{% url 'elearning' object.elearning.pk object.elearning.slug %}">{{ object.elearning.name }}</a></td>
-						{% if object.user_progress > 80 %}
+
 						<td>
+							{% if object.user_progress > 80 %}
 								<a href="{% url 'generate-certificate' object.elearning.slug %}" class="btn btn-warning">Download</a>
+							{% endif %}
 						</td>
-						{% endif %}
+
 						<td>
 							{{ object.user_progress }}%
 							<a class="pb-2 btn btn-sm btn-lin k pull-right" href="{% url 'elearning' object.elearning.pk object.elearning.slug %}">Continue ></a></td>
