@@ -190,7 +190,10 @@ class ExamListView(LoginRequiredMixin, ListView):
 
         context['memory_force'] =  dict(memory_force)
 
-        context['elearnings'] = ELearning.objects.all()
+        if self.request.user.is_demo:
+            context['elearnings'] = ELearning.objects.filter(demo=True)
+        else:
+            context['elearnings'] = ELearning.objects.all()
         # context['memory_force'] = ELearningUserSession.objects.filter(user=self.request.user)
         # context['elearnings_ns'] = self.get_queryset().filter(exam_type=Exam.ELEARNING_NS)
         return context
