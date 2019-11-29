@@ -15,18 +15,15 @@ class ELearning(Exam):
 	random_questions = models.BooleanField(default=True)
 	certificate_count = models.PositiveSmallIntegerField(default=369)
 
-
 class Slide(models.Model):
 	elearning = models.ForeignKey(ELearning, on_delete=models.DO_NOTHING)
 	image = models.ImageField(upload_to='slides/')
-
 
 class ELearningSession(models.Model):
 	elearning = models.ForeignKey(ELearning, on_delete=models.DO_NOTHING, related_name='sessions')
 	number = models.PositiveIntegerField(default=0)
 	slides = models.ManyToManyField(Slide, blank=True)
 	questions = models.ManyToManyField(Question, blank=True)
-
 
 class ELearningUserSession(ExamUserSession):
 	PHASES = (
@@ -67,23 +64,70 @@ class ELearningUserSession(ExamUserSession):
 
 	@property
 	def user_progress(self):
-		q_dict = {}
+		"""
+		Please do it so that it is calculated as follows:
+		formula = 0
+		formula = formula + 0.50 * correct_1 / no_of_all_questions
+		formula = formula + 0.65 * correct_2 / no_of_all_questions
+		formula = formula + 0.80 * correct_3 / no_of_all_questions
+		formula = formula + 0.95 * correct_4 / no_of_all_questions
+		formula = formula + 1.00 * correct_5 / no_of_all_questions
+
+		progress = min(formula, 1)
+
+		return round(progress * 100,2)
+
+		correct_1: means number of questions in the particular elearning that were answered correctly 1 time by the user
+		correct_2: means number of questions in the particular elearning that were answered correctly 2 times by the user
+		"""
 		no_of_all_questions = self.exam.questions.count()
-		all_correct_answers = self.answers.filter(answer__correct=True).values('question').annotate(qcount=Count('question'))
-		for q in all_correct_answers:
-			q_dict.setdefault(q['qcount'],[]).append(q['question'])
+		# all_correct_answers = self.answers.filter(answer__correct=True).values('question').annotate(qcount=Count('question'))
+
+		# Read correct answers from repitions and add 1 in each count as it comes in repitition after answered correctly first
+		all_correct_answers = ELearningRepetition.objects.filter(answered=True).values('question').annotate(qcount=Count('question'))
+
+		# print(all_correct_answers,"all_correct_answers")
+
+		correct_1,correct_2,correct_3,correct_4,correct_5=0,0,0,0,0
+		formula = 0
+
+		for all_ques_dict in all_correct_answers:
+			# It's counting 0 as 1, 1 as 2 and so on
+			# because need to add 1 in each count as it comes in repitition after answered correctly first
+			if all_ques_dict['qcount'] == 0:
+				correct_1 += 1
+			if all_ques_dict['qcount'] == 1:
+				correct_2 += 1
+			if all_ques_dict['qcount'] == 2:
+				correct_3 += 1
+			if all_ques_dict['qcount'] == 3:
+				correct_4 += 1
+			if all_ques_dict['qcount'] == 4:
+				correct_5 += 1
+
+		# print("+" * 20)
+		# print(correct_1,correct_2,correct_3,correct_4,correct_5)
+		# print("+" * 20)
 
 		try:
+			formula = formula + 0.50 * correct_1 / no_of_all_questions
+			# print(formula,"1")
+			formula = formula + 0.65 * correct_2 / no_of_all_questions
+			# print(formula, "2")
+			formula = formula + 0.80 * correct_3 / no_of_all_questions
+			# print(formula, "3")
+			formula = formula + 0.95 * correct_4 / no_of_all_questions
+			# print(formula, "4")
+			formula = formula + 1.00 * correct_5 / no_of_all_questions
+			# print(formula, "5")
 
-			formula = 10 * self.answers.count() / no_of_all_questions
-			#formula = formula + 0.25 * q_dict.get(2, 0) / no_of_all_questions
-			#formula = formula + 0.15 * q_dict.get(3, 0) / no_of_all_questions
-			#formula = formula + 0.05 * q_dict.get(4, 0) / no_of_all_questions
-			#formula = formula + 0.05 * q_dict.get(5, 0) / no_of_all_questions
 			progress = min(formula, 1)
+			# print(progress,"progress")
 		except:
 			progress = 0
-		return round(progress * 100,2)
+
+		return round(progress * 100, 2)
+
 
 class ELearningUserAnswer(models.Model):
 	session = models.ForeignKey(ELearningUserSession, on_delete=models.CASCADE, related_name='answers')
