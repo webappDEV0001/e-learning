@@ -53,6 +53,9 @@
     <!-- Main Content -->
     <main class="main-content">
       {% block content_header %}{% endblock content_header %}
+      {% block messages %}
+			{% include 'messages.html' %}
+		{% endblock messages %}
       {% block content %}{% endblock content %}
 
       {% if not hide_references %}
@@ -131,6 +134,7 @@
       </div>
     </footer><!-- /.footer -->
     {% endblock footer%}
+
     <script>
 
     //swipe slide code
@@ -190,6 +194,17 @@
     <script src="{% static 'js/page.min.js' %}"></script>
     <script src="{% static 'js/script.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/gh/Wruczek/Bootstrap-Cookie-Alert@gh-pages/cookiealert.js"></script>
+    <script>
+			$(document).ready(function(){
+	             // messages timeout for 10 seconds
+	           if ($(".message-container .alert").hasClass("success") ) {
+	          console.log("error");
+	            setTimeout(function() {
+	                $('.message-container .success').slideUp('slow');
+	            }, 1000); // <-- time in milliseconds, 1000 =  1 sec
+	           }
+			});
+		</script>
     {% block extendfoot %}{% endblock extendfoot %}
 
   </body>

@@ -1,0 +1,22 @@
+<div class="container message-container">
+    <div class="row justify-content-center">
+        {% for message in messages %}
+        <div class="alert alert-{{message.level_tag}} {{message.tags}} {{msg_class}} col-md-8 text-center mt-3" role="alert">
+            <span>
+			{% if message.level_tag == "danger" %}
+				<i class="fa fa-times-circle"></i>
+			{% elif message.level_tag == 'warning' %}
+				<i class="fa fa fa-warning"></i>
+			{% elif message.level_tag == 'success' %}
+				<i class="fa fa fa-check-square"></i>
+			{% elif message.level_tag == 'debug' %}
+				<i class="fa fa-free-code-camp"></i>
+			{% else %}
+				<i class="fa fa-info-circle"></i>
+			{% endif %}
+				{{message|safe}}
+			</span>
+        </div>
+        {% endfor %}
+    </div>
+</div>
