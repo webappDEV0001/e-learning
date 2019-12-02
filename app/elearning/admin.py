@@ -48,7 +48,7 @@ class AdminElearning(admin.ModelAdmin):
 			df['explanation'] = q['explanation']
 
 		response = HttpResponse(df, content_type='application/vnd.ms-excel')
-		response['Content-Disposition'] = 'attachment; filename="db_exam.xlsx"'
+		response['Content-Disposition'] = 'attachment; filename="db_elearn.xlsx"'
 		df.to_csv(path_or_buf=response, sep=';', float_format='%.2f', index=False, decimal=",")
 		return response
 
