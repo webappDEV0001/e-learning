@@ -67,7 +67,7 @@ class ExamAdmin(admin.ModelAdmin):
             # df['answer3']
 
         response = HttpResponse(df, content_type='application/vnd.ms-excel')
-        response['Content-Disposition'] = 'attachment; filename="db_exam.xlsx"'
+        response['Content-Disposition'] = 'attachment; filename="db_exam.csv"'
         df.to_csv(path_or_buf=response, sep=';', float_format='%.2f', index=False, decimal=",")
         return response
             # row = writer.writerow([getattr(obj[field], field) for field in field_names])
