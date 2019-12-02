@@ -2,24 +2,29 @@ import datetime
 import os
 import time
 
+import pandas
 import pdfkit
+from django.contrib import messages
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse
 from django.template import loader
+from django.urls import reverse_lazy
 from django.utils import timezone
 import random
 from django.views.generic.base import View
 from django.shortcuts import render, redirect
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, FormView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, AccessMixin
 from rest_framework import viewsets, mixins
 from rest_framework.response import Response
 
 from config.common import TEMP_DIR
+
+from elearning.forms import ElearningImportForm
 from .models import ELearning, ELearningUserSession, ELearningRepetition, ELearningCorrection, ELearningSession
 from exam.models import Exam
 from elearning.models import ELearningUserAnswer
@@ -475,3 +480,68 @@ class DownloadCertificateView(View):
         user_session.elearning.save()
         return self.render_to_pdf_response(context, self.template_name, kwargs.get('slug'))
 
+
+class AdminOrStaffLoginRequiredMixin(AccessMixin):
+    """Verify that the current user is authenticated and is staff or admin"""
+
+    # ---------------------------------------------------------------------------
+    # dispatch
+    # ---------------------------------------------------------------------------
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated or not (request.user.is_staff or request.user.is_superuser):
+            return self.handle_no_permission()
+
+        return super().dispatch(request, *args, **kwargs)
+
+
+class ElearningImportView(AdminOrStaffLoginRequiredMixin, FormView):
+    """
+    This class handle the import data of elearning
+    """
+
+    form_class = ElearningImportForm
+    template_name = "elearning/elearning_import_form.html"
+
+    def get_success_url(self):
+        success_url = reverse_lazy('admin:elearning_elearning_changelist')
+        return success_url
+
+    def form_valid(self, form):
+        csv_file = form.cleaned_data.get("csv_file")
+        df = pandas.read_excel(csv_file)
+        df.dropna(how="all", inplace=True)
+        print(df)
+
+        for i in range(len(df)):
+            try:
+                exam_name = df['quiz'][i]
+                q_category = df['category'][i]
+                q_subcategory = df['sub_category'][i]
+                exam, crt = ELearning.objects.get_or_create(name=exam_name)
+                q_text = df['content'][i]
+                q_explanation = df['explanation'][i]
+                correct_answer_text = df['correct'][i]
+                wrong_1 = df['answer1'][i]
+                wrong_2 = df['answer2'][i]
+                wrong_3 = df['answer3'][i]
+                q, crt = Question.objects.get_or_create(exam=exam, text=q_text)
+                if crt:
+                    q.explanation = q_explanation
+                    q.text = q_text
+                    q.category = q_category
+                    q.subcategory = q_subcategory
+                    q.save()
+                    Answer.objects.create(question=q, text=correct_answer_text, correct=True)
+                    Answer.objects.create(question=q, text=wrong_1)
+                    Answer.objects.create(question=q, text=wrong_2)
+                    Answer.objects.create(question=q, text=wrong_3)
+            except:
+                print("Skip row" + i)
+        messages.info(self.request, "your elearning data imported successfully.")
+        return FormView.form_valid(self, form)
+
+    def get_context_data(self, **kwargs):
+
+        context = super(ElearningImportView, self).get_context_data()
+        context["opts"] = ELearning._meta
+        return context

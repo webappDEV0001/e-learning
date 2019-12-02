@@ -10,10 +10,6 @@ from exam.forms import ExamImportForm
 from exam.views import ExamImportView
 
 
-class CsvImportForm(forms.Form):
-    csv_file = forms.FileField()
-
-
 @admin.register(Exam)
 class ExamAdmin(admin.ModelAdmin):
     change_list_template = "exam/examadmin_changelist.html"

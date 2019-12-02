@@ -21,3 +21,13 @@ class ElearningForm(forms.ModelForm):
     class Meta:
         model = ELearning
         fields = '__all__'
+
+
+from django import forms
+
+class ElearningImportForm(forms.Form):
+    """
+    This form handle the import file data.
+    """
+
+    csv_file = forms.FileField(label="file")
