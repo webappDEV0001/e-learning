@@ -1,24 +1,26 @@
 import random
-from django.db.models import Count
-from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect
-from django.urls import reverse
+
+from django.contrib import messages
+from django.shortcuts import render
+from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, FormView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.contrib.auth.mixins import LoginRequiredMixin
-from rest_framework import viewsets, mixins
+from rest_framework import viewsets
 from rest_framework.response import Response
+import pandas
+from exam.forms import ExamImportForm
 
+from question.models import Answer
 from .models import Exam
 from elearning.models import ELearningUserSession,ELearning
 from question.models import Question, ExamUserSession, ExamUserAnswer
 from question.serializers import ExamUserSessionSerializer
-from exam.serializers import ExamSerializer
-
+from django.contrib.auth.mixins import AccessMixin
 
 def about(request):
     return render(request, 'about.html')
@@ -172,10 +174,8 @@ class ExamListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         if self.request.user.is_demo:
-            print("demo user")
             qs = super(ExamListView, self).get_queryset().filter(demo=True)
         else:
-            print("normal user")
             qs = super(ExamListView, self).get_queryset()
         return qs
 
@@ -227,3 +227,75 @@ class ExamScoreView(LoginRequiredMixin, View):
             'correct': eus.count_correct_answers
         })
         return response
+
+
+
+class AdminOrStaffLoginRequiredMixin(AccessMixin):
+    """Verify that the current user is authenticated and is staff or admin"""
+
+    # ---------------------------------------------------------------------------
+    # dispatch
+    # ---------------------------------------------------------------------------
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated or not (request.user.is_staff or request.user.is_superuser):
+            return self.handle_no_permission()
+
+        return super().dispatch(request, *args, **kwargs)
+
+
+class ExamImportView(AdminOrStaffLoginRequiredMixin, FormView):
+    """
+    This class handle the import data of exam
+    """
+
+    form_class = ExamImportForm
+    template_name = "exam/exam_import_form.html"
+
+    def get_success_url(self):
+        success_url = reverse_lazy('admin:exam_exam_changelist')
+        return success_url
+
+    def form_valid(self, form):
+        csv_file = form.cleaned_data.get("csv_file")
+        df = pandas.read_excel(csv_file)
+        df.dropna(how="all", inplace=True)
+        print(df)
+
+        for i in range(len(df)):
+            try:
+                exam_name = df['quiz'][i]
+                q_category = df['category'][i]
+                q_subcategory = df['sub_category'][i]
+                exam, crt = Exam.objects.get_or_create(name=exam_name, exam_type=Exam.EXAM)
+                q_text = df['content'][i]
+                q_explanation = df['explanation'][i]
+                correct_answer_text = df['correct'][i]
+                wrong_1 = df['answer1'][i]
+                wrong_2 = df['answer2'][i]
+                wrong_3 = df['answer3'][i]
+                q, crt = Question.objects.get_or_create(exam=exam, text=q_text)
+                if crt:
+                    q.explanation = q_explanation
+                    q.text = q_text
+                    q.category = q_category
+                    q.subcategory = q_subcategory
+                    q.save()
+                    Answer.objects.create(question=q, text=correct_answer_text, correct=True)
+                    Answer.objects.create(question=q, text=wrong_1)
+                    Answer.objects.create(question=q, text=wrong_2)
+                    Answer.objects.create(question=q, text=wrong_3)
+            except:
+                print("Skip row" + i)
+        messages.info(self.request, "your exam data imported successfully.")
+        return FormView.form_valid(self, form)
+
+    def get_context_data(self, **kwargs):
+
+        context = super(ExamImportView, self).get_context_data()
+        context["opts"] = Exam._meta
+        return context
+
+
+
+
+

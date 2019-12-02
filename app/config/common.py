@@ -41,10 +41,10 @@ INSTALLED_APPS = [
     'question',
     'exam',
     'elearning',
-    'import_export',
+    # 'import_export',
 ]
 
-IMPORT_EXPORT_USE_TRANSACTIONS = True
+IMPORT_EXPORT_USE_TRANSACTIONS = False
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

@@ -1,0 +1,25 @@
+{% extends 'admin/base.html' %}
+
+{% block content %}
+
+    <div>
+        <form action="." method="POST" enctype="multipart/form-data">
+            {{ form.as_p }}
+            {% csrf_token %}
+
+                <button type="submit">Upload CSV</button>
+        </form>
+    </div>
+    <br />
+
+{% if result == "Success" %}
+<div class="alert alert-success">
+  <strong>Success!</strong> Indicates a successful or positive action.
+</div>
+{% elif result == "Error" %}
+<div class="alert alert-danger">
+  <strong>Sorry!</strong>Error importing file.
+</div>
+{% endif %}
+
+{% endblock %}

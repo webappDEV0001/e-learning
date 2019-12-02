@@ -30,7 +30,7 @@ class ELearningImportExportResource(resources.ModelResource):
 	class Meta:
 		model = ImportExportELearning
 
-	def before_import(self, dataset, result, using_transactions, dry_run = False, **kwargs):
+	def before_import(self, dataset, result, using_transactions, dry_run = True, **kwargs):
 		session_no = 1
 		if len(dataset) > 1:
 			prev_exam_name = dataset[0][1]
