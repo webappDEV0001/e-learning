@@ -1,5 +1,8 @@
 from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin
+
+from elearning.forms import ElearningForm
+from exam.models import Exam
 from .models import *
 
 from question.models import Question, Answer
@@ -21,6 +24,7 @@ class ELearningResource(resources.ModelResource):
 
 class ELearningAdmin(ImportExportModelAdmin):
 	resource_class = ELearningResource
+	form = ElearningForm
 
 admin.site.register(ELearning, ELearningAdmin)
 

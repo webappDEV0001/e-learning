@@ -99,7 +99,7 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
             eus.save()
             slides = eus.active_session.slides
             if eus.seen_slides < slides.count():
-                slide_to_show = list(slides.all())[eus.seen_slides]
+                slide_to_show = list(slides.all())[eus.seen_slides:]
                 if eus.seen_slides == 0 :
                     previous_slide=0
                 else:
@@ -107,8 +107,9 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
 
                 response = {
                     'state': 'slide',
-                    'content': render_to_string('elearning/includes/_slide.html', {'slide': slide_to_show,'previous_slide':previous_slide})
+                    'content': render_to_string('elearning/includes/_slide.html', {'slides': slide_to_show,'previous_slide':previous_slide, "object":eus})
                 }
+                # response = {'state':'slide','previous_slide':previous_slide}
                 return Response(response)
 
 
@@ -263,18 +264,28 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
         if data.get('slide', None) == 'seen':
             eus.seen_slides += 1
             eus.save()
-            response = {
-                'state': 'start',
-                'session': self.serializer_class(eus).data,
-                'full_screen_mode':data.get('full_screen_mode',False)
-            }
+            slides = eus.active_session.slides
+            slide_to_show = list(slides.all())[eus.seen_slides:]
+            total_count= len(slide_to_show)
+            if total_count == 0:
+                response = {
+                    'state': 'start',
+                    'session': self.serializer_class(eus).data,
+                    'full_screen_mode': data.get('full_screen_mode', False)
+                }
+            else:
+                response = {
+                    'state': 'start_slide',
+                    # 'session': self.serializer_class(eus).data,
+                    'full_screen_mode':data.get('full_screen_mode',False)
+                }
             return Response(response)
 
         elif data.get('slide', None) == 'previous_seen':
             eus.seen_slides -= 1
             eus.save()
             response = {
-                'state': 'start',
+                'state': 'start_prev_slide',
                 'session': self.serializer_class(eus).data,
                 'full_screen_mode': data.get('full_screen_mode', False)
             }

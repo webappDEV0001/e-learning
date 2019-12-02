@@ -1,16 +1,28 @@
 {% load static %}
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<style>
+.mySlides {display:none;}
+img.mySlides.current {
+    display: block !important;
+}
+</style>
 <div class="row">
 	<div class="col-md-12 mx-auto text-center">
+    <!--old view start	-->
 		<div id="full_screen_img" class="ppt_info_slide">
-			<img src="{{ slide.image.url }}" />
+			<!--<img src="{{ slide.image.url }}" />-->
+			{% for obj in slides %}
+		  		<img class="mySlides" id="{{forloop.counter}}" src="{{ obj.image.url }}" style="width:100%">
+			{% endfor %}
 			<div class="bottom_pagination">
-
-				{% ifequal previous_slide 1 %}
-				<button id="previous_slide" class="previous-slide btn btn-lg btn-primary btn-block"><i class="fa fa-caret-left" aria-hidden="true"></i></button>
-				{% endifequal %}
+				<button id="previous_slide" style="display:none;" class="previous-slide btn btn-lg btn-primary btn-block"><i class="fa fa-caret-left" aria-hidden="true"></i></button>
+<!--				<button class="w3-button w3-black w3-display-left" onclick="plusDivs(-1)">&#10094;</button>-->
+<!--		  		<button class="w3-button w3-black w3-display-right" onclick="plusDivs(1)">&#10095;</button>-->
 				<button id="start-exam" class="next-slide btn btn-lg btn-primary btn-block"><i class="fa fa-caret-right" aria-hidden="true"></i></button>
 				<button id="full-screen" class="full-screen-mode btn btn-lg btn-primary btn-block" Z><img src="https://img.icons8.com/wired/64/000000/full-screen.png"></button>
 			</div>
+		</div>
+			<!--old view end -->
 		</div>
 	</div>
 </div>
@@ -101,6 +113,9 @@ function checkKey(e) {
     }
 
 }
+
+$("#1").addClass("current");
+
 
 </script>
 
