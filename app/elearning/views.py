@@ -21,11 +21,10 @@ from django.template.loader import render_to_string
 from django.contrib.auth.mixins import LoginRequiredMixin, AccessMixin
 from rest_framework import viewsets, mixins
 from rest_framework.response import Response
-
 from config.common import TEMP_DIR
 
 from elearning.forms import ElearningImportForm
-from .models import ELearning, ELearningUserSession, ELearningRepetition, ELearningCorrection, ELearningSession
+from .models import ELearning, ELearningUserSession, ELearningRepetition, ELearningCorrection, ELearningSession, Slide
 from exam.models import Exam
 from elearning.models import ELearningUserAnswer
 from question.models import Question, Answer, ExamUserSession
@@ -507,6 +506,7 @@ class ElearningImportView(AdminOrStaffLoginRequiredMixin, FormView):
         return success_url
 
     def form_valid(self, form):
+        from os import path
         csv_file = form.cleaned_data.get("csv_file")
         df = pandas.read_excel(csv_file)
         df.dropna(how="all", inplace=True)
@@ -517,20 +517,32 @@ class ElearningImportView(AdminOrStaffLoginRequiredMixin, FormView):
                 exam_name = df['quiz'][i]
                 q_category = df['category'][i]
                 q_subcategory = df['sub_category'][i]
-                exam, crt = ELearning.objects.get_or_create(name=exam_name)
+                q_figure = df['figure'][i]
+
+                #elearning object creating....
+                elearn, crt = ELearning.objects.get_or_create(name=exam_name, exam_type="elearning")
                 q_text = df['content'][i]
                 q_explanation = df['explanation'][i]
                 correct_answer_text = df['correct'][i]
                 wrong_1 = df['answer1'][i]
                 wrong_2 = df['answer2'][i]
                 wrong_3 = df['answer3'][i]
-                q, crt = Question.objects.get_or_create(exam=exam, text=q_text)
+
+                #slides object creating....
+                slide_path = os.path.join('media/', q_figure.strip())
+                if path.exists(slide_path):
+                    Slide.objects.get_or_create(elearning=elearn, image=q_figure.strip())
+
+                #Questions object creating....
+                q, crt = Question.objects.get_or_create(exam=elearn, text=q_text)
                 if crt:
                     q.explanation = q_explanation
                     q.text = q_text
                     q.category = q_category
                     q.subcategory = q_subcategory
                     q.save()
+
+                    #Answer object creating....
                     Answer.objects.create(question=q, text=correct_answer_text, correct=True)
                     Answer.objects.create(question=q, text=wrong_1)
                     Answer.objects.create(question=q, text=wrong_2)
