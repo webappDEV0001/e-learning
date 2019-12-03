@@ -81,33 +81,45 @@ class ELearningUserSession(ExamUserSession):
 		correct_2: means number of questions in the particular elearning that were answered correctly 2 times by the user
 		"""
 		no_of_all_questions = self.exam.questions.count()
-		# all_correct_answers = self.answers.filter(answer__correct=True).values('question').annotate(qcount=Count('question'))
+		from_rep=1
+		#all_correct_answers = self.answers.filter(answer__correct=True).values('question').annotate(qcount=Count('question'))
 
 		# Read correct answers from repitions and add 1 in each count as it comes in repitition after answered correctly first
 		all_correct_answers = ELearningRepetition.objects.filter(answered=True).values('question').annotate(qcount=Count('question'))
+		if len(all_correct_answers) == 0:
+			from_rep = 0
+			all_correct_answers = self.answers.filter(answer__correct=True).values('question').annotate(qcount=Count('question'))
 
-		# print(all_correct_answers,"all_correct_answers")
 
 		correct_1,correct_2,correct_3,correct_4,correct_5=0,0,0,0,0
 		formula = 0
+		# print(all_correct_answers)
 
 		for all_ques_dict in all_correct_answers:
 			# It's counting 0 as 1, 1 as 2 and so on
 			# because need to add 1 in each count as it comes in repitition after answered correctly first
-			if all_ques_dict['qcount'] == 0:
+			if all_ques_dict['qcount'] == 0 and from_rep:
 				correct_1 += 1
-			if all_ques_dict['qcount'] == 1:
+			if all_ques_dict['qcount'] == 1 and from_rep:
 				correct_2 += 1
-			if all_ques_dict['qcount'] == 2:
+			if all_ques_dict['qcount'] == 2 and from_rep:
 				correct_3 += 1
-			if all_ques_dict['qcount'] == 3:
+			if all_ques_dict['qcount'] == 3 and from_rep:
 				correct_4 += 1
-			if all_ques_dict['qcount'] == 4:
+			if all_ques_dict['qcount'] == 4 and from_rep:
+				correct_5 += 1
+			#if not from repititions no need to count 0 as 1.
+			if all_ques_dict['qcount'] == 1 and not from_rep:
+				correct_1 += 1
+			if all_ques_dict['qcount'] == 2 and not from_rep:
+				correct_2 += 1
+			if all_ques_dict['qcount'] == 3 and not from_rep:
+				correct_3 += 1
+			if all_ques_dict['qcount'] == 4 and not from_rep:
+				correct_4 += 1
+			if all_ques_dict['qcount'] == 5 and not from_rep:
 				correct_5 += 1
 
-		# print("+" * 20)
-		# print(correct_1,correct_2,correct_3,correct_4,correct_5)
-		# print("+" * 20)
 
 		try:
 			formula = formula + 0.50 * correct_1 / no_of_all_questions
