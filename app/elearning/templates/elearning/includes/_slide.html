@@ -104,8 +104,9 @@ function checkKey(e) {
 
     e = e || window.event;
     event.preventDefault();
+    check = $("#1").hasClass("current");
 
-    if (e.keyCode == '37') {
+    if (e.keyCode == '37' && check == false) {
        $(".previous-slide").click();
     }
     else if (e.keyCode == '39') {
