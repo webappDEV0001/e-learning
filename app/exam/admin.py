@@ -8,6 +8,8 @@ import pandas
 from django import forms
 from exam.forms import ExamImportForm
 from exam.views import ExamImportView
+from pandas import ExcelWriter
+import os
 
 
 @admin.register(Exam)
@@ -28,50 +30,73 @@ class ExamAdmin(admin.ModelAdmin):
     def export_csv(self, request):
         question_objects = Question.objects.all().values()
         # meta = self.model._meta
-        field_names = ['id','quiz','category','subcategory','figure','content','explanation','correct','answer1',
+        field_names = ['id','quiz','category','subcategory','content','explanation','correct','answer1',
                        'answer2','answer3']
 
-        df=pandas.DataFrame()
-
-        #
-        # response = HttpResponse(content_type='text/csv')
-        # response['Content-Disposition'] = 'attachment; filename={}.csv'.format(meta)
-        # writer = csv.writer(response)
-        #
-        #
-        # writer.writerow(field_names)
-
-
+        id_list=[]
+        exam_name_list=[]
+        category=[]
+        sub_category=[]
+        content = []
+        explanation_list = []
+        correct=[]
+        answer1=[]
+        answer2=[]
+        answer3=[]
         for q in question_objects:
-            a=Answer.objects.filter(question=q['id']).values()
-            exam = Exam.objects.filter(id=q['exam_id']).values()
-            count_answer=1
-            for i in range(0,3):
-                if a[i]['correct']:
-                    df['correct']=a[i]
-                else:
-                    key='answer'+str(count_answer)
-                    df[key]=a[i]
-                    count_answer += 1
+            try:
+                correct_answer = Answer.objects.filter(question=q['id'], correct=True).values_list('text')
+                other_answers = Answer.objects.filter(question=q['id'], correct=False).values_list('text')
 
-            df['id'] = q['id']
-            df['quiz'] = exam[0]['name']
-            df['category'] = q['category']
-            df['sub_category'] = q['sub_category']
-            df['figure'] = 'n'
-            df['content'] = q['text']
-            df['explanation'] = q['explanation']
-            # df['correct']
-            # df['answer1']
-            # df['answer2']
-            # df['answer3']
+                # print(correct_answer[0][0], "correct_answers")
+                # print(other_answers[1][0], "other_answers")
+                exam = Exam.objects.filter(id=q['exam_id']).values()
+                # count_answer=1
+                id_list.append(q['id'])
+                exam_name_list.append(exam[0]['name'])
+                category.append(q['category'])
+                sub_category.append(q['sub_category'])
+                content.append(q['text'])
+                explanation_list.append(q['explanation'])
+                correct.append(correct_answer[0][0])
+                try:
+                    answer1.append(other_answers[0][0])
+                except:
+                    answer1.append("")
+                try:
+                    answer2.append(other_answers[1][0])
+                except:
+                    answer2.append("")
+                try:
+                    answer3.append(other_answers[2][0])
+                except:
+                    answer3.append("")
+            except:
+                continue
+
+        data={'id':id_list,'quiz':exam_name_list,'category':category,'subcategory':sub_category,
+              'content':content,'explanation':explanation_list,'correct':correct,'answer1':answer1,
+              'answer2':answer2,'answer3':answer3}
+        df = pandas.DataFrame(data, columns=field_names)
 
         df = df.dropna(axis=1, how='all')
-        response = HttpResponse(df, content_type='application/vnd.ms-excel')
-        response['Content-Disposition'] = 'attachment; filename="db_exam.xlsx"'
-        df.to_excel(path_or_buf=response, sep=';', float_format='%.2f', index=False, decimal=",")
 
-        # df[1:].to_excel(response,sheet_name="Exam",header=True,encoding='utf-8',columns=field_names)
-        return response
+        writer = ExcelWriter('Exam-test.xlsx')
+        df.to_excel(writer, 'Exam', index=False)
+        writer.save()
+
+        path="Exam-test.xlsx"
+
+        if os.path.exists(path):
+            with open(path, "rb") as excel:
+                data = excel.read()
+
+            response = HttpResponse(data,
+                                    content_type='application/vnd.ms-excel')
+            response['Content-Disposition'] = 'attachment; filename="db_exam.xlsx"'
+            return response
+
+
+        # df.to_csv(response,sep="\t",index=False)
             # row = writer.writerow([getattr(obj[field], field) for field in field_names])
 
