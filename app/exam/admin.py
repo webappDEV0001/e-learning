@@ -28,8 +28,8 @@ class ExamAdmin(admin.ModelAdmin):
     def export_csv(self, request):
         question_objects = Question.objects.all().values()
         # meta = self.model._meta
-        # field_names = ['id','quiz','category','subcategory','figure','content','explanation','correct','answer1',
-                       # 'answer2','answer3']
+        field_names = ['id','quiz','category','subcategory','figure','content','explanation','correct','answer1',
+                       'answer2','answer3']
 
         df=pandas.DataFrame()
 
@@ -66,9 +66,12 @@ class ExamAdmin(admin.ModelAdmin):
             # df['answer2']
             # df['answer3']
 
+        df = df.dropna(axis=1, how='all')
         response = HttpResponse(df, content_type='application/vnd.ms-excel')
-        response['Content-Disposition'] = 'attachment; filename="db_exam.csv"'
-        df.to_csv(path_or_buf=response, sep=';', float_format='%.2f', index=False, decimal=",")
+        response['Content-Disposition'] = 'attachment; filename="db_exam.xlsx"'
+        df.to_excel(path_or_buf=response, sep=';', float_format='%.2f', index=False, decimal=",")
+
+        # df[1:].to_excel(response,sheet_name="Exam",header=True,encoding='utf-8',columns=field_names)
         return response
             # row = writer.writerow([getattr(obj[field], field) for field in field_names])
 
