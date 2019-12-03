@@ -28,16 +28,20 @@ class AdminElearning(admin.ModelAdmin):
 		question_objects = Question.objects.all().values()
 		df = pandas.DataFrame()
 		for q in question_objects:
-			a = Answer.objects.filter(question=q['id']).values()
+			correct_answer = Answer.objects.filter(question=q['id'],correct=True).values()
+			other_answers = Answer.objects.filter(question=q['id'], correct=False).values()
+
+			print(correct_answer,"correct answers")
+			print(other_answers,"other_answers")
 			exam = Exam.objects.filter(id=q['exam_id']).values()
-			count_answer = 1
-			for i in range(0, 3):
-				if a[i]['correct']:
-					df['correct'] = a[i]
-				else:
-					key = 'answer' + str(count_answer)
-					df[key] = a[i]
-					count_answer += 1
+			# count_answer = 1
+			# for i in range(0, 3):
+			# 	if a[i]['correct']:
+			# 		df['correct'] = a[i]
+			# 	else:
+			# 		key = 'answer' + str(count_answer)
+			# 		df[key] = a[i]
+			# 		count_answer += 1
 
 			df['id'] = q['id']
 			df['quiz'] = exam[0]['name']
@@ -49,7 +53,7 @@ class AdminElearning(admin.ModelAdmin):
 
 		response = HttpResponse(df, content_type='application/vnd.ms-excel')
 		response['Content-Disposition'] = 'attachment; filename="db_elearn.csv"'
-		df.to_csv(path_or_buf=response, sep=';', float_format='%.2f', index=False, decimal=",")
+		df[1:].to_excel(path_or_buf=response,header=True)
 		return response
 
 admin.site.register(Slide)
