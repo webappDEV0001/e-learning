@@ -547,6 +547,16 @@ class ElearningImportView(AdminOrStaffLoginRequiredMixin, FormView):
                     Answer.objects.create(question=q, text=wrong_1)
                     Answer.objects.create(question=q, text=wrong_2)
                     Answer.objects.create(question=q, text=wrong_3)
+
+                slides = Slide.objects.filter(elearning=elearn)
+                question = Question.objects.filter(exam=elearn)
+                slides = list(slides)
+                question = list(question)
+                elearn_session, crt = ELearningSession.objects.get_or_create(elearning=elearn)
+                elearn_session.number = 1
+                elearn_session.save()
+                elearn_session.slides.add(*slides)
+                elearn_session.questions.add(*question)
             except:
                 print("Skip row" + i)
         messages.info(self.request, "your elearning data imported successfully.")

@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     # 'import_export',
 ]
 
-IMPORT_EXPORT_USE_TRANSACTIONS = False
+# IMPORT_EXPORT_USE_TRANSACTIONS = False
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
