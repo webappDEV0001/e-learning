@@ -79,20 +79,19 @@ class ExamAdmin(admin.ModelAdmin):
               'answer2':answer2,'answer3':answer3}
         df = pandas.DataFrame(data, columns=field_names)
 
-        df = df.dropna(axis=1, how='all')
+        df = df.dropna()
 
-        writer = ExcelWriter('Exam-test.xlsx')
+        writer = ExcelWriter('Exam-db.xlsx')
         df.to_excel(writer, 'Exam', index=False)
         writer.save()
 
-        path="Exam-test.xlsx"
+        path="Exam-db.xlsx"
 
         if os.path.exists(path):
             with open(path, "rb") as excel:
                 data = excel.read()
 
-            response = HttpResponse(data,
-                                    content_type='application/vnd.ms-excel')
+            response = HttpResponse(data,content_type='application/vnd.ms-excel')
             response['Content-Disposition'] = 'attachment; filename="db_exam.xlsx"'
             return response
 

@@ -8,6 +8,9 @@ from exam.models import Exam
 from elearning.views import ElearningImportView
 from .models import *
 from question.models import Question, Answer
+from pandas import ExcelWriter
+import os
+
 
 @admin.register(ELearning)
 class AdminElearning(admin.ModelAdmin):
@@ -24,37 +27,102 @@ class AdminElearning(admin.ModelAdmin):
 		return my_urls + urls
 
 	def export_csv(self, request):
+		elearning_session = ELearningSession.objects.all()
+		# meta = self.model._meta
+		field_names = ['id', 'quiz','session', 'category', 'subcategory','figure','content', 'explanation', 'correct', 'answer1',
+					   'answer2', 'answer3']
 
-		question_objects = Question.objects.all().values()
-		df = pandas.DataFrame()
-		for q in question_objects:
-			correct_answer = Answer.objects.filter(question=q['id'],correct=True).values()
-			other_answers = Answer.objects.filter(question=q['id'], correct=False).values()
+		id_list = []
+		elearning_name_list = []
+		session_list=[]
+		category = []
+		sub_category = []
+		figure_list=[]
+		content = []
+		explanation_list = []
+		correct = []
+		answer1 = []
+		answer2 = []
+		answer3 = []
+		count=1
+		for q in elearning_session:
 
-			print(correct_answer,"correct answers")
-			print(other_answers,"other_answers")
-			exam = Exam.objects.filter(id=q['exam_id']).values()
-			# count_answer = 1
-			# for i in range(0, 3):
-			# 	if a[i]['correct']:
-			# 		df['correct'] = a[i]
-			# 	else:
-			# 		key = 'answer' + str(count_answer)
-			# 		df[key] = a[i]
-			# 		count_answer += 1
+			try:
+				for slide in q.slides.all().values():
+					if q.elearning in elearning_name_list:
+						session_list.append(count)
+					else:
+						count = 1
+						session_list.append(count)
+					id_list.append(count)
+					elearning_name_list.append(q.elearning)
+					category.append("n")
+					sub_category.append("n")
+					figure_list.append(slide['image'])
+					content.append("n")
+					explanation_list.append("n")
+					correct.append("n")
+					answer1.append("n")
+					answer2.append("n")
+					answer3.append("n")
 
-			df['id'] = q['id']
-			df['quiz'] = exam[0]['name']
-			df['category'] = q['category']
-			df['sub_category'] = q['sub_category']
-			df['figure'] = 'n'
-			df['content'] = q['text']
-			df['explanation'] = q['explanation']
+				for question in q.questions.all().values():
+					id_list.append(count)
+					if q.elearning in elearning_name_list:
+						session_list.append(count)
+					else:
+						count = 1
+						session_list.append(count)
+					elearning_name_list.append(q.elearning)
+					category.append(question['category'])
+					sub_category.append(question['sub_category'])
+					figure_list.append("n")
+					content.append(question['text'])
+					explanation_list.append(question['explanation'])
+					correct_answer = Answer.objects.filter(question=question['id'], correct=True).values_list('text')
+					other_answers = Answer.objects.filter(question=question['id'], correct=False).values_list('text')
+					correct.append(correct_answer[0][0])
+					try:
+						answer1.append(other_answers[0][0])
+					except:
+						answer1.append("")
+					try:
+						answer2.append(other_answers[1][0])
+					except:
+						answer2.append("")
+					try:
+						answer3.append(other_answers[2][0])
+					except:
+						answer3.append("")
+			except:
+				continue
+			else:
+				count += 1
 
-		response = HttpResponse(df, content_type='application/vnd.ms-excel')
-		response['Content-Disposition'] = 'attachment; filename="db_elearn.csv"'
-		df[1:].to_excel(path_or_buf=response,header=True)
+
+		data = {'id': id_list, 'quiz': elearning_name_list,'session':session_list,
+				'category': category, 'subcategory': sub_category,'figure':figure_list,
+				'content': content, 'explanation': explanation_list, 'correct': correct, 'answer1': answer1,
+				'answer2': answer2, 'answer3': answer3}
+		df = pandas.DataFrame(data, columns=field_names)
+
+		df = df.dropna()
+
+		writer = ExcelWriter('Elearning-db.xlsx')
+		df.to_excel(writer, 'Elearning', index=False)
+		writer.save()
+
+		path = "Elearning-db.xlsx"
+
+		if os.path.exists(path):
+			with open(path, "rb") as excel:
+				data = excel.read()
+
+			response = HttpResponse(data,
+									content_type='application/vnd.ms-excel')
+			response['Content-Disposition'] = 'attachment; filename="db_elearning.xlsx"'
 		return response
+
 
 admin.site.register(Slide)
 admin.site.register(ELearningSession)
