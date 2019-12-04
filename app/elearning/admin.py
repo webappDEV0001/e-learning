@@ -28,8 +28,8 @@ class AdminElearning(admin.ModelAdmin):
 
 	def export_csv(self, request):
 		elearning_session = ELearningSession.objects.all()
-		# meta = self.model._meta
-		field_names = ['id', 'quiz','session', 'category', 'subcategory','figure','content', 'explanation', 'correct', 'answer1',
+
+		field_names = ['id', 'quiz','session', 'category', 'sub_category','figure','content', 'explanation', 'correct', 'answer1',
 					   'answer2', 'answer3']
 
 		id_list = []
@@ -101,7 +101,7 @@ class AdminElearning(admin.ModelAdmin):
 
 
 		data = {'id': id_list, 'quiz': elearning_name_list,'session':session_list,
-				'category': category, 'subcategory': sub_category,'figure':figure_list,
+				'category': category, 'sub_category': sub_category,'figure':figure_list,
 				'content': content, 'explanation': explanation_list, 'correct': correct, 'answer1': answer1,
 				'answer2': answer2, 'answer3': answer3}
 		df = pandas.DataFrame(data, columns=field_names)

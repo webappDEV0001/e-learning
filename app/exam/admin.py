@@ -30,7 +30,7 @@ class ExamAdmin(admin.ModelAdmin):
     def export_csv(self, request):
         question_objects = Question.objects.all().values()
         # meta = self.model._meta
-        field_names = ['id','quiz','category','subcategory','content','explanation','correct','answer1',
+        field_names = ['id','quiz','category','sub_category','content','explanation','correct','answer1',
                        'answer2','answer3']
 
         id_list=[]
@@ -48,10 +48,7 @@ class ExamAdmin(admin.ModelAdmin):
                 correct_answer = Answer.objects.filter(question=q['id'], correct=True).values_list('text')
                 other_answers = Answer.objects.filter(question=q['id'], correct=False).values_list('text')
 
-                # print(correct_answer[0][0], "correct_answers")
-                # print(other_answers[1][0], "other_answers")
                 exam = Exam.objects.filter(id=q['exam_id']).values()
-                # count_answer=1
                 id_list.append(q['id'])
                 exam_name_list.append(exam[0]['name'])
                 category.append(q['category'])
@@ -74,7 +71,7 @@ class ExamAdmin(admin.ModelAdmin):
             except:
                 continue
 
-        data={'id':id_list,'quiz':exam_name_list,'category':category,'subcategory':sub_category,
+        data={'id':id_list,'quiz':exam_name_list,'category':category,'sub_category':sub_category,
               'content':content,'explanation':explanation_list,'correct':correct,'answer1':answer1,
               'answer2':answer2,'answer3':answer3}
         df = pandas.DataFrame(data, columns=field_names)

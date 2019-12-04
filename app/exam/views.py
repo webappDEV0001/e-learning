@@ -273,17 +273,18 @@ class ExamImportView(AdminOrStaffLoginRequiredMixin, FormView):
                 wrong_1 = df['answer1'][i]
                 wrong_2 = df['answer2'][i]
                 wrong_3 = df['answer3'][i]
-                q, crt = Question.objects.get_or_create(exam=exam, text=q_text)
-                if crt:
-                    q.explanation = q_explanation
-                    q.text = q_text
-                    q.category = q_category
-                    q.subcategory = q_subcategory
-                    q.save()
-                    Answer.objects.create(question=q, text=correct_answer_text, correct=True)
-                    Answer.objects.create(question=q, text=wrong_1)
-                    Answer.objects.create(question=q, text=wrong_2)
-                    Answer.objects.create(question=q, text=wrong_3)
+                if q_text != "n" and correct_answer_text != "n" and str(q_text) != "nan" and q_text != " ":
+                    q, crt = Question.objects.get_or_create(exam=exam, text=q_text)
+                    if crt:
+                        q.explanation = q_explanation
+                        q.text = q_text
+                        q.category = q_category
+                        q.subcategory = q_subcategory
+                        q.save()
+                        Answer.objects.create(question=q, text=correct_answer_text, correct=True)
+                        Answer.objects.create(question=q, text=wrong_1)
+                        Answer.objects.create(question=q, text=wrong_2)
+                        Answer.objects.create(question=q, text=wrong_3)
             except:
                 print("Skip row" + i)
         messages.info(self.request, "your exam data imported successfully.")

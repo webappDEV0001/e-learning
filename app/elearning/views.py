@@ -510,17 +510,39 @@ class ElearningImportView(AdminOrStaffLoginRequiredMixin, FormView):
         csv_file = form.cleaned_data.get("csv_file")
         df = pandas.read_excel(csv_file)
         df.dropna(how="all", inplace=True)
-        print(df)
+        check_dict= {}
+        session_list=[]
+        previous_session=0
 
         for i in range(len(df)):
+
             try:
+                if df['quiz'][i] in check_dict.keys():
+                    check_dict[df['quiz'][i]] = session_list
+                else:
+                    session_list.clear()
+                    check_dict.clear()
+                    check_dict[df['quiz'][i]] = session_list
+
                 exam_name = df['quiz'][i]
                 q_category = df['category'][i]
                 q_subcategory = df['sub_category'][i]
                 q_figure = df['figure'][i]
 
                 #elearning object creating....
-                elearn, crt = ELearning.objects.get_or_create(name=exam_name, exam_type="elearning")
+                if df['session'][i] in check_dict[df['quiz'][i]]:
+                    # print("session already exist")
+                    elearn = ELearning.objects.get(id=previous_session,name=exam_name, exam_type="elearning")
+                    # print(elearn,"previous session get")
+                else:
+                    try:
+                        elearn = ELearning.objects.filter(name=exam_name, exam_type="elearning").order_by('-id')[0]
+                    except:
+                        elearn = ELearning.objects.create(name=exam_name, exam_type="elearning")
+                    previous_session = elearn.id
+                    session_list.append(df['session'][i])
+                    # session_id_list.append()
+
                 q_text = df['content'][i]
                 q_explanation = df['explanation'][i]
                 correct_answer_text = df['correct'][i]
@@ -534,13 +556,14 @@ class ElearningImportView(AdminOrStaffLoginRequiredMixin, FormView):
                     Slide.objects.get_or_create(elearning=elearn, image=q_figure.strip())
 
                 #Questions object creating....
-                q, crt = Question.objects.get_or_create(exam=elearn, text=q_text)
-                if crt:
-                    q.explanation = q_explanation
-                    q.text = q_text
-                    q.category = q_category
-                    q.subcategory = q_subcategory
-                    q.save()
+                if q_text!= "n" and correct_answer_text!= "n" and str(q_text)!= "nan" and q_text!= " ":
+                    q, crt = Question.objects.get_or_create(exam=elearn, text=q_text)
+                    if crt:
+                        q.explanation = q_explanation
+                        q.text = q_text
+                        q.category = q_category
+                        q.subcategory = q_subcategory
+                        q.save()
 
                     #Answer object creating....
                     Answer.objects.create(question=q, text=correct_answer_text, correct=True)
@@ -552,13 +575,14 @@ class ElearningImportView(AdminOrStaffLoginRequiredMixin, FormView):
                 question = Question.objects.filter(exam=elearn)
                 slides = list(slides)
                 question = list(question)
+
                 elearn_session, crt = ELearningSession.objects.get_or_create(elearning=elearn)
                 elearn_session.number = 1
                 elearn_session.save()
                 elearn_session.slides.add(*slides)
                 elearn_session.questions.add(*question)
             except:
-                print("Skip row" + i)
+                print("Skip row")
         messages.info(self.request, "your elearning data imported successfully.")
         return FormView.form_valid(self, form)
 
