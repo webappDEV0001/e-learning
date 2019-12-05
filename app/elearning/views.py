@@ -512,7 +512,10 @@ class ElearningImportView(AdminOrStaffLoginRequiredMixin, FormView):
         df.dropna(how="all", inplace=True)
         check_dict= {}
         session_list=[]
-        previous_session=0
+        check_dict2 = {}
+        session_list2 = []
+        previous_session= 0
+        previous_elearning = 0
 
         for i in range(len(df)):
 
@@ -524,6 +527,13 @@ class ElearningImportView(AdminOrStaffLoginRequiredMixin, FormView):
                     check_dict.clear()
                     check_dict[df['quiz'][i]] = session_list
 
+                if df['quiz'][i] in check_dict2.keys():
+                    check_dict2[df['quiz'][i]] = session_list2
+                else:
+                    session_list2.clear()
+                    check_dict2.clear()
+                    check_dict2[df['quiz'][i]] = session_list2
+
                 exam_name = df['quiz'][i]
                 q_category = df['category'][i]
                 q_subcategory = df['sub_category'][i]
@@ -531,15 +541,14 @@ class ElearningImportView(AdminOrStaffLoginRequiredMixin, FormView):
 
                 #elearning object creating....
                 if df['session'][i] in check_dict[df['quiz'][i]]:
-                    # print("session already exist")
-                    elearn = ELearning.objects.get(id=previous_session,name=exam_name, exam_type="elearning")
-                    # print(elearn,"previous session get")
+                    # session already exist
+                    elearn = ELearning.objects.get(id=previous_elearning,name=exam_name, exam_type="elearning")
                 else:
                     try:
                         elearn = ELearning.objects.filter(name=exam_name, exam_type="elearning").order_by('-id')[0]
                     except:
                         elearn = ELearning.objects.create(name=exam_name, exam_type="elearning")
-                    previous_session = elearn.id
+                    previous_elearning = elearn.id
                     session_list.append(df['session'][i])
                     # session_id_list.append()
 
@@ -553,7 +562,7 @@ class ElearningImportView(AdminOrStaffLoginRequiredMixin, FormView):
                 #slides object creating....
                 slide_path = os.path.join('media/', q_figure.strip())
                 if path.exists(slide_path):
-                    Slide.objects.get_or_create(elearning=elearn, image=q_figure.strip())
+                    slide_obj,crt = Slide.objects.get_or_create(elearning=elearn, image=q_figure.strip())
 
                 #Questions object creating....
                 if q_text!= "n" and correct_answer_text!= "n" and str(q_text)!= "nan" and q_text!= " ":
@@ -571,16 +580,40 @@ class ElearningImportView(AdminOrStaffLoginRequiredMixin, FormView):
                     Answer.objects.create(question=q, text=wrong_2)
                     Answer.objects.create(question=q, text=wrong_3)
 
-                slides = Slide.objects.filter(elearning=elearn)
-                question = Question.objects.filter(exam=elearn)
+                slides = Slide.objects.filter(id=slide_obj.id)
+                if q_text != "n" and correct_answer_text != "n" and str(q_text) != "nan" and q_text != " ":
+                    question = Question.objects.filter(exam=elearn,id=q.id)
+                    question = list(question)
                 slides = list(slides)
-                question = list(question)
 
-                elearn_session, crt = ELearningSession.objects.get_or_create(elearning=elearn)
+                # elearning object creating....
+                if df['session'][i] in check_dict2[df['quiz'][i]]:
+                    # session already exist
+                    elearn_session = ELearningSession.objects.get(id=previous_session,elearning=elearn)
+                else:
+                    elearn_session = ELearningSession.objects.filter(elearning=elearn).order_by("-id")
+                    if len(elearn_session) == 0:
+                        # complete new_session start
+                        elearn_session = ELearningSession.objects.create(elearning=elearn)
+                    else:
+                        previous_session = elearn_session[0].id + 1
+                        #new session start here
+                        elearn_session = ELearningSession.objects.create(id=previous_session,elearning=elearn)
+
                 elearn_session.number = 1
                 elearn_session.save()
-                elearn_session.slides.add(*slides)
-                elearn_session.questions.add(*question)
+
+                previous_slides_list=list(elearn_session.slides.all())
+                previous_slides_list += slides
+                if q_text != "n" and correct_answer_text != "n" and str(q_text) != "nan" and q_text != " ":
+                    previous_questions = list(elearn_session.questions.all())
+                    previous_questions += question
+                    elearn_session.questions.add(*previous_questions)
+                elearn_session.slides.add(*previous_slides_list)
+
+                previous_session = elearn_session.id
+                session_list2.append(df['session'][i])
+
             except:
                 print("Skip row")
         messages.info(self.request, "your elearning data imported successfully.")
