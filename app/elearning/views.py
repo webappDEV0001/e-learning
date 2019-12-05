@@ -575,10 +575,10 @@ class ElearningImportView(AdminOrStaffLoginRequiredMixin, FormView):
                         q.save()
 
                     #Answer object creating....
-                    Answer.objects.create(question=q, text=correct_answer_text, correct=True)
-                    Answer.objects.create(question=q, text=wrong_1)
-                    Answer.objects.create(question=q, text=wrong_2)
-                    Answer.objects.create(question=q, text=wrong_3)
+                    Answer.objects.get_or_create(question=q, text=correct_answer_text, correct=True)
+                    Answer.objects.get_or_create(question=q, text=wrong_1)
+                    Answer.objects.get_or_create(question=q, text=wrong_2)
+                    Answer.objects.get_or_create(question=q, text=wrong_3)
 
                 slides = Slide.objects.filter(id=slide_obj.id)
                 if q_text != "n" and correct_answer_text != "n" and str(q_text) != "nan" and q_text != " ":
