@@ -591,16 +591,15 @@ class ElearningImportView(AdminOrStaffLoginRequiredMixin, FormView):
                     # session already exist
                     elearn_session = ELearningSession.objects.get(id=previous_session,elearning=elearn)
                 else:
-                    elearn_session = ELearningSession.objects.filter(elearning=elearn).order_by("-id")
+                    elearn_session = ELearningSession.objects.filter(elearning=elearn,number=df['session'][i]).order_by("-id")
                     if len(elearn_session) == 0:
                         # complete new_session start
-                        elearn_session = ELearningSession.objects.create(elearning=elearn)
+                        elearn_session = ELearningSession.objects.create(elearning=elearn,number=df['session'][i])
                     else:
                         previous_session = elearn_session[0].id + 1
                         #new session start here
-                        elearn_session = ELearningSession.objects.create(id=previous_session,elearning=elearn)
+                        elearn_session = ELearningSession.objects.create(id=previous_session,elearning=elearn,number=df['session'][i])
 
-                elearn_session.number = 1
                 elearn_session.save()
 
                 previous_slides_list=list(elearn_session.slides.all())
