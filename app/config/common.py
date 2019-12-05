@@ -69,9 +69,9 @@ TEMPLATES = [
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
-
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'users.context_processors.common',
             ],
         },
     },
@@ -150,3 +150,7 @@ AUTH_PASSWORD_VALIDATORS = [
 #### Crispy Forms
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+RECAPTCHA_PRIVATE_KEY = "6LdtPcYUAAAAAM0CcFMRffccvEA0bS8u2mFcaSgq"
+RECAPTCHA_PUBLIC_KEY = "6LdtPcYUAAAAAKj3Xhg6_Knz0tsm-f2BB-yGgTub"
+RECAPTCHA_VERIFICATION_URL = 'https://www.google.com/recaptcha/api/siteverify'

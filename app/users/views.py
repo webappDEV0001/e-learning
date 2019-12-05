@@ -42,6 +42,11 @@ class ViewContact(FormView):
     template_name = "contact.html"
     success_url = reverse_lazy("contact")
 
+    def get_form_kwargs(self):
+        kwargs = FormView.get_form_kwargs(self)
+        kwargs['request'] = self.request
+
+        return kwargs
 
     def form_valid(self, form):
         """

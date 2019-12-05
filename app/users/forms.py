@@ -5,7 +5,12 @@ from allauth.account.forms import LoginForm, ChangePasswordForm, SignupForm
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import HTML, Fieldset, Layout, Row, Column
+from django.core.exceptions import ValidationError
+import requests
 
+from config.common import RECAPTCHA_VERIFICATION_URL
+
+from config.common import RECAPTCHA_PRIVATE_KEY
 
 
 class LoginForm(LoginForm):
@@ -90,4 +95,43 @@ class ConatctForm(forms.Form):
 
     message = forms.CharField(widget=forms.Textarea(attrs={'rows': 4, 'class': 'form-control form-control-lg',
                                                            'placeholder': 'Message'}), required=False)
+
+    recaptcha = forms.CharField(max_length=255, required=False)
+
+    # ---------------------------------------------------------------------------
+    # __init__
+    # ---------------------------------------------------------------------------
+    def __init__(self, *args, **kwargs):
+
+        self.request = kwargs.pop('request')
+        super(ConatctForm, self).__init__(*args, **kwargs)
+
+        # ---------------------------------------------------------------------------
+
+    # clean_recaptcha
+    # ---------------------------------------------------------------------------
+    def clean_recaptcha(self):
+        """
+        This method verifies the recaptcha.
+        """
+
+        recaptcha_response = self.request.POST.get('g-recaptcha-response')
+
+        if not recaptcha_response:
+            raise ValidationError("Oops, it seems you forgot to confirm "
+                                  "you're not a robot")
+
+        payload = {'secret': RECAPTCHA_PRIVATE_KEY,
+                   'response': recaptcha_response}
+
+        response = requests.post(RECAPTCHA_VERIFICATION_URL, data=payload)
+
+        try:
+            response = response.json()
+        except Exception as e:
+            raise ValidationError('Unable to verify captcha, please try again.')
+
+        if not response['success']:
+            raise ValidationError('Invalid captcha, please try again...')
+
 
