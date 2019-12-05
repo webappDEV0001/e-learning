@@ -16,6 +16,8 @@
 						<th class="font-weight-bold">Name</th>
 						<th class="font-weight-bold">Certificate</th>
 						<th class="font-weight-bold">Progress</th>
+						<th class="font-weight-bold"></th>
+						<th class="font-weight-bold"></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -29,9 +31,20 @@
 							{% endif %}
 						</td>
 
+
 						<td>
 							{{ object.user_progress }}%
-							<a class="pb-2 btn btn-sm btn-lin k pull-right" href="{% url 'elearning' object.elearning.pk object.elearning.slug %}">Continue ></a></td>
+						</td>
+
+						<td>
+							<a href="{% url 'reset-progress' object.id %}" class="btn btn-warning">Reset</a>
+						</td>
+
+						<td>
+							<a class="pb-2 btn btn-sm btn-lin k pull-right" href="{% url 'elearning' object.elearning.pk object.elearning.slug %}">Continue ></a>
+						</td>
+
+
 					</tr>
 					{% endfor %}
 				</tbody>

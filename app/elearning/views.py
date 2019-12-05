@@ -6,12 +6,12 @@ import pandas
 import pdfkit
 from django.contrib import messages
 from django.core.files.storage import FileSystemStorage
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.utils import timezone
 import random
-from django.views.generic.base import View
+from django.views.generic.base import View, RedirectView
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView, FormView
 from django.views.generic.detail import DetailView
@@ -381,6 +381,15 @@ class ELearningProgressListView(LoginRequiredMixin, ListView):
         return context
 
 
+class ElearningResetProgress(RedirectView):
+    template_name = "elearning/elearning_progress.html"
+
+    def get_redirect_url(self, *args, **kwargs):
+        print(kwargs['pk']," Check ")
+        session_obj = get_object_or_404(ELearningUserSession, id=kwargs['pk'])
+        print("session obj",session_obj)
+        session_obj.delete()
+        return reverse("elearning-progress")
 
 class DownloadCertificateView(View):
     template_name = "elearning/download-certificate.html"

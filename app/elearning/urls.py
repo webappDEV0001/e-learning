@@ -12,5 +12,6 @@ urlpatterns = [
 	path('<int:pk>-<str:slug>/', ELearningView.as_view() , name='elearning'),
 	path('progress/', ELearningProgressListView.as_view() , name='elearning-progress'),
 	path('generate-certificate/<str:slug>/', DownloadCertificateView.as_view(),name='generate-certificate'),
+	path('reset-progress/<int:pk>/', ElearningResetProgress.as_view(),name='reset-progress'),
 	path('', include(router.urls)),
 ]
