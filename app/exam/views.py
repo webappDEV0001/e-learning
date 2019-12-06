@@ -23,6 +23,7 @@ from question.models import Question, ExamUserSession, ExamUserAnswer
 from question.serializers import ExamUserSessionSerializer
 from django.contrib.auth.mixins import AccessMixin
 import os
+from config.common import *
 
 
 def about(request):
@@ -183,7 +184,8 @@ class ExamListView(LoginRequiredMixin, ListView):
         return qs
 
     def get_material_list(self):
-        path = "assets/materials"  # insert the path to your directory
+
+        path = os.path.join(STATICFILES_DIRS[0],"materials")  # insert the path to your directory
         files = os.listdir(path)
         return files
 
@@ -313,10 +315,9 @@ class DownloadFileView(View):
 
     def get(self, request, *args, **kwargs):
 
-        print(kwargs.get('slug'),"I'm here")
-        path = "assets/materials"
+        # path = "assets/materials"
+        path = os.path.join(STATICFILES_DIRS[0],"materials")
         file_path = os.path.join(path,kwargs.get('slug'))
-        print("filepath",file_path)
         if os.path.exists(file_path):
             with open(file_path, 'rb') as fh:
                 response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
