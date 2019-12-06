@@ -12,5 +12,6 @@ urlpatterns = [
 	path('<int:pk>-<str:slug>/', ExamView.as_view() , name='exam'),
 	path('scores/', ExamScoresListView.as_view() , name='exam-scores'),
 	path('scores/<int:pk>/', ExamScoreView.as_view() , name='exam-score'),
+	path('download-files/<str:slug>/', DownloadFileView.as_view(),name='download-files'),
     path('api/', include(router.urls)),
 ]

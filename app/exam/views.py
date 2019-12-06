@@ -1,6 +1,7 @@
 import random
 
 from django.contrib import messages
+from django.http import HttpResponse, Http404
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import View
@@ -21,6 +22,8 @@ from elearning.models import ELearningUserSession,ELearning
 from question.models import Question, ExamUserSession, ExamUserAnswer
 from question.serializers import ExamUserSessionSerializer
 from django.contrib.auth.mixins import AccessMixin
+import os
+
 
 def about(request):
     return render(request, 'about.html')
@@ -179,6 +182,11 @@ class ExamListView(LoginRequiredMixin, ListView):
             qs = super(ExamListView, self).get_queryset()
         return qs
 
+    def get_material_list(self):
+        path = "assets/materials"  # insert the path to your directory
+        files = os.listdir(path)
+        return files
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['exams'] = self.get_queryset().filter(exam_type=Exam.EXAM)
@@ -189,6 +197,8 @@ class ExamListView(LoginRequiredMixin, ListView):
                                           .values_list('exam__name','memory_force')
 
         context['memory_force'] =  dict(memory_force)
+
+        context['material_files'] = self.get_material_list()
 
         if self.request.user.is_demo:
             context['elearnings'] = ELearning.objects.filter(demo=True, exam_type="elearning")
@@ -295,6 +305,25 @@ class ExamImportView(AdminOrStaffLoginRequiredMixin, FormView):
         context = super(ExamImportView, self).get_context_data()
         context["opts"] = Exam._meta
         return context
+
+
+
+class DownloadFileView(View):
+    template_name = "exam/exam_list.html"
+
+    def get(self, request, *args, **kwargs):
+
+        print(kwargs.get('slug'),"I'm here")
+        path = "assets/materials"
+        file_path = os.path.join(path,kwargs.get('slug'))
+        print("filepath",file_path)
+        if os.path.exists(file_path):
+            with open(file_path, 'rb') as fh:
+                response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
+                response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+                return response
+        raise Http404
+
 
 
 
