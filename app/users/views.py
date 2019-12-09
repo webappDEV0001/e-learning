@@ -1,13 +1,16 @@
+import os
+
 import pytz
 from django.contrib import messages
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, FileResponse
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.shortcuts import redirect, render, reverse
 from django.views.generic import FormView
 from django.core.mail import send_mail
+from django.views.generic.base import View
 from users.forms import ConatctForm
-
+from config.common import *
 def set_timezone(request):
     if request.method == 'POST':
         user = request.user
@@ -62,3 +65,10 @@ class ViewContact(FormView):
             send_contact_email(context_data) #send email
             messages.info(self.request, "We received your message and will contact you back soon.")
         return HttpResponseRedirect("/contact")
+
+
+class DisplayPDFView(View):
+
+    def get(self, request, *args, **kwargs):
+        path =  os.path.join(MEDIA_ROOT, 'terms_condition.pdf')
+        return FileResponse(open(path, 'rb'), content_type='application/pdf')

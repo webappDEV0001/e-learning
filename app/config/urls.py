@@ -6,6 +6,7 @@ from django.conf.urls.static import static
 from exam.views import ExamListView, about, contact, careers, solutions, OurBaseView
 from users.views import set_timezone
 from users.views import ViewContact
+from users.views import DisplayPDFView
 
 dummy_view = TemplateView.as_view(template_name='index.html')
 
@@ -16,6 +17,8 @@ urlpatterns = [
     path('careers/', careers, name='careers'),
     #path('contact/', contact, name='contact'),
     path('contact/', ViewContact.as_view(), name='contact'),
+    path('terms-condition/', DisplayPDFView.as_view(), name='terms-condition'),
+
 
     path('set_timezone/', set_timezone, name='set_timezone'),
 
