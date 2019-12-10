@@ -174,15 +174,16 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
             # Assign new question if not already assigned. Exclude already answered.
             if not eus.active_question:
 
-                if eus.elearning.random_questions:
-                    question = random.choice(questions)
-                else:
-                    question = questions.first()
+                # if eus.elearning.random_questions:
+                #     question = random.choice(questions)
+                # else:
+                question = questions.first()
                 eus.active_question = question
                 eus.save()
 
             else:
                 question = eus.active_question
+
 
             eus.phase = 2
             eus.save()
@@ -195,7 +196,8 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
                 'question': question,
                 'phase': 'new_questions',
                 'show_answers': exam_obj.show_answers,
-                'left': int(eus.n_questions - len(already_answered))
+                'left':int(len(questions))
+                # 'left': int(eus.n_questions - len(already_answered))
             }
             response = {
                     'state': 'question',
