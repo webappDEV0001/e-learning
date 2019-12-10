@@ -90,8 +90,8 @@ section#contact-header {
     background: unset !important;
     border: navajowhite;
     width: auto;
-    margin: 0 !important;
-    padding: 0px 20px;
+    margin: 0 20px !important;
+    padding: 0px;
     height: auto;
     font-size: 45px;
     transition: all 0.5s ease-in-out 0s;
@@ -203,6 +203,7 @@ button#full-screen {
     top: 50%;
     transform: translateY(-50%);
     padding: 0;
+    margin: 0px !important;
 }
 button#full-screen img {
     filter: invert(1);

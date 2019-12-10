@@ -62,8 +62,8 @@ p.slide_counter {
     top: 55%;
     }
 .bottom_pagination button {
-    padding: 0px 10px;
     font-size: 30px;
+    margin: 0 8px !important;
     }
 .loader {
     left: 43%;
@@ -205,6 +205,13 @@ $("#"+{{seen_slide}}).addClass("current");
 if({{seen_slide}} == 1){
 	$(".previous-slide").css('display','none');
 }
+
+$(document).on('swipedown', '.ppt_info_slide', function () {
+   $("#full-screen").click();
+});
+$(document).on('swipeup', '.ppt_info_slide', function () {
+    $("#full-screen").click();
+});
 
 </script>
 
