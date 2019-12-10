@@ -82,7 +82,9 @@ section#contact-header {
     padding: 15px;
     display: flex;
     justify-content: center;
-    position: relative;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
 }
 .bottom_pagination button {
     background: unset !important;
@@ -100,8 +102,11 @@ section#contact-header {
     color: #21375f;
     box-shadow: none;
 }
+
 .ppt_info_slide {
     border: 2px solid #646464;
+    height: 68vh;
+    position: relative;
 }
 .ppt_info_slide img {
    width: 100%;

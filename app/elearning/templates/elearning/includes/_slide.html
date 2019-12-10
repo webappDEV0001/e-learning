@@ -16,11 +16,78 @@ p.slide_counter {
     padding: 0;
     font-weight: bold;
 }
+
+.ppt_info_slide .mySlides {
+    height: 60vh;
+}
+
+.full_screen .mySlides {
+    height: 100vh;
+}
+.ppt_info_slide {
+    border: 2px solid #646464;
+    height: 68vh;
+    position: relative;
+}
+
+.bottom_pagination {
+    background: #646464;
+    padding: 15px;
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+.loader {
+	border: 8px solid #203864;
+    border-radius: 50%;
+    border-top: 8px solid #ffbf00;
+    width: 60px;
+    height: 60px;
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+    position: absolute;
+    top: 40%;
+    left: 47%;
+    z-index: -1;
+}
+
+
+@media (max-width:480px)
+{
+ p.slide_counter {
+    font-size: 16px;
+    top: 55%;
+    }
+.bottom_pagination button {
+    padding: 0px 10px;
+    font-size: 30px;
+    }
+.loader {
+    left: 43%;
+    }
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 </style>
 <div class="row">
 	<div class="col-md-12 mx-auto text-center">
     <!--old view start	-->
 		<div id="full_screen_img" class="ppt_info_slide">
+			<div class="loader"></div>
+
 			<!--<img src="{{ slide.image.url }}" />-->
 			{% for obj in slides %}
 		  		<img class="mySlides" id="{{forloop.counter}}" src="{{ obj.image.url }}" style="width:100%">
@@ -32,7 +99,7 @@ p.slide_counter {
 <!--				<button class="w3-button w3-black w3-display-left" onclick="plusDivs(-1)">&#10094;</button>-->
 <!--		  		<button class="w3-button w3-black w3-display-right" onclick="plusDivs(1)">&#10095;</button>-->
 				<button id="start-exam" class="next-slide btn btn-lg btn-primary btn-block"><i class="fa fa-caret-right" aria-hidden="true"></i></button>
-				<button id="full-screen"  data-toggle="tooltip" data-placement="left" title="view full screen" class="full-screen-mode btn btn-lg btn-primary btn-block" Z><img src="https://img.icons8.com/wired/64/000000/full-screen.png"></button>
+				<button id="full-screen"  data-toggle="tooltip" data-placement="left" title="View full screen" class="full-screen-mode btn btn-lg btn-primary btn-block" Z><img src="https://img.icons8.com/wired/64/000000/full-screen.png"></button>
 			</div>
 		</div>
 			<!--old view end -->
@@ -101,12 +168,14 @@ $("#full-screen").click(function(){
 	      if(check == true){
 	      	  	$(".ppt_info_slide").removeClass("full_screen");
 	      	  GoOutFullscreen();
-	      	   $("#full-screen").attr('data-original-title', 'View full Screen').tooltip('show');
+	      	   $("#full-screen").attr('data-original-title', 'View full Screen');
+	      	    $("#full-screen").attr('title', 'View full Screen');
 	      }
 	      else{
 	      	  $(".ppt_info_slide").addClass("full_screen");
 	      	  GoInFullscreen();
-	      	   $("#full-screen").attr('data-original-title', 'Exit full Screen').tooltip('update');;
+	      	   $("#full-screen").attr('data-original-title', 'Exit full Screen');
+	      	   $("#full-screen").attr('title', 'Exit full Screen');
 
 
 
