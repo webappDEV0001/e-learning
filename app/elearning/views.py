@@ -88,7 +88,8 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
                     'question': repetition.first().question,
                     'phase': 'repetitions',
                     'left': repetition.count(),
-                    'show_answers': exam_obj.show_answers,
+                    'show_answers': exam_obj.show_answers
+                    ,
                     'correct_answered_count':correct_answered_count
                 }
                 response = {
@@ -102,8 +103,14 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
             eus.phase = 3
             eus.save()
             slides = eus.active_session.slides
+
+
             if eus.seen_slides < slides.count():
-                slide_to_show = list(slides.all())[eus.seen_slides:]
+                slide_to_show = list(slides.all())
+                seen_slide = eus.seen_slides + 1
+                total_slides = slides.count()
+                print(seen_slide)
+
                 if eus.seen_slides == 0 :
                     previous_slide=0
                 else:
@@ -111,7 +118,11 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
 
                 response = {
                     'state': 'slide',
-                    'content': render_to_string('elearning/includes/_slide.html', {'slides': slide_to_show,'previous_slide':previous_slide, "object":eus})
+                    'content': render_to_string('elearning/includes/_slide.html', {'slides': slide_to_show,
+                                                                                   'previous_slide':previous_slide,
+                                                                                   "object":eus,
+                                                                                   "seen_slide":seen_slide,
+                                                                                   "total_slides":total_slides})
                 }
                 # response = {'state':'slide','previous_slide':previous_slide}
                 return Response(response)
@@ -366,7 +377,6 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
         return Response(response)
 
 
-
 class ELearningProgressListView(LoginRequiredMixin, ListView):
     model = ELearningUserSession
     template_name = 'elearning/elearning_progress.html'
@@ -385,9 +395,7 @@ class ElearningResetProgress(RedirectView):
     template_name = "elearning/elearning_progress.html"
 
     def get_redirect_url(self, *args, **kwargs):
-        print(kwargs['pk']," Check ")
         session_obj = get_object_or_404(ELearningUserSession, id=kwargs['pk'])
-        print("session obj",session_obj)
         session_obj.delete()
         return reverse("elearning-progress")
 
@@ -528,7 +536,7 @@ class ElearningImportView(AdminOrStaffLoginRequiredMixin, FormView):
 
         for i in range(len(df)):
 
-            try:
+            # try:
                 if df['quiz'][i] in check_dict.keys():
                     check_dict[df['quiz'][i]] = session_list
                 else:
@@ -589,11 +597,16 @@ class ElearningImportView(AdminOrStaffLoginRequiredMixin, FormView):
                     Answer.objects.get_or_create(question=q, text=wrong_2)
                     Answer.objects.get_or_create(question=q, text=wrong_3)
 
-                slides = Slide.objects.filter(id=slide_obj.id)
+
+                try:
+                    slides = Slide.objects.filter(id=slide_obj.id)
+                    slides = list(slides)
+                except:
+                    print("Skip slide")
+                    slides = []
                 if q_text != "n" and correct_answer_text != "n" and str(q_text) != "nan" and q_text != " ":
                     question = Question.objects.filter(exam=elearn,id=q.id)
                     question = list(question)
-                slides = list(slides)
 
                 # elearning object creating....
                 if df['session'][i] in check_dict2[df['quiz'][i]]:
@@ -611,7 +624,7 @@ class ElearningImportView(AdminOrStaffLoginRequiredMixin, FormView):
 
                 elearn_session.save()
 
-                previous_slides_list=list(elearn_session.slides.all())
+                previous_slides_list = list(elearn_session.slides.all())
                 previous_slides_list += slides
                 if q_text != "n" and correct_answer_text != "n" and str(q_text) != "nan" and q_text != " ":
                     previous_questions = list(elearn_session.questions.all())
@@ -622,8 +635,8 @@ class ElearningImportView(AdminOrStaffLoginRequiredMixin, FormView):
                 previous_session = elearn_session.id
                 session_list2.append(df['session'][i])
 
-            except:
-                print("Skip row")
+            # except:
+            #     print("Skip row")
         messages.info(self.request, "your elearning data imported successfully.")
         return FormView.form_valid(self, form)
 

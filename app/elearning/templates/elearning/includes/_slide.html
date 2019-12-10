@@ -5,6 +5,17 @@
 img.mySlides.current {
     display: block !important;
 }
+
+p.slide_counter {
+    position: absolute;
+    left: 25px;
+    color: #fff;
+    font-size: 25px;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 0;
+    font-weight: bold;
+}
 </style>
 <div class="row">
 	<div class="col-md-12 mx-auto text-center">
@@ -15,11 +26,13 @@ img.mySlides.current {
 		  		<img class="mySlides" id="{{forloop.counter}}" src="{{ obj.image.url }}" style="width:100%">
 			{% endfor %}
 			<div class="bottom_pagination">
-				<button id="previous_slide" style="display:none;" class="previous-slide btn btn-lg btn-primary btn-block"><i class="fa fa-caret-left" aria-hidden="true"></i></button>
+				<p class="slide_counter">Slide <span id="seen_slide">{{seen_slide}}</span> / {{total_slides}}</p>
+
+				<button id="previous_slide" class="previous-slide btn btn-lg btn-primary btn-block"><i class="fa fa-caret-left" aria-hidden="true"></i></button>
 <!--				<button class="w3-button w3-black w3-display-left" onclick="plusDivs(-1)">&#10094;</button>-->
 <!--		  		<button class="w3-button w3-black w3-display-right" onclick="plusDivs(1)">&#10095;</button>-->
 				<button id="start-exam" class="next-slide btn btn-lg btn-primary btn-block"><i class="fa fa-caret-right" aria-hidden="true"></i></button>
-				<button id="full-screen" class="full-screen-mode btn btn-lg btn-primary btn-block" Z><img src="https://img.icons8.com/wired/64/000000/full-screen.png"></button>
+				<button id="full-screen"  data-toggle="tooltip" data-placement="left" title="view full screen" class="full-screen-mode btn btn-lg btn-primary btn-block" Z><img src="https://img.icons8.com/wired/64/000000/full-screen.png"></button>
 			</div>
 		</div>
 			<!--old view end -->
@@ -88,10 +101,15 @@ $("#full-screen").click(function(){
 	      if(check == true){
 	      	  	$(".ppt_info_slide").removeClass("full_screen");
 	      	  GoOutFullscreen();
+	      	   $("#full-screen").attr('data-original-title', 'View full Screen').tooltip('show');
 	      }
 	      else{
 	      	  $(".ppt_info_slide").addClass("full_screen");
 	      	  GoInFullscreen();
+	      	   $("#full-screen").attr('data-original-title', 'Exit full Screen').tooltip('update');;
+
+
+
     		}
 
 });
@@ -114,9 +132,10 @@ function checkKey(e) {
     }
 
 }
-
-$("#1").addClass("current");
-
+$("#"+{{seen_slide}}).addClass("current");
+if({{seen_slide}} == 1){
+	$(".previous-slide").css('display','none');
+}
 
 </script>
 
