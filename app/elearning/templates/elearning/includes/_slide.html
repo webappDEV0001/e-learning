@@ -95,11 +95,17 @@ p.slide_counter {
 			<div class="bottom_pagination">
 				<p class="slide_counter">Slide <span id="seen_slide">{{seen_slide}}</span> / {{total_slides}}</p>
 
-				<button id="previous_slide" class="previous-slide btn btn-lg btn-primary btn-block"><i class="fa fa-caret-left" aria-hidden="true"></i></button>
+				<button id="previous_slide" class="previous-slide btn btn-lg btn-primary btn-block" data-toggle="tooltip" data-placement="left" title="Previous Slide">
+					<i class="fa fa-caret-left" aria-hidden="true"></i>
+				</button>
 <!--				<button class="w3-button w3-black w3-display-left" onclick="plusDivs(-1)">&#10094;</button>-->
 <!--		  		<button class="w3-button w3-black w3-display-right" onclick="plusDivs(1)">&#10095;</button>-->
-				<button id="start-exam" class="next-slide btn btn-lg btn-primary btn-block"><i class="fa fa-caret-right" aria-hidden="true"></i></button>
-				<button id="full-screen"  data-toggle="tooltip" data-placement="left" title="View full screen" class="full-screen-mode btn btn-lg btn-primary btn-block" Z><img src="https://img.icons8.com/wired/64/000000/full-screen.png"></button>
+				<button id="start-exam" class="next-slide btn btn-lg btn-primary btn-block" data-toggle="tooltip" data-placement="left" title="Next Slide">
+					<i class="fa fa-caret-right" aria-hidden="true"></i>
+				</button>
+				<button id="full-screen"  data-toggle="tooltip" data-placement="left" title="View full screen" class="full-screen-mode btn btn-lg btn-primary btn-block" Z>
+					<img src="https://img.icons8.com/wired/64/000000/full-screen.png">
+				</button>
 			</div>
 		</div>
 			<!--old view end -->
@@ -176,8 +182,6 @@ $("#full-screen").click(function(){
 	      	  GoInFullscreen();
 	      	   $("#full-screen").attr('data-original-title', 'Exit full Screen');
 	      	   $("#full-screen").attr('title', 'Exit full Screen');
-
-
 
     		}
 
