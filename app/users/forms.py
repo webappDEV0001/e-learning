@@ -96,6 +96,8 @@ class ConatctForm(forms.Form):
     message = forms.CharField(widget=forms.Textarea(attrs={'rows': 4, 'class': 'form-control form-control-lg',
                                                            'placeholder': 'Message'}), required=False)
 
+    attachment = forms.FileField()
+
     recaptcha = forms.CharField(max_length=255, required=False)
 
     # ---------------------------------------------------------------------------

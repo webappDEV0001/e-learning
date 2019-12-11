@@ -15,7 +15,7 @@
   <div class="container">
     <div class="row">
       <div class="col-12">
-          <form method="POST">
+          <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="form-row">
               <div class="form-group col-md-6">
@@ -34,6 +34,9 @@
             <div class="form-group">
               {{form.message}}
             </div>
+              <div class="form-group">
+              {{form.attachment}}
+             </div>
               <div class="form-group">
                   <div class="g-recaptcha-wrapper">
                     <div class="g-recaptcha" data-sitekey="{{RECAPTCHA_PUBLIC_KEY}}" data-expired-callback="recaptchaExpired"></div>

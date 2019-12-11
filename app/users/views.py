@@ -10,6 +10,8 @@ from django.views.generic import FormView
 from django.core.mail import send_mail
 from django.views.generic.base import View
 from users.forms import ConatctForm
+from django.core.mail import EmailMessage
+
 from config.common import *
 def set_timezone(request):
     if request.method == 'POST':
@@ -29,14 +31,16 @@ def send_contact_email(data):
     email = data.get("email")
     message = data.get("message")
     name = data.get("name")
+    file = data.get("file")
     message = "My name is {0} and my email is {1} and my query is {2}".format(name, email, message)
-    send_mail(
+    msg = EmailMessage(
         'Contact Email',
-        message,
+         message,
         "contact@4actuaries.com",
         ['contact@4actuaries.com'],
-        fail_silently=False,
     )
+    msg.attach(file.name, file.read(), file.content_type)
+    msg.send()
 
 
 class ViewContact(FormView):
@@ -59,14 +63,15 @@ class ViewContact(FormView):
             "email": form.cleaned_data.get("email"),
             "title": form.cleaned_data.get("title"),
             "name": form.cleaned_data.get("name"),
-            "message": form.cleaned_data.get("message")
+            "message": form.cleaned_data.get("message"),
+            "file": form.cleaned_data.get("attachment")
         }
         if form.is_valid():
             send_contact_email(context_data) #send email
             messages.info(self.request, "We received your message and will contact you back soon.")
         return HttpResponseRedirect("/contact")
 
-
+    
 class DisplayPDFView(View):
 
     def get(self, request, *args, **kwargs):
