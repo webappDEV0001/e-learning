@@ -83,7 +83,22 @@ p.slide_counter {
   100% { transform: rotate(360deg); }
 }
 
+.toast{
+	color: white;
+    position: fixed;
+    z-index: 1;
+    margin: 50% auto;
+    width: 238px;
+    left: 0;
+    right: 0;
+    background-color: #000;
+    border-color: #000;
+}
+
 </style>
+<div class="alert alert-success toast">
+				 Swipe left to view next slide
+			</div>
 <div class="row">
 	<div class="col-md-12 mx-auto text-center">
     <!--old view start	-->
@@ -94,6 +109,7 @@ p.slide_counter {
 			{% for obj in slides %}
 		  		<img class="mySlides" id="{{forloop.counter}}" src="{{ obj.image.url }}" style="width:100%">
 			{% endfor %}
+
 			<div class="bottom_pagination">
 				<p class="slide_counter">Slide <span id="seen_slide">{{seen_slide}}</span> / {{total_slides}}</p>
 
@@ -114,6 +130,8 @@ p.slide_counter {
 		</div>
 	</div>
 </div>
+
+
 
 
  {% block subfooter %}
@@ -210,6 +228,15 @@ function checkKey(e) {
 $("#"+{{seen_slide}}).addClass("current");
 if({{seen_slide}} == 1){
 	$(".previous-slide").css('display','none');
+}
+
+if ($(window).width() < 700)
+{
+	window.setTimeout(function () {
+    $(".alert-success").fadeTo(500, 0).slideUp(500, function () {
+        $(this).remove();
+    });
+}, 5000);
 }
 
 

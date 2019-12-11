@@ -49,11 +49,11 @@ class AdminElearning(admin.ModelAdmin):
 
 			try:
 				for slide in q.slides.all().values():
-					if q.elearning in elearning_name_list:
-						session_list.append(count)
-					else:
-						count = 1
-						session_list.append(count)
+					# if q.elearning in elearning_name_list:
+					# 	session_list.append(q.number)
+					# else:
+					# 	count = 1
+					session_list.append(q.number)
 					id_list.append(count)
 					elearning_name_list.append(q.elearning)
 					category.append("n")
@@ -68,11 +68,11 @@ class AdminElearning(admin.ModelAdmin):
 
 				for question in q.questions.all().values():
 					id_list.append(count)
-					if q.elearning in elearning_name_list:
-						session_list.append(count)
-					else:
-						count = 1
-						session_list.append(count)
+					# if q.elearning in elearning_name_list:
+					# 	session_list.append(count)
+					# else:
+					# 	count = 1
+					session_list.append(q.number)
 					elearning_name_list.append(q.elearning)
 					category.append(question['category'])
 					sub_category.append(question['sub_category'])
