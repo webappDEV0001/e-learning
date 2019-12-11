@@ -39,7 +39,7 @@ def careers(request):
     return render(request, 'careers.html')
 
 class OurBaseView(TemplateView):
-    template_name = "exam/ourbase.html"
+    template_name = "exam/ifrs-17-e-learning.html"
 
 class ExamView(DetailView):
     model = Exam

@@ -23,7 +23,7 @@ urlpatterns = [
     path('set_timezone/', set_timezone, name='set_timezone'),
 
     path('list/', ExamListView.as_view(), name='exam-list'),
-    path('ourbase/', OurBaseView.as_view(), name='ourbase'),
+    path('ifrs-17-e-learning/', OurBaseView.as_view(), name='ourbase'),
 	path('exam/', include('exam.urls')),
 	path('elearning/', include('elearning.urls')),
 
