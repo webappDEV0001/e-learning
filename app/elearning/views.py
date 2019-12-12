@@ -540,7 +540,7 @@ class ElearningImportView(AdminOrStaffLoginRequiredMixin, FormView):
 
         for i in range(len(df)):
 
-            # try:
+            try:
                 if df['quiz'][i] in check_dict.keys():
                     check_dict[df['quiz'][i]] = session_list
                 else:
@@ -624,7 +624,7 @@ class ElearningImportView(AdminOrStaffLoginRequiredMixin, FormView):
                     else:
                         previous_session = elearn_session[0].id + 1
                         #new session start here
-                        elearn_session = ELearningSession.objects.create(id=previous_session,elearning=elearn,number=df['session'][i])
+                        elearn_session,crt = ELearningSession.objects.get_or_create(id=previous_session,elearning=elearn,number=df['session'][i])
 
                 elearn_session.save()
 
@@ -639,8 +639,8 @@ class ElearningImportView(AdminOrStaffLoginRequiredMixin, FormView):
                 previous_session = elearn_session.id
                 session_list2.append(df['session'][i])
 
-            # except:
-            #     print("Skip row")
+            except:
+                print("Skip row")
         messages.info(self.request, "your elearning data imported successfully.")
         return FormView.form_valid(self, form)
 
