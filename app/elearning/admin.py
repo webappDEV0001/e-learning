@@ -135,7 +135,7 @@ class AdminPresentation(admin.ModelAdmin):
 		my_urls = [
 			path('import-presentation/', self.admin_site.admin_view(PresentationImportView.as_view()),
 				 name="import-presentation"),
-			# path('export-csv/', self.export_csv),
+			# path('export-presentation/', self.export_csv),
 		]
 		return my_urls + urls
 
