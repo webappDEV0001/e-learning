@@ -125,6 +125,7 @@ class AdminElearning(admin.ModelAdmin):
 
 
 admin.site.register(Slide)
+admin.site.register(Presentation)
 admin.site.register(ELearningSession)
 admin.site.register(ELearningUserSession)
 admin.site.register(ELearningUserAnswer)
