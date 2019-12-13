@@ -191,4 +191,4 @@ class Presentation(models.Model):
 	slide = models.CharField(max_length=1000, help_text="name of the slide")
 
 	def __str__(self):
-		return "%s - %s" % (self.title, self.elearning.name)
+		return "%s - %s" % (self.topic, self.elearning.name)

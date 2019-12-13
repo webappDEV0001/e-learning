@@ -11,6 +11,8 @@ from question.models import Question, Answer
 from pandas import ExcelWriter
 import os
 
+from .views import PresentationImportView
+
 
 @admin.register(ELearning)
 class AdminElearning(admin.ModelAdmin):
@@ -124,8 +126,25 @@ class AdminElearning(admin.ModelAdmin):
 		return response
 
 
+@admin.register(Presentation)
+class AdminPresentation(admin.ModelAdmin):
+	change_list_template = "elearning/presentation_admin_changelist.html"
+
+	def get_urls(self):
+		urls = super(AdminPresentation, self).get_urls()
+		my_urls = [
+			path('import-presentation/', self.admin_site.admin_view(PresentationImportView.as_view()),
+				 name="import-presentation"),
+			# path('export-csv/', self.export_csv),
+		]
+		return my_urls + urls
+
+
+
+
+
+
 admin.site.register(Slide)
-admin.site.register(Presentation)
 admin.site.register(ELearningSession)
 admin.site.register(ELearningUserSession)
 admin.site.register(ELearningUserAnswer)
