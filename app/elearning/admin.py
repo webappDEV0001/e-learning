@@ -135,9 +135,48 @@ class AdminPresentation(admin.ModelAdmin):
 		my_urls = [
 			path('import-presentation/', self.admin_site.admin_view(PresentationImportView.as_view()),
 				 name="import-presentation"),
-			# path('export-presentation/', self.export_csv),
+			path('export-presentation/', self.export_csv),
 		]
 		return my_urls + urls
+
+
+	def export_csv(self, request):
+		field_names=["id","presentation_name","topic","slide"]
+		id_list=[]
+		presentation_name_list = []
+		topic_list = []
+		slide_list = []
+
+		presentation_obj = Presentation.objects.all()
+
+		count = 1
+		for presentation in presentation_obj:
+			id_list.append(count)
+			presentation_name_list.append(presentation.elearning)
+			topic_list.append(presentation.topic)
+			slide_list.append(presentation.slide)
+			count += 1
+
+		data = {"id":id_list,"presentation_name":presentation_name_list,"topic":topic_list,"slide":slide_list}
+		df = pandas.DataFrame(data, columns=field_names)
+
+		df = df.dropna()
+
+		writer = ExcelWriter('Presentation-db.xlsx')
+		df.to_excel(writer, 'Presentation', index=False)
+		writer.save()
+
+		path = "Presentation-db.xlsx"
+
+		if os.path.exists(path):
+			with open(path, "rb") as excel:
+				data = excel.read()
+
+			response = HttpResponse(data,
+									content_type='application/vnd.ms-excel')
+			response['Content-Disposition'] = 'attachment; filename="db_presentation.xlsx"'
+		return response
+		return HttpResponse("Success")
 
 
 

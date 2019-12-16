@@ -671,6 +671,18 @@ class PresentationImportView(AdminOrStaffLoginRequiredMixin, FormView):
         csv_file = form.cleaned_data.get("csv_file")
         df = pandas.read_excel(csv_file)
         df.dropna(how="all", inplace=True)
+
+        for i in range(len(df)):
+            try:
+                presentation_name = df['presentation_name'][i]
+                topic = df['topic'][i]
+                slide = df['slide'][i]
+                elearning,crt = ELearning.objects.get_or_create(name=presentation_name, exam_type='elearning')
+                if crt:
+                    ELearningSession.objects.create(elearning=elearning,number=1)
+                presentation, crt = Presentation.objects.get_or_create(elearning=elearning, topic=topic,slide=slide)
+            except:
+                print("Skip row")
         messages.info(self.request, "your presentation data imported successfully.")
         return FormView.form_valid(self, form)
 
