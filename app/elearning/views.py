@@ -677,10 +677,7 @@ class PresentationImportView(AdminOrStaffLoginRequiredMixin, FormView):
                 presentation_name = df['presentation_name'][i]
                 topic = df['topic'][i]
                 slide = df['slide'][i]
-                elearning,crt = ELearning.objects.get_or_create(name=presentation_name, exam_type='elearning')
-                if crt:
-                    ELearningSession.objects.create(elearning=elearning,number=1)
-                presentation, crt = Presentation.objects.get_or_create(elearning=elearning, topic=topic,slide=slide)
+                presentation, crt = Presentation.objects.get_or_create(elearning=presentation_name, topic=topic,slide=slide)
             except:
                 print("Skip row")
         messages.info(self.request, "your presentation data imported successfully.")

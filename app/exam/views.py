@@ -203,6 +203,8 @@ class ExamListView(LoginRequiredMixin, ListView):
         context['material_files'] = self.get_material_list()
 
         context['topic'] =  Presentation.objects.values_list('topic', flat=True).distinct()
+        context['presentation_elearnings'] = Presentation.objects.values_list('elearning', flat=True).distinct()
+
 
         if self.request.user.is_demo:
             context['elearnings'] = ELearning.objects.filter(demo=True, exam_type="elearning")
@@ -349,7 +351,7 @@ class PresentationSlideShow(TemplateView):
             topic = self.request.GET.get('topic', None)
             elearning = self.request.GET.get('elearning', None)
 
-            slides = Presentation.objects.filter(topic=topic,elearning__name=elearning).values_list('slide', flat=True)
+            slides = Presentation.objects.filter(topic=topic,elearning=elearning).values_list('slide', flat=True)
             context["media"] = MEDIA_URL
             context["slides"] = slides
             context["seen_slide"] = 1
