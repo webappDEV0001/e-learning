@@ -1,7 +1,12 @@
 {% load static %}
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<div class="alert alert-success toast">
+				 You can also use swipe the slides your finger
+			</div>
+
 <style>
+
 .mySlides {display:none;}
+
 img.mySlides.current {
     display: block !important;
     background-color: #000;
@@ -18,88 +23,7 @@ p.slide_counter {
     font-weight: bold;
 }
 
-.ppt_info_slide .mySlides {
-    height: 60vh;
-    object-fit: contain;
-}
-
-.full_screen .mySlides {
-    height: 100vh;
-}
-.ppt_info_slide {
-    border: 2px solid #646464;
-    height: 68vh;
-    position: relative;
-
-}
-
-.bottom_pagination {
-    background: #646464;
-    padding: 15px;
-    display: flex;
-    justify-content: center;
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-}
-
-.loader {
-	border: 8px solid #203864;
-    border-radius: 50%;
-    border-top: 8px solid #ffbf00;
-    width: 60px;
-    height: 60px;
-    -webkit-animation: spin 2s linear infinite;
-    animation: spin 2s linear infinite;
-    position: absolute;
-    top: 40%;
-    left: 47%;
-    z-index: -1;
-}
-
-
-@media (max-width:480px)
-{
- p.slide_counter {
-    font-size: 16px;
-    top: 55%;
-    }
-.bottom_pagination button {
-    font-size: 30px;
-    margin: 0 8px !important;
-    }
-.loader {
-    left: 43%;
-    }
-}
-
-/* Safari */
-@-webkit-keyframes spin {
-  0% { -webkit-transform: rotate(0deg); }
-  100% { -webkit-transform: rotate(360deg); }
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.toast{
-	color: white;
-    position: fixed;
-    z-index: 1;
-    margin: 50% auto;
-    width: 238px;
-    left: 0;
-    right: 0;
-    background-color: #000;
-    border-color: #000;
-}
-
 </style>
-<div class="alert alert-success toast">
-				 You can also use swipe the slides your finger
-			</div>
 <div class="row">
 	<div class="col-md-12 mx-auto text-center">
     <!--old view start	-->
@@ -132,7 +56,13 @@ p.slide_counter {
 	</div>
 </div>
 
+{% block page-js %}
+<script>
+	var SEEN_SLIDES = {{seen_slide}};
+</script>
 
+<script src="{% static 'js/elearn-slide.js' %}"></script>
+{% endblock page-js %}
 
 
  {% block subfooter %}
@@ -141,106 +71,5 @@ p.slide_counter {
 {% block footer %}
 {% endblock footer %}
 
-<script>
 
-
-function GoOutFullscreen() {
-	if(document.exitFullscreen)
-		document.exitFullscreen();
-	else if(document.mozCancelFullScreen)
-		document.mozCancelFullScreen();
-	else if(document.webkitExitFullscreen)
-		document.webkitExitFullscreen();
-	else if(document.msExitFullscreen)
-		document.msExitFullscreen();
-}
-
-
-function GoInFullscreen(elem) {
-	  elem = elem || document.documentElement;
-		if (elem.requestFullscreen) {
-		  elem.requestFullscreen();
-		} else if (elem.msRequestFullscreen) {
-		  elem.msRequestFullscreen();
-		} else if (elem.mozRequestFullScreen) {
-		  elem.mozRequestFullScreen();
-		} else if (elem.webkitRequestFullscreen) {
-		  elem.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
-		}
-
-}
-
-function GoOutFullscreen(elem)  {
-		if (document.exitFullscreen) {
-		  document.exitFullscreen();
-		} else if (document.msExitFullscreen) {
-		  document.msExitFullscreen();
-		} else if (document.mozCancelFullScreen) {
-		  document.mozCancelFullScreen();
-		} else if (document.webkitExitFullscreen) {
-		  document.webkitExitFullscreen();
-		}
-}
-
-var device;
-
-if(window.matchMedia("(max-width: 767px)").matches){
-           device="mobile";
-    } else{
-            device="desktop";
-}
-
-$("#full-screen").click(function(){
-	      check =$(".ppt_info_slide").hasClass("full_screen");
-	      if(check == true){
-	      	  	$(".ppt_info_slide").removeClass("full_screen");
-	      	  GoOutFullscreen();
-	      	   $("#full-screen").attr('data-original-title', 'View full Screen');
-	      	    $("#full-screen").attr('title', 'View full Screen');
-	      }
-	      else{
-	      	  $(".ppt_info_slide").addClass("full_screen");
-	      	  GoInFullscreen();
-	      	   $("#full-screen").attr('data-original-title', 'Exit full Screen');
-	      	   $("#full-screen").attr('title', 'Exit full Screen');
-
-    		}
-
-});
-
-var counter=0;
-
-document.onkeydown = checkKey;
-
-function checkKey(e) {
-
-    e = e || window.event;
-    event.preventDefault();
-    check = $("#1").hasClass("current");
-
-    if (e.keyCode == '37' && check == false) {
-       $(".previous-slide").click();
-    }
-    else if (e.keyCode == '39') {
-       $(".next-slide").click();
-    }
-
-}
-$("#"+{{seen_slide}}).addClass("current");
-if({{seen_slide}} == 1){
-	$(".previous-slide").css('display','none');
-}
-
-if ($(window).width() < 700)
-{
-	window.setTimeout(function () {
-    $(".alert-success").fadeTo(500, 0).slideUp(500, function () {
-        $(this).remove();
-    });
-}, 5000);
-}
-
-
-
-</script>
 

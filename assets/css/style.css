@@ -283,3 +283,92 @@ div#exam-screen {
 */
 }
 
+
+
+########## slides css ##############
+
+
+
+.ppt_info_slide .mySlides {
+    height: 60vh;
+    object-fit: contain;
+}
+
+.full_screen .mySlides {
+    height: 100vh;
+}
+.ppt_info_slide {
+    border: 2px solid #646464;
+    height: 68vh;
+    position: relative;
+
+}
+
+.bottom_pagination {
+    background: #646464;
+    padding: 15px;
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+.loader {
+	border: 8px solid #203864;
+    border-radius: 50%;
+    border-top: 8px solid #ffbf00;
+    width: 60px;
+    height: 60px;
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+    position: absolute;
+    top: 40%;
+    left: 47%;
+    z-index: -1;
+}
+
+
+@media (max-width:480px)
+{
+ p.slide_counter {
+    font-size: 16px;
+    top: 55%;
+    }
+
+.bottom_pagination button {
+    font-size: 30px;
+    margin: 0 8px !important;
+    }
+
+.loader {
+    left: 43%;
+    }
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.toast{
+	color: white;
+    position: fixed;
+    z-index: 1;
+    margin: 50% auto;
+    width: 238px;
+    left: 0;
+    right: 0;
+    background-color: #000;
+    border-color: #000;
+}
+
+######## end slides css ##########
+
+

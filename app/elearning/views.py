@@ -114,7 +114,7 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
                 slide_to_show = list(slides.all())
                 seen_slide = eus.seen_slides + 1
                 total_slides = slides.count()
-                print(seen_slide)
+                # print(seen_slide)
 
                 if eus.seen_slides == 0 :
                     previous_slide=0

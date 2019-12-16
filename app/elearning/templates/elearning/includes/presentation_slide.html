@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+
+<style>
+	#start-exam{
+		visibility : hidden;
+	}
+
+	#go_back {
+    	text-align: end;
+    	display:none;
+	}
+
+	.mySlides {display:none;}
+
+	img.mySlides.current {
+		display: block !important;
+		background-color: #000;
+	}
+
+	p.slide_counter {
+		position: absolute;
+		left: 25px;
+		color: #fff;
+		font-size: 25px;
+		top: 50%;
+		transform: translateY(-50%);
+		padding: 0;
+		font-weight: bold;
+	}
+
+	.empty_slides {
+		font-size: 26px;
+		font-weight: bold;
+		margin-top: 25%;
+	}
+
+</style>
+<div id="exam-screen"  class="container mt-5 mb-12">
+
+<div class="row">
+	<div class="col-md-12 mx-auto text-center">
+    <!--old view start	-->
+
+		{% if total_slides == 0 %}
+		<div class="empty_slides"> No Slides Found </div>
+		{% else %}
+		<div id="full_screen_img" class="ppt_info_slide">
+			<div class="loader"></div>
+
+			<!--<img src="{{ slide.image.url }}" />-->
+			{% for obj in slides %}
+				{% if forloop.counter == seen_slide %}
+				<img class="mySlides current" id="{{forloop.counter}}" src="{{media}}/{{obj}}" style="width:100%">
+				{% else %}
+		  		<img class="mySlides" id="{{forloop.counter}}" src="{{media}}/{{obj}}" style="width:100%">
+				{% endif %}
+
+
+			{% endfor %}
+
+			<div class="bottom_pagination">
+				<p class="slide_counter">Slide <span id="seen_slide">{{seen_slide}}</span> / {{total_slides}}</p>
+
+				<button id="previous_slide_pre" style="visibility:hidden" class="previous-slide-pre btn btn-lg btn-primary btn-block" data-toggle="tooltip" data-placement="left" title="Previous Slide">
+					<i class="fa fa-caret-left" aria-hidden="true"></i>
+				</button>
+<!--				<button class="w3-button w3-black w3-display-left" onclick="plusDivs(-1)">&#10094;</button>-->
+<!--		  		<button class="w3-button w3-black w3-display-right" onclick="plusDivs(1)">&#10095;</button>-->
+
+
+				<button id="start-exam-pre" class="next-slide-pre btn btn-lg btn-primary btn-block" data-toggle="tooltip" data-placement="right" title="Next Slide">
+					<i class="fa fa-caret-right" aria-hidden="true"></i>
+				</button>
+				<button id="full-screen"  data-toggle="tooltip" data-placement="left" title="View full screen" class="full-screen-mode btn btn-lg btn-primary btn-block" Z>
+					<img src="https://img.icons8.com/wired/64/000000/full-screen.png">
+				</button>
+			</div>
+		</div>
+		{% endif %}
+			<!--old view end -->
+		</div>
+	</div>
+	{% if total_slides == 0 %}
+	<div id="go_back" style="display:block; text-align:center"><a href="/list/#tab-presentation">Go Back to Presentation</a></div>
+	{% else %}
+	<div id="go_back" ><a href="/list/#tab-presentation">Go Back to Presentation</a></div>
+	{% endif %}
+</div>
+
+</div>
+{% endblock content %}
+
+ {% block subfooter %}
+{% endblock subfooter %}
+
+{% block footer %}
+{% endblock footer %}
+{% block page-js %}
+<script>
+var TOTAL_SLIDES = {{total_slides}};
+</script>
+<script src="{% static 'js/presentation-slide.js' %}"></script>
+{% endblock page-js %}

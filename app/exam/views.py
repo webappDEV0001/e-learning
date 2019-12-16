@@ -18,7 +18,7 @@ from exam.forms import ExamImportForm
 
 from question.models import Answer
 from .models import Exam
-from elearning.models import ELearningUserSession,ELearning
+from elearning.models import ELearningUserSession,ELearning,Presentation
 from question.models import Question, ExamUserSession, ExamUserAnswer
 from question.serializers import ExamUserSessionSerializer
 from django.contrib.auth.mixins import AccessMixin
@@ -202,6 +202,8 @@ class ExamListView(LoginRequiredMixin, ListView):
 
         context['material_files'] = self.get_material_list()
 
+        context['topic'] =  Presentation.objects.values_list('topic', flat=True).distinct()
+
         if self.request.user.is_demo:
             context['elearnings'] = ELearning.objects.filter(demo=True, exam_type="elearning")
         else:
@@ -324,6 +326,38 @@ class DownloadFileView(View):
                 response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
                 return response
         raise Http404
+
+
+class PresentationSlideShow(TemplateView):
+        template_name = 'elearning/includes/presentation_slide.html'
+
+        # def get(self, request, *args, **kwargs):
+        #     topic = request.GET.get('topic',None)
+        #     elearning = request.GET.get('elearning', None)
+        #
+        #     slides = Presentation.objects.filter(topic=topic).values_list('slide',flat=True)
+        #     media_root = MEDIA_ROOT
+        #     print(slides)
+        #     print("_"*20)
+        #     response = {'slides': slides,
+        #      'previous_slide': 0,
+        #      }
+        #     return super(TemplateView, self).render_to_response(response)
+
+        def get_context_data(self, **kwargs):
+            context = super(PresentationSlideShow, self).get_context_data()
+            topic = self.request.GET.get('topic', None)
+            elearning = self.request.GET.get('elearning', None)
+
+            slides = Presentation.objects.filter(topic=topic,elearning__name=elearning).values_list('slide', flat=True)
+            context["media"] = MEDIA_URL
+            context["slides"] = slides
+            context["seen_slide"] = 1
+            context["previous_slide"] = 0
+            context["total_slides"] = len(slides)
+
+            return context
+
 
 
 
