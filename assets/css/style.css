@@ -371,4 +371,13 @@ div#exam-screen {
 
 ######## end slides css ##########
 
+div#tab-presentation select {
+    padding: 5px;
+    border: 1px solid #28479e;
+    color: #000;
+    background-color: #ffff;
+}
 
+div#tab-presentation label {
+    font-size: 15px;
+}
