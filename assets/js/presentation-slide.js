@@ -1,17 +1,4 @@
-$("#previous_slide_pre").on('click', function () {
-				$("#go_back").css('display','none');
-				var id = $(".current").attr('id');
-				prev_slide_id = parseInt(id)-1;
-				if(prev_slide_id == 1){
-					$("#previous_slide_pre").css('visibility','hidden');
-				}
-				$("#start-exam-pre").css('visibility','visible');
-				$("#"+id).removeClass("current");
-				$("#"+prev_slide_id).addClass("current");
-				$("#seen_slide").text(prev_slide_id);
 
-
-		});
 
 
 $("#full-screen").click(function(){
@@ -60,15 +47,33 @@ function GoOutFullscreen(elem)  {
 
 	$("#start-exam-pre").on('click', function () {
 				var id = $(".current").attr('id');
-				next_slide_id = parseInt(id)+1;
-				if(next_slide_id == TOTAL_SLIDES ){
-					$("#start-exam-pre").css('visibility','hidden');
-					$("#go_back").css('display','block');
-				}
-				$("#previous_slide_pre").css('visibility','visible');
-				$("#"+id).removeClass("current");
-				$("#"+next_slide_id).addClass("current");
-				$("#seen_slide").text(next_slide_id);
+				if(id != TOTAL_SLIDES ){
+                    next_slide_id = parseInt(id)+1;
+                    if(next_slide_id == TOTAL_SLIDES ){
+                        $("#start-exam-pre").css('visibility','hidden');
+                        $("#go_back").css('display','block');
+                    }
+                    $("#previous_slide_pre").css('visibility','visible');
+                    $("#"+id).removeClass("current");
+                    $("#"+next_slide_id).addClass("current");
+                    $("#seen_slide").text(next_slide_id);
+                }
+
+		});
+
+	$("#previous_slide_pre").on('click', function () {
+				$("#go_back").css('display','none');
+				var id = $(".current").attr('id');
+				if(id != 1 ){
+                    prev_slide_id = parseInt(id)-1;
+                    if(prev_slide_id == 1){
+                        $("#previous_slide_pre").css('visibility','hidden');
+                    }
+                    $("#start-exam-pre").css('visibility','visible');
+                    $("#"+id).removeClass("current");
+                    $("#"+prev_slide_id).addClass("current");
+                    $("#seen_slide").text(prev_slide_id);
+                }
 
 		});
 

@@ -44,7 +44,7 @@ div#tab-presentation label {
 	      <a class="nav-link" data-toggle="tab" href="#tab-dm">Download Materials</a>
 	    </li>
 		<li id="Presentation" class="nav-item">
-	      <a class="nav-link" data-toggle="tab" href="#tab-presentation">Presentation</a>
+	      <a class="nav-link" data-toggle="tab" href="#tab-presentation">Presentations</a>
 	    </li>
 	    {% comment %} <li class="nav-item">
 	      <a class="nav-link" data-toggle="tab" href="#tab-el-ns">E-Learnings (no slides)</a>
@@ -184,10 +184,10 @@ div#tab-presentation label {
 						</div>
 						<div class="col-sm-2">
 							<select id="elearning" name="elearning">
+								<option value="----">-----</option>
 							  {% for elearning_name in presentation_elearnings %}
 							  <option value="{{elearning_name}}">{{elearning_name}}</option>
 								{% empty %}
-								<option value="----">-----</option>
 								{% endfor %}
 
 							</select>
@@ -201,10 +201,10 @@ div#tab-presentation label {
 							</div>
 							<div class="col-sm-2">
 							<select id="topic" name="topic">
-								{% for topic_name in topic %}
-							  <option value="{{topic_name}}">{{topic_name}}</option>
+								<option value="----" class="empty_opition">-----</option>
+								{% for topic_name,el_name in topic_dict.items %}
+							  <option class="{{el_name}} all_options" value="{{topic_name}}">{{topic_name}}</option>
 								{% empty %}
-								<option value="----">-----</option>
 								{% endfor %}
 							</select>
 							</div>

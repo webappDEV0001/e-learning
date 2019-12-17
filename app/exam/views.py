@@ -202,7 +202,8 @@ class ExamListView(LoginRequiredMixin, ListView):
 
         context['material_files'] = self.get_material_list()
 
-        context['topic'] =  Presentation.objects.values_list('topic', flat=True).distinct()
+        # context['topic'] =  Presentation.objects.values_list('topic', flat=True).distinct()
+        context['topic_dict'] = dict(Presentation.objects.values_list('topic','elearning').distinct())
         context['presentation_elearnings'] = Presentation.objects.values_list('elearning', flat=True).distinct()
 
 
