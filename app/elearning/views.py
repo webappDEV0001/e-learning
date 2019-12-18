@@ -47,8 +47,6 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
     serializer_class = ELearningUserSessionSerializer
     pk_url_kwarg = 'elearning.pk'
 
-
-
     def get_object(self):
         return self.get_queryset().filter(exam__pk=self.kwargs['pk']).first()
 
@@ -68,6 +66,7 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
         eus, crt = ELearningUserSession.objects.get_or_create(exam_id=pk, elearning_id=pk, user=request.user)
         get_object_or_404(Exam, pk=pk, exam_type__in=[Exam.ELEARNING])
         if not eus.started:
+
             response = {
                 'state': 'init',
                 'session': self.serializer_class(eus).data,
@@ -75,13 +74,13 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
             }
 
         elif eus.started and not eus.finished:
-
             # Repetitions Phase
             rep_date_from = timezone.now().date()
             repetition = ELearningRepetition.objects.filter(session=eus, repeat_after__lte=rep_date_from, answered=False)
 
             if repetition:
                 # repetition get correct answers count
+                ELearningCorrection.objects.filter(session=eus).delete()
                 correct_answered_count = ELearningRepetition.objects.filter(session=eus,
                                                                             question=repetition.first().question,
                                                                             answered=True).count()
@@ -93,8 +92,7 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
                     'question': repetition.first().question,
                     'phase': 'repetitions',
                     'left': repetition.count(),
-                    'show_answers': exam_obj.show_answers
-                    ,
+                    'show_answers': exam_obj.show_answers,
                     'correct_answered_count':correct_answered_count
                 }
                 response = {
@@ -114,7 +112,6 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
                 slide_to_show = list(slides.all())
                 seen_slide = eus.seen_slides + 1
                 total_slides = slides.count()
-                # print(seen_slide)
 
                 if eus.seen_slides == 0 :
                     previous_slide=0
@@ -132,16 +129,13 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
                 # response = {'state':'slide','previous_slide':previous_slide}
                 return Response(response)
 
-
             already_answered = list(ELearningUserAnswer.objects.filter(
                 session=eus, session_number=eus.active_session_number).values_list('question', flat=True))
 
             # Get new questions from active session
             questions = eus.active_session.questions.exclude(pk__in=already_answered)
-
             # If no new questions or questions limit reached
             if not questions or len(already_answered) >= eus.n_questions:
-
                 # Corrections Phase
                 correction = ELearningCorrection.objects.filter(session=eus)
                 if correction:
@@ -176,7 +170,6 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
 
             # Assign new question if not already assigned. Exclude already answered.
             if not eus.active_question:
-
                 # if eus.elearning.random_questions:
                 #     question = random.choice(questions)
                 # else:
@@ -193,7 +186,6 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
             exam_obj = Exam.objects.get(id=pk)
             # Clean all answered repetitions
             ELearningRepetition.objects.filter(session=eus, answered=True).delete()
-
             context = {
                 'object': eus,
                 'question': question,
@@ -210,7 +202,6 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
         elif eus.finished:
             # check if finish time is yesterday - if yes, level up session
             # if eus.finished.date() <= timezone.now().date():
-                # print('next session!')
             response = {
                 'state': 'end',
                 'session': self.serializer_class(eus).data,
@@ -277,7 +268,6 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
 
         #Update memory force
         if data.get('memory_force',None) == 'True':
-            # print(data.get('memory_force_value').lower(),'memory force value')
             eus.memory_force = data.get('memory_force_value').lower()
             eus.save()
             return Response("Value Updated Successfully")
@@ -336,18 +326,19 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
             return Response(status=400)
 
         if phase in ['new_questions', 'repetitions']:
-            eua = ELearningUserAnswer.objects.create(
-                session=eus,
-                session_number=eus.active_session_number,
-                question_id=question_id,
-                answer=answer,
-                user_id=request.user.id
-            )
+            if phase == 'new_questions':
+                eua = ELearningUserAnswer.objects.create(
+                    session=eus,
+                    session_number=eus.active_session_number,
+                    question_id=question_id,
+                    answer=answer,
+                    user_id=request.user.id
+                )
             # Mark old repetition after answer
             if phase == 'repetitions':
                 ELearningRepetition.objects.filter(session=eus, question_id=question_id).update(answered=True)
 
-            if eua.answer.correct:
+            if answer.correct:
                 self.create_repetition(eus, request.user.id, question_id)
                 correct = True
             else:
@@ -515,7 +506,6 @@ class AdminOrStaffLoginRequiredMixin(AccessMixin):
             return self.handle_no_permission()
 
         return super().dispatch(request, *args, **kwargs)
-
 
 class ElearningImportView(AdminOrStaffLoginRequiredMixin, FormView):
     """
