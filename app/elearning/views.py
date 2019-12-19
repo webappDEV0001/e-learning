@@ -65,6 +65,7 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
         # get_object_or_404(Exam, pk=pk, exam_type__in=[Exam.ELEARNING, Exam.ELEARNING_NS])
         eus, crt = ELearningUserSession.objects.get_or_create(exam_id=pk, elearning_id=pk, user=request.user)
         get_object_or_404(Exam, pk=pk, exam_type__in=[Exam.ELEARNING])
+        print(eus,eus.active_session_number)
         if not eus.started:
 
             response = {
@@ -76,11 +77,14 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
         elif eus.started and not eus.finished:
             # Repetitions Phase
             rep_date_from = timezone.now().date()
+            print(rep_date_from,"rep_date_from")
             repetition = ELearningRepetition.objects.filter(session=eus, repeat_after__lte=rep_date_from, answered=False)
+            print("repition",repetition)
 
             if repetition:
                 # repetition get correct answers count
                 ELearningCorrection.objects.filter(session=eus).delete()
+                print("Correction deleted")
                 correct_answered_count = ELearningRepetition.objects.filter(session=eus,
                                                                             question=repetition.first().question,
                                                                             answered=True).count()
@@ -223,7 +227,7 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
         return Response(response)
 
     @staticmethod
-    def create_repetition(session, user_id, question_id):
+    def create_repetition(session, user_id, question_id,answered=False):
         if session.memory_force == 'low':
             interval_dict = {
                 0: 1,
@@ -249,12 +253,22 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
                 4: 60
             }
 
-        correctly_answered = ELearningUserAnswer.objects.filter(
-            user_id=user_id, question_id=question_id, answer__correct=True).count()
+        # correctly_answered = ELearningUserAnswer.objects.filter(
+        #     user_id=user_id, question_id=question_id, answer__correct=True).count()
+        correctly_answered = ELearningRepetition.objects.filter(session=session,
+                                                                    question__id=question_id,
+                                                                    answered=True).count()
+        if correctly_answered == 0:
+            correctly_answered = ELearningUserAnswer.objects.filter(
+                    user_id=user_id, question_id=question_id, answer__correct=True).count()
         interval = interval_dict[min(correctly_answered, max(0, 4))]
         next_rep_date = (timezone.now() + datetime.timedelta(days=interval)).date()
-        # Create repetition
-        ELearningRepetition.objects.create(session=session, repeat_after=next_rep_date, question_id=question_id)
+        if answered == True:
+            ELearningRepetition.objects.create(session=session, repeat_after=next_rep_date, question_id=question_id,
+                                               answered=True)
+        else:
+            # Create repetition
+            ELearningRepetition.objects.create(session=session, repeat_after=next_rep_date, question_id=question_id)
 
     @staticmethod
     def create_correction(session, question_id):
@@ -337,13 +351,19 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
             # Mark old repetition after answer
             if phase == 'repetitions':
                 ELearningRepetition.objects.filter(session=eus, question_id=question_id).update(answered=True)
+                if answer.correct:
+                    self.create_repetition(eus, request.user.id, question_id,True)
+                    correct = True
+                else:
+                    self.create_repetition(eus, request.user.id, question_id,False)
 
-            if answer.correct:
-                self.create_repetition(eus, request.user.id, question_id)
-                correct = True
-            else:
-                self.create_repetition(eus, request.user.id, question_id)
-                self.create_correction(eus, question_id)
+            if phase == 'new_questions':
+                if eua.answer.correct:
+                    self.create_repetition(eus, request.user.id, question_id)
+                    correct = True
+                else:
+                    self.create_repetition(eus, request.user.id, question_id)
+                    self.create_correction(eus, question_id)
 
         elif phase == 'corrections':
             correction = ELearningCorrection.objects.get(session=eus, question=answer.question)
