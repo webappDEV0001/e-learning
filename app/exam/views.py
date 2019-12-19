@@ -303,7 +303,7 @@ class ExamImportView(AdminOrStaffLoginRequiredMixin, FormView):
                         Answer.objects.create(question=q, text=wrong_2)
                         Answer.objects.create(question=q, text=wrong_3)
             except:
-                print("Skip row" + i)
+                print("Skip row")
         messages.info(self.request, "your exam data imported successfully.")
         return FormView.form_valid(self, form)
 
