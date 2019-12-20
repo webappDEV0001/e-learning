@@ -6,7 +6,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from users.models import User
 from exam.models import Exam
-
+from dateutil import tz
 
 class Question(models.Model):
 	exam = models.ForeignKey(Exam, on_delete=models.DO_NOTHING, related_name='questions')
@@ -45,8 +45,10 @@ class ExamUserSession(models.Model):
 
 	@property
 	def stop_time(self):
+
+		user_timezone = tz.gettz(self.user.timezone)
 		if self.started and self.exam.time_limit:
-			return self.started + datetime.timedelta(seconds=self.exam.time_limit)
+			return self.started.replace(tzinfo=user_timezone) + timezone.timedelta(seconds=self.exam.time_limit)
 		return None
 
 	@property
