@@ -127,9 +127,9 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
                 total_slides = slides.count()
 
                 if eus.seen_slides == 0 :
-                    previous_slide=0
+                    previous_slide = 0
                 else:
-                    previous_slide=1
+                    previous_slide = 1
 
                 response = {
                     'state': 'slide',
@@ -178,7 +178,8 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
                     response = {
                         'state': 'end',
                         'session': self.serializer_class(eus).data,
-                        'content': render_to_string('elearning/includes/_finished.html', {'next_session': next_session, 'obj': eus.elearning})
+                        'content': render_to_string('elearning/includes/_finished.html', {'next_session': next_session,
+                                                                                          'obj': eus.elearning})
                     }
                 return Response(response)
 
@@ -441,7 +442,6 @@ class DownloadCertificateView(View):
 
         return file_path
 
-
     def get_temp_path(self, filename_initials):
         self.confirm_dir_exists(TEMP_DIR)
 
@@ -544,7 +544,7 @@ class ElearningImportView(AdminOrStaffLoginRequiredMixin, FormView):
         session_list = []
         check_dict2 = {}
         session_list2 = []
-        previous_session= 0
+        previous_session = 0
         previous_elearning = 0
 
         for i in range(len(df)):
