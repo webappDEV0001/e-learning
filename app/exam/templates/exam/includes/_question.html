@@ -17,6 +17,11 @@
 				{% endfor %}
 			</div>
 		</div>
+		<div class="row loader_row" style="display:none;">
+			<div class="col">
+				<div class="loader"></div>
+			</div>
+		</div>
 	</div>
 	<div class="col-md-5">
 		{% if question.exam.time_limit %}
@@ -26,7 +31,7 @@
 		{% endif %}
 		<div id="explanation" class="d-none">
 			<h6>Explanation:</h6>
-			<pre id="explanation-text" class="text-break"></div>
+			<pre id="explanation-text" class="text-break"></pre></div>
 		</div>
 </div>
 
