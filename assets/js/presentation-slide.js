@@ -51,7 +51,7 @@ function GoOutFullscreen(elem)  {
                     next_slide_id = parseInt(id)+1;
                     if(next_slide_id == TOTAL_SLIDES ){
                         $("#start-exam-pre").css('visibility','hidden');
-                        $("#go_back").css('display','block');
+                      //  $("#go_back").css('display','block');
                     }
                     $("#previous_slide_pre").css('visibility','visible');
                     $("#"+id).removeClass("current");
@@ -62,7 +62,7 @@ function GoOutFullscreen(elem)  {
 		});
 
 	$("#previous_slide_pre").on('click', function () {
-				$("#go_back").css('display','none');
+			//	$("#go_back").css('display','none');
 				var id = $(".current").attr('id');
 				if(id != 1 ){
                     prev_slide_id = parseInt(id)-1;
