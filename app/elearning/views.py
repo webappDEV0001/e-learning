@@ -1,7 +1,7 @@
 import datetime
 import os
 import time
-
+from dateutil import tz
 import pandas
 import pdfkit
 from django.contrib import messages
@@ -78,9 +78,9 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
 
 
             # Repetitions Phase
-            rep_date_from = timezone.now().date()
+            user_timezone = tz.gettz(request.user.timezone)
+            rep_date_from = timezone.now().astimezone(user_timezone).date()
             repetition = ELearningRepetition.objects.filter(session=eus, repeat_after__lte=rep_date_from, answered=False)
-
 
             if repetition:
                 # repetition get correct answers count
@@ -238,7 +238,7 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
         return Response(response)
 
     @staticmethod
-    def create_repetition(session, user_id, question_id,answered=False):
+    def create_repetition(session, user, question_id,answered=False):
         if session.memory_force == 'low':
             interval_dict = {
                 0: 1,
@@ -265,11 +265,11 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
             }
 
         correctly_answered = ELearningUserAnswer.objects.filter(
-            user_id=user_id, question_id=question_id, answer__correct=True).count()
-
+            user_id=user.id, question_id=question_id, answer__correct=True).count()
         interval = interval_dict[min(correctly_answered, max(0, 4))]
-        next_rep_date = (timezone.now() + datetime.timedelta(days=interval)).date()
 
+        user_timezone = tz.gettz(user.timezone)
+        next_rep_date = (timezone.now().astimezone(user_timezone) + datetime.timedelta(days=interval)).date()
         # Create repetition
         ELearningRepetition.objects.create(session=session, repeat_after=next_rep_date, question_id=question_id)
 
@@ -356,10 +356,10 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
                 ELearningRepetition.objects.filter(session=eus, question_id=question_id).update(answered=True)
 
             if eua.answer.correct:
-                    self.create_repetition(eus, request.user.id, question_id)
+                    self.create_repetition(eus, request.user, question_id)
                     correct = True
             else:
-                    self.create_repetition(eus, request.user.id, question_id)
+                    self.create_repetition(eus, request.user, question_id)
                     self.create_correction(eus, question_id)
 
         elif phase == 'corrections':
