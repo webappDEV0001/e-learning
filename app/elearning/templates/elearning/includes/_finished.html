@@ -5,7 +5,7 @@
 		<p>You have successfully finished this session. You can start new session from here or check your e-learning progress.</p>
 		<br/>
 		{% if next_session %}
-		<a href="{% url 'elearning' obj.pk obj.slug %}" id="check-results" class="btn btn-lg btn-primary btn-block">Go to next session</a>
+		<a href="{% url 'elearning' obj.pk obj.slug %}" id="check-results-session" class="btn btn-lg btn-primary btn-block">Go to next session</a>
 		{% endif %}
 		<a href="{% url 'elearning-progress' %}" id="check-results" class="btn btn-lg btn-primary btn-block">Check progress</a>
 	</div>

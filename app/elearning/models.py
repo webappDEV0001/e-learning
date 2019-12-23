@@ -147,6 +147,7 @@ class ELearningUserAnswer(models.Model):
 	question = models.ForeignKey(Question, on_delete=models.CASCADE)
 	answer = models.ForeignKey(Answer, on_delete=models.CASCADE)
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
+	phase = models.CharField(max_length=254, default="new_questions")
 
 
 class ELearningRepetition(models.Model):

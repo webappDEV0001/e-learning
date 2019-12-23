@@ -65,7 +65,7 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
         # get_object_or_404(Exam, pk=pk, exam_type__in=[Exam.ELEARNING, Exam.ELEARNING_NS])
         eus, crt = ELearningUserSession.objects.get_or_create(exam_id=pk, elearning_id=pk, user=request.user)
         get_object_or_404(Exam, pk=pk, exam_type__in=[Exam.ELEARNING])
-        print(eus,eus.active_session_number)
+
         if not eus.started:
 
             response = {
@@ -75,22 +75,32 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
             }
 
         elif eus.started and not eus.finished:
+
+
             # Repetitions Phase
             rep_date_from = timezone.now().date()
-            print(rep_date_from,"rep_date_from")
             repetition = ELearningRepetition.objects.filter(session=eus, repeat_after__lte=rep_date_from, answered=False)
-            print("repition",repetition)
+
 
             if repetition:
                 # repetition get correct answers count
+
                 ELearningCorrection.objects.filter(session=eus).delete()
-                print("Correction deleted")
+
                 correct_answered_count = ELearningRepetition.objects.filter(session=eus,
                                                                             question=repetition.first().question,
                                                                             answered=True).count()
                 eus.phase = 1
                 eus.save()
                 exam_obj = Exam.objects.get(id=pk)
+
+                next_session = ELearningSession.objects.filter(
+                        elearning=eus.exam.elearning, number=int(eus.active_session_number + 1)).first()
+                if next_session:
+                        eus.active_session = next_session
+                        eus.seen_slides = 0
+                        eus.save()
+
                 context = {
                     'object': eus,
                     'question': repetition.first().question,
@@ -111,16 +121,15 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
             eus.save()
             slides = eus.active_session.slides
 
-
             if eus.seen_slides < slides.count():
                 slide_to_show = list(slides.all())
                 seen_slide = eus.seen_slides + 1
                 total_slides = slides.count()
 
                 if eus.seen_slides == 0 :
-                    previous_slide=0
+                    previous_slide = 0
                 else:
-                    previous_slide=1
+                    previous_slide = 1
 
                 response = {
                     'state': 'slide',
@@ -134,7 +143,7 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
                 return Response(response)
 
             already_answered = list(ELearningUserAnswer.objects.filter(
-                session=eus, session_number=eus.active_session_number).values_list('question', flat=True))
+                session=eus, session_number=eus.active_session_number,phase="new_questions").values_list('question', flat=True))
 
             # Get new questions from active session
             questions = eus.active_session.questions.exclude(pk__in=already_answered)
@@ -142,7 +151,8 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
             if not questions or len(already_answered) >= eus.n_questions:
                 # Corrections Phase
                 correction = ELearningCorrection.objects.filter(session=eus)
-                if correction:
+
+                if correction :
                     eus.phase = 0
                     eus.save()
                     exam_obj = Exam.objects.get(id=pk)
@@ -168,7 +178,8 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
                     response = {
                         'state': 'end',
                         'session': self.serializer_class(eus).data,
-                        'content': render_to_string('elearning/includes/_finished.html', {'next_session': next_session, 'obj': eus.elearning})
+                        'content': render_to_string('elearning/includes/_finished.html', {'next_session': next_session,
+                                                                                          'obj': eus.elearning})
                     }
                 return Response(response)
 
@@ -253,22 +264,14 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
                 4: 60
             }
 
-        # correctly_answered = ELearningUserAnswer.objects.filter(
-        #     user_id=user_id, question_id=question_id, answer__correct=True).count()
-        correctly_answered = ELearningRepetition.objects.filter(session=session,
-                                                                    question__id=question_id,
-                                                                    answered=True).count()
-        if correctly_answered == 0:
-            correctly_answered = ELearningUserAnswer.objects.filter(
-                    user_id=user_id, question_id=question_id, answer__correct=True).count()
+        correctly_answered = ELearningUserAnswer.objects.filter(
+            user_id=user_id, question_id=question_id, answer__correct=True).count()
+
         interval = interval_dict[min(correctly_answered, max(0, 4))]
         next_rep_date = (timezone.now() + datetime.timedelta(days=interval)).date()
-        if answered == True:
-            ELearningRepetition.objects.create(session=session, repeat_after=next_rep_date, question_id=question_id,
-                                               answered=True)
-        else:
-            # Create repetition
-            ELearningRepetition.objects.create(session=session, repeat_after=next_rep_date, question_id=question_id)
+
+        # Create repetition
+        ELearningRepetition.objects.create(session=session, repeat_after=next_rep_date, question_id=question_id)
 
     @staticmethod
     def create_correction(session, question_id):
@@ -292,7 +295,7 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
             eus.save()
             slides = eus.active_session.slides
             slide_to_show = list(slides.all())[eus.seen_slides:]
-            total_count= len(slide_to_show)
+            total_count = len(slide_to_show)
             if total_count == 0:
                 response = {
                     'state': 'start',
@@ -336,32 +339,26 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
         eua = ELearningUserAnswer.objects.filter(session=eus, question_id=question_id).first()
 
         # If already answered or finished - return error
-        if eua and phase == 'new_questions':
+        if eua and phase == 's':
             return Response(status=400)
 
         if phase in ['new_questions', 'repetitions']:
-            if phase == 'new_questions':
-                eua = ELearningUserAnswer.objects.create(
+            eua = ELearningUserAnswer.objects.create(
                     session=eus,
                     session_number=eus.active_session_number,
                     question_id=question_id,
                     answer=answer,
-                    user_id=request.user.id
+                    user_id=request.user.id,
+                    phase=phase
                 )
             # Mark old repetition after answer
             if phase == 'repetitions':
                 ELearningRepetition.objects.filter(session=eus, question_id=question_id).update(answered=True)
-                if answer.correct:
-                    self.create_repetition(eus, request.user.id, question_id,True)
-                    correct = True
-                else:
-                    self.create_repetition(eus, request.user.id, question_id,False)
 
-            if phase == 'new_questions':
-                if eua.answer.correct:
+            if eua.answer.correct:
                     self.create_repetition(eus, request.user.id, question_id)
                     correct = True
-                else:
+            else:
                     self.create_repetition(eus, request.user.id, question_id)
                     self.create_correction(eus, question_id)
 
@@ -444,7 +441,6 @@ class DownloadCertificateView(View):
                 f.write('')
 
         return file_path
-
 
     def get_temp_path(self, filename_initials):
         self.confirm_dir_exists(TEMP_DIR)
@@ -544,11 +540,11 @@ class ElearningImportView(AdminOrStaffLoginRequiredMixin, FormView):
         csv_file = form.cleaned_data.get("csv_file")
         df = pandas.read_excel(csv_file)
         df.dropna(how="all", inplace=True)
-        check_dict= {}
-        session_list=[]
+        check_dict = {}
+        session_list = []
         check_dict2 = {}
         session_list2 = []
-        previous_session= 0
+        previous_session = 0
         previous_elearning = 0
 
         for i in range(len(df)):
