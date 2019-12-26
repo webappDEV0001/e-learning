@@ -100,7 +100,7 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
             if repetition:
                 # repetition get correct answers count
 
-                ELearningCorrection.objects.filter(session=eus).delete()
+
 
                 correct_answered_count = ELearningRepetition.objects.filter(session=eus,
                                                                             question=repetition.first().question,
@@ -112,13 +112,21 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
                 already_answered_repetition = ELearningRepetition.objects.filter(session=eus, repeat_after__lte=rep_date_from,
                                                                 answered=True).count()
 
-                if already_answered_repetition == 0:
-                    next_session = ELearningSession.objects.filter(
-                            elearning=eus.exam.elearning, number=int(eus.active_session_number + 1)).first()
-                    if next_session:
-                            eus.active_session = next_session
-                            eus.seen_slides = 0
-                            eus.save()
+                already_answered = list(ELearningUserAnswer.objects.filter(
+                    session=eus, session_number=eus.active_session_number, phase="new_questions").values_list(
+                    'question', flat=True))
+
+                new_questions_left_current_session = eus.active_session.questions.exclude(pk__in=already_answered)
+
+                if not new_questions_left_current_session or len(already_answered) >= eus.n_questions:
+                    if already_answered_repetition == 0:
+                        ELearningCorrection.objects.filter(session=eus).delete()
+                        next_session = ELearningSession.objects.filter(
+                                elearning=eus.exam.elearning, number=int(eus.active_session_number + 1)).first()
+                        if next_session:
+                                eus.active_session = next_session
+                                eus.seen_slides = 0
+                                eus.save()
 
                     # print("session updated to",eus.active_session_number)
 
