@@ -36,6 +36,21 @@ from question.serializers import ExamUserSessionSerializer, ELearningUserSession
 from config.common import MEDIA_ROOT
 
 
+def repitiion_date_change(request):
+    user_session = request.GET.get('user_session','')
+    back_days_count = request.GET.get('back_days_count',0)
+    repitition_objs = ELearningRepetition.objects.filter(session=user_session)
+
+    eus = ELearningUserSession.objects.get(id=user_session)
+    eus.started = eus.started - datetime.timedelta(days=int(back_days_count))
+    eus.save()
+
+    for repitition in repitition_objs:
+        repitition.repeat_after = repitition.repeat_after - datetime.timedelta(days=int(back_days_count))
+        repitition.save()
+    return HttpResponse("Success")
+
+
 class ELearningView(DetailView):
     model = ELearning
     template_name = 'exam/elearning_detail.html'
@@ -94,12 +109,18 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
                 eus.save()
                 exam_obj = Exam.objects.get(id=pk)
 
-                next_session = ELearningSession.objects.filter(
-                        elearning=eus.exam.elearning, number=int(eus.active_session_number + 1)).first()
-                if next_session:
-                        eus.active_session = next_session
-                        eus.seen_slides = 0
-                        eus.save()
+                already_answered_repetition = ELearningRepetition.objects.filter(session=eus, repeat_after__lte=rep_date_from,
+                                                                answered=True).count()
+
+                if already_answered_repetition == 0:
+                    next_session = ELearningSession.objects.filter(
+                            elearning=eus.exam.elearning, number=int(eus.active_session_number + 1)).first()
+                    if next_session:
+                            eus.active_session = next_session
+                            eus.seen_slides = 0
+                            eus.save()
+
+                    # print("session updated to",eus.active_session_number)
 
                 context = {
                     'object': eus,
@@ -120,6 +141,8 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
             eus.phase = 3
             eus.save()
             slides = eus.active_session.slides
+
+            # print("eus active session",eus.active_session_number)
 
             if eus.seen_slides < slides.count():
                 slide_to_show = list(slides.all())

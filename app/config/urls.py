@@ -7,6 +7,7 @@ from exam.views import ExamListView, about, contact, careers, solutions, OurBase
 from users.views import set_timezone
 from users.views import ViewContact
 from users.views import DisplayPDFView
+from elearning import views as el_view
 
 dummy_view = TemplateView.as_view(template_name='index.html')
 
@@ -19,6 +20,8 @@ urlpatterns = [
     path('contact/', ViewContact.as_view(), name='contact'),
     path('terms-condition/', DisplayPDFView.as_view(), name='terms-condition'),
 
+    # Testing Url
+    path('change_repitition_date/', el_view.repitiion_date_change, name='change_repitition_date'),
 
     path('set_timezone/', set_timezone, name='set_timezone'),
 
