@@ -44,9 +44,9 @@
 	</div>
 
 	<div id="forget_class" class="col-sm-5">
-		{% if correct_answered_count >= 2 %}
-		<button type="button" class="Forget-question btn btn-primary" data-toggle="modal" data-target="#popUpModal" data-whatever="@getbootstrap">Forget this Question Forever</button>
-		{% endif %}
+
+		<button type="button" style="display:none;{% if correct_answered_count >= 2 %}display:block;{% endif %}" class="Forget-question btn btn-primary" data-toggle="modal" data-target="#popUpModal" data-whatever="@getbootstrap">Forget this Question Forever</button>
+
 	</div>
 
 	<div class="col-md-5">

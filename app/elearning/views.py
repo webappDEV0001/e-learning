@@ -91,7 +91,6 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
 
         elif eus.started and not eus.finished:
 
-
             # Repetitions Phase
             user_timezone = tz.gettz(request.user.timezone)
             rep_date_from = timezone.now().astimezone(user_timezone).date()
@@ -100,11 +99,13 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
             if repetition:
                 # repetition get correct answers count
 
+                #Delete corrections from previous session
+                ELearningCorrection.objects.filter(session=eus).delete()
+
+                correct_answered_count = ELearningUserAnswer.objects.filter(session=eus,
+                     question=repetition.first().question, answer__correct=True).count()
 
 
-                correct_answered_count = ELearningRepetition.objects.filter(session=eus,
-                                                                            question=repetition.first().question,
-                                                                            answered=True).count()
                 eus.phase = 1
                 eus.save()
                 exam_obj = Exam.objects.get(id=pk)
@@ -222,7 +223,6 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
                 question = questions.first()
                 eus.active_question = question
                 eus.save()
-
             else:
                 question = eus.active_question
 
@@ -313,6 +313,7 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
 
         data = request.data
         eus = self.get_object()
+        correct_answered_count = 0
 
         #Update memory force
         if data.get('memory_force',None) == 'True':
@@ -386,6 +387,12 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
             if phase == 'repetitions':
                 ELearningRepetition.objects.filter(session=eus, question_id=question_id).update(answered=True)
 
+                correct_answered_count = ELearningUserAnswer.objects.filter(session=eus,
+                                                                            question__id=question_id,
+                                                                            answer__correct=True).count()
+
+                print("correct_answered_count repititions", correct_answered_count)
+
             if eua.answer.correct:
                     self.create_repetition(eus, request.user, question_id)
                     correct = True
@@ -404,15 +411,19 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
                 correction.save()
                 ELearningCorrection.objects.get(pk=old_pk).delete()
 
+
+
         if correct:
             response = {
                 'correct': 'true',
-                'content': render_to_string('exam/includes/_correct.html')
+                'content': render_to_string('exam/includes/_correct.html'),
+                'correct_answered_count':correct_answered_count
             }
         else:
             response = {
                 'correct': 'false',
-                'content': render_to_string('exam/includes/_false.html')
+                'content': render_to_string('exam/includes/_false.html'),
+                'correct_answered_count':correct_answered_count
             }
 
         if answer.question.explanation:
@@ -541,7 +552,6 @@ class DownloadCertificateView(View):
         user_session.elearning.save()
         return self.render_to_pdf_response(context, self.template_name, kwargs.get('slug'))
 
-
 class AdminOrStaffLoginRequiredMixin(AccessMixin):
     """Verify that the current user is authenticated and is staff or admin"""
 
@@ -626,7 +636,7 @@ class ElearningImportView(AdminOrStaffLoginRequiredMixin, FormView):
                     slide_obj,crt = Slide.objects.get_or_create(elearning=elearn, image=q_figure.strip())
 
                 #Questions object creating....
-                if q_text!= "n" and correct_answer_text!= "n" and str(q_text)!= "nan" and q_text!= " ":
+                if q_text != "n" and correct_answer_text!= "n" and str(q_text)!= "nan" and q_text!= " ":
                     q, crt = Question.objects.get_or_create(exam=elearn, text=q_text)
                     if crt:
                         q.explanation = q_explanation
