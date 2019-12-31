@@ -23,9 +23,8 @@ $(function() {
 
 		var endTime = Date.parse(new Date(end_time));
 		var now = Date.parse(new Date(new Date().toUTCString().substr(0, 25)))
-
 		timeLeft = (endTime - now) / 1000;
-		if (timeLeft == -1) {
+		if (timeLeft <= -1) {
 			manageUserSession("GET");
 			return "";
 		}
