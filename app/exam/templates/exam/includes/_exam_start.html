@@ -1,17 +1,33 @@
 {% load static %}
+
+<style>
+input#nick_name {
+		width: 36%;
+		border: 1px solid #203863;
+		height: 40px;
+		padding: 10px;
+    	color: #203863;
+}
+</style>
 <div class="row">
 	<div class="mt-8 col-md-8 mx-auto text-center">
 		<h2>You're about to start an exam</h2>
 		<h4>{{ object }}</h4>
-		<br/>
+
+		<p style="font-weight:bold;">Please type a nickname (for example "candidate 69"), how you want to save the results for this candidate.
+			Due to data protection laws, please do <span class="text-danger">not</span> use
+		the real names and surnames.</p>
+		<input type="text" id="nick_name" name="nick_name">
 		{% if object.time_limit %}
 		<p>Time limit for this exam is set to {{ object.time_limit }} seconds.</p>
 		{% endif %}
 		<h5>Click on button below to start</h5>
 		<br/>
-		<button id="start-exam" class="btn btn-lg btn-primary btn-block">Start exam</button>
+		<button id="start-exam-only" class="btn btn-lg btn-primary btn-block">Start exam</button>
 	</div>
 </div>
+
+
 
  {% block subfooter %}
 {% endblock subfooter %}

@@ -42,6 +42,7 @@ class ExamUserSession(models.Model):
 	started = models.DateTimeField(blank=True, null=True)
 	finished = models.DateTimeField(blank=True, null=True)
 	active_question = models.ForeignKey(Question, null=True, on_delete=models.CASCADE)
+	nick_name = models.CharField(max_length=255,blank=True,null=True)
 
 	@property
 	def stop_time(self):

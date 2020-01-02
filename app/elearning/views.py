@@ -105,7 +105,6 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
                 correct_answered_count = ELearningUserAnswer.objects.filter(session=eus,
                      question=repetition.first().question, answer__correct=True).count()
 
-
                 eus.phase = 1
                 eus.save()
                 exam_obj = Exam.objects.get(id=pk)
@@ -129,8 +128,6 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
                                 eus.seen_slides = 0
                                 eus.save()
 
-                    # print("session updated to",eus.active_session_number)
-
                 context = {
                     'object': eus,
                     'question': repetition.first().question,
@@ -151,7 +148,6 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
             eus.save()
             slides = eus.active_session.slides
 
-            # print("eus active session",eus.active_session_number)
 
             if eus.seen_slides < slides.count():
                 slide_to_show = list(slides.all())
@@ -391,7 +387,7 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
                                                                             question__id=question_id,
                                                                             answer__correct=True).count()
 
-                print("correct_answered_count repititions", correct_answered_count)
+                # print("correct_answered_count repititions", correct_answered_count)
 
             if eua.answer.correct:
                     self.create_repetition(eus, request.user, question_id)
@@ -403,6 +399,7 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
         elif phase == 'corrections':
             correction = ELearningCorrection.objects.get(session=eus, question=answer.question)
             old_pk = correction.pk
+
             if answer.correct:
                 correction.delete()
                 correct = True
@@ -410,8 +407,6 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
                 correction.pk = None
                 correction.save()
                 ELearningCorrection.objects.get(pk=old_pk).delete()
-
-
 
         if correct:
             response = {
@@ -432,7 +427,6 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
         eus.active_question = None
         eus.save()
         return Response(response)
-
 
 class ELearningProgressListView(LoginRequiredMixin, ListView):
     model = ELearningUserSession

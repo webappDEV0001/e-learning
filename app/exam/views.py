@@ -1,9 +1,9 @@
 import random
 
 from django.contrib import messages
-from django.http import HttpResponse, Http404
-from django.shortcuts import render
-from django.urls import reverse_lazy
+from django.http import HttpResponse, Http404, HttpResponseRedirect
+from django.shortcuts import render, redirect
+from django.urls import reverse_lazy, reverse
 from django.views import View
 from django.views.generic import TemplateView, FormView
 from django.views.generic.detail import DetailView
@@ -18,28 +18,34 @@ from exam.forms import ExamImportForm
 
 from question.models import Answer
 from .models import Exam
-from elearning.models import ELearningUserSession,ELearning,Presentation
+from elearning.models import ELearningUserSession, ELearning, Presentation
 from question.models import Question, ExamUserSession, ExamUserAnswer
 from question.serializers import ExamUserSessionSerializer
 from django.contrib.auth.mixins import AccessMixin
 import os
 from config.common import *
+from django.contrib.auth import authenticate
 
 
 def about(request):
     return render(request, 'about.html')
 
+
 def solutions(request):
     return render(request, 'solutions.html')
+
 
 def contact(request):
     return render(request, 'contact.html')
 
+
 def careers(request):
     return render(request, 'careers.html')
 
+
 class OurBaseView(TemplateView):
     template_name = "exam/ifrs-17-e-learning.html"
+
 
 class ExamView(DetailView):
     model = Exam
@@ -87,8 +93,8 @@ class ExamUserSessionViewSet(viewsets.GenericViewSet):
             # Assign new question if not already assigned. Exclude already answered.
             if not eus.active_question:
 
-                already_answered = list(ExamUserAnswer.objects.filter(session=eus)\
-                    .values_list('question', flat=True))
+                already_answered = list(ExamUserAnswer.objects.filter(session=eus) \
+                                        .values_list('question', flat=True))
 
                 questions = Question.objects.filter(exam=eus.exam).exclude(pk__in=already_answered)
 
@@ -124,7 +130,11 @@ class ExamUserSessionViewSet(viewsets.GenericViewSet):
     def partial_update(self, request, pk=None):
         """ PATCH: Start exam """
         exam = get_object_or_404(Exam, pk=pk)
-        eus, crt = ExamUserSession.objects.get_or_create(exam=exam, user=request.user, finished=None)
+        data = request.data
+        nick_name = data.get('nick_name', None)
+
+        eus, crt = ExamUserSession.objects.get_or_create(exam=exam, user=request.user, nick_name=nick_name,
+                                                         finished=None)
         if crt:
             eus.start_test()
             response = {
@@ -175,7 +185,6 @@ class ExamListView(LoginRequiredMixin, ListView):
     model = Exam
     template_name = 'exam/exam_list.html'
 
-
     def get_queryset(self):
         if self.request.user.is_demo:
             qs = super(ExamListView, self).get_queryset().filter(demo=True)
@@ -185,7 +194,7 @@ class ExamListView(LoginRequiredMixin, ListView):
 
     def get_material_list(self):
 
-        path = os.path.join(STATICFILES_DIRS[0],"materials")  # insert the path to your directory
+        path = os.path.join(STATICFILES_DIRS[0], "materials")  # insert the path to your directory
         files = os.listdir(path)
         return files
 
@@ -193,19 +202,18 @@ class ExamListView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['exams'] = self.get_queryset().filter(exam_type=Exam.EXAM)
         context['e_user_sessions'] = list(ELearningUserSession.objects.filter(user=self.request.user) \
-            .values_list('elearning', flat=True))
+                                          .values_list('elearning', flat=True))
 
         memory_force = ELearningUserSession.objects.filter(user=self.request.user) \
-                                          .values_list('exam__name','memory_force')
+            .values_list('exam__name', 'memory_force')
 
-        context['memory_force'] =  dict(memory_force)
+        context['memory_force'] = dict(memory_force)
 
         context['material_files'] = self.get_material_list()
 
         # context['topic'] =  Presentation.objects.values_list('topic', flat=True).distinct()
-        context['topic_dict'] = dict(Presentation.objects.values_list('topic','elearning').distinct())
+        context['topic_dict'] = dict(Presentation.objects.values_list('topic', 'elearning').distinct())
         context['presentation_elearnings'] = Presentation.objects.values_list('elearning', flat=True).distinct()
-
 
         if self.request.user.is_demo:
             context['elearnings'] = ELearning.objects.filter(demo=True, exam_type="elearning")
@@ -216,22 +224,29 @@ class ExamListView(LoginRequiredMixin, ListView):
         return context
 
 
+class ExamScoreReauthentication(TemplateView):
+    template_name = 'exam/score_login.html'
 
-class ExamScoresListView(LoginRequiredMixin, ListView):
+
+class ExamScoresListView(LoginRequiredMixin, TemplateView):
     model = ExamUserSession
     template_name = 'exam/exam_score_list.html'
 
-    def get_queryset(self):
-        qs = super(ExamScoresListView, self).get_queryset().filter(
-            finished__isnull=False,
-            user=self.request.user)
-        return qs
+    def get(self, *args, **kwargs):
+        return redirect("/exam/score-reauthentication")
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['exam_sessions'] = self.get_queryset().filter(exam__exam_type=Exam.EXAM)
-        context['elearning_sessions'] = ELearningUserSession.objects.filter(user=self.request.user)
-        return context
+    def post(self, *args, **kwargs):
+
+        email = self.request.user.email
+        password = self.request.POST['password']
+        user = authenticate(email=email, password=password)
+        if user is not None:
+            context = {}
+            context['object_list'] = self.model.objects.filter(finished__isnull=False,
+                                                               user=self.request.user, exam__exam_type=Exam.EXAM)
+            return render(self.request, 'exam/exam_score_list.html', context)
+        else:
+            return HttpResponse("Sorry,You don't have permissions to access this page.")
 
 
 class ExamScoreView(LoginRequiredMixin, View):
@@ -244,7 +259,6 @@ class ExamScoreView(LoginRequiredMixin, View):
             'correct': eus.count_correct_answers
         })
         return response
-
 
 
 class AdminOrStaffLoginRequiredMixin(AccessMixin):
@@ -314,15 +328,13 @@ class ExamImportView(AdminOrStaffLoginRequiredMixin, FormView):
         return context
 
 
-
 class DownloadFileView(View):
     template_name = "exam/exam_list.html"
 
     def get(self, request, *args, **kwargs):
-
         # path = "assets/materials"
-        path = os.path.join(STATICFILES_DIRS[0],"materials")
-        file_path = os.path.join(path,kwargs.get('slug'))
+        path = os.path.join(STATICFILES_DIRS[0], "materials")
+        file_path = os.path.join(path, kwargs.get('slug'))
         if os.path.exists(file_path):
             with open(file_path, 'rb') as fh:
                 response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
@@ -332,38 +344,20 @@ class DownloadFileView(View):
 
 
 class PresentationSlideShow(TemplateView):
-        template_name = 'elearning/includes/presentation_slide.html'
 
-        # def get(self, request, *args, **kwargs):
-        #     topic = request.GET.get('topic',None)
-        #     elearning = request.GET.get('elearning', None)
-        #
-        #     slides = Presentation.objects.filter(topic=topic).values_list('slide',flat=True)
-        #     media_root = MEDIA_ROOT
-        #     print(slides)
-        #     print("_"*20)
-        #     response = {'slides': slides,
-        #      'previous_slide': 0,
-        #      }
-        #     return super(TemplateView, self).render_to_response(response)
+    template_name = 'elearning/includes/presentation_slide.html'
 
-        def get_context_data(self, **kwargs):
-            context = super(PresentationSlideShow, self).get_context_data()
-            topic = self.request.GET.get('topic', None)
-            elearning = self.request.GET.get('elearning', None)
+    def get_context_data(self, **kwargs):
 
-            slides = Presentation.objects.filter(topic=topic,elearning=elearning).values_list('slide', flat=True)
-            context["media"] = MEDIA_URL
-            context["slides"] = slides
-            context["seen_slide"] = 1
-            context["previous_slide"] = 0
-            context["total_slides"] = len(slides)
+        context = super(PresentationSlideShow, self).get_context_data()
+        topic = self.request.GET.get('topic', None)
+        elearning = self.request.GET.get('elearning', None)
 
-            return context
+        slides = Presentation.objects.filter(topic=topic, elearning=elearning).values_list('slide', flat=True)
+        context["media"] = MEDIA_URL
+        context["slides"] = slides
+        context["seen_slide"] = 1
+        context["previous_slide"] = 0
+        context["total_slides"] = len(slides)
 
-
-
-
-
-
-
+        return context

@@ -14,5 +14,6 @@ urlpatterns = [
 	path('scores/<int:pk>/', ExamScoreView.as_view() , name='exam-score'),
 	path('download-files/<str:slug>/', DownloadFileView.as_view(),name='download-files'),
 	path('presentation-slides/', PresentationSlideShow.as_view(),name='presentation-slides'),
+	path('score-reauthentication/', ExamScoreReauthentication.as_view(),name='score-reauthentication'),
     path('api/', include(router.urls)),
 ]

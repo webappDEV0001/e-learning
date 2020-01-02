@@ -15,6 +15,7 @@
 					<tr class="bg-primary text-white font-weight-bold">
 						<th class="font-weight-bold">Exam name</th>
 						<th class="font-weight-bold">Completed</th>
+						<th class="font-weight-bold">Candidate</th>
 						<th class="font-weight-bold">Score</th>
 						<th></th>
 					</tr>
@@ -24,6 +25,11 @@
 					<tr>
 						<td>{{ object.exam.name }}</td>
 						<td>{{ object.finished }}</td>
+						{% if object.nick_name == None %}
+						<td></td>
+						{% else %}
+						<td>{{ object.nick_name }}</td>
+						{% endif %}
 						<td>{{ object.get_score }} %</td>
 						<td class="text-right"><a href="{% url 'exam-score' object.pk %}" class="btn btn-primary">Show more</a>
 						</td>

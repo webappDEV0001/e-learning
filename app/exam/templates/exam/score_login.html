@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<section class="section">
+    <div class="text-center"><h4>Re-authentication required to access this page</h4></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-6 mx-auto">
+                <form action="{% url 'exam-scores' %}" method="post">
+                    {% csrf_token %}
+                    <div class="container">
+                        <label data-error="wrong" data-success="right" for="defaultForm-pass">Enter your
+                            password</label>
+                        <input type="password" name="password" id="defaultForm-pass" class="form-control validate"
+                               required>
+                        <button class="btn btn-primary btn-block score_login_submit" style=" margin-top: 37px;"
+                                type="submit">Sign In
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+{% endblock %}
+
