@@ -94,13 +94,11 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
             # Repetitions Phase
             user_timezone = tz.gettz(request.user.timezone)
             rep_date_from = timezone.now().astimezone(user_timezone).date()
+
             repetition = ELearningRepetition.objects.filter(session=eus, repeat_after__lte=rep_date_from, answered=False)
 
             if repetition:
                 # repetition get correct answers count
-
-                #Delete corrections from previous session
-                ELearningCorrection.objects.filter(session=eus).delete()
 
                 correct_answered_count = ELearningUserAnswer.objects.filter(session=eus,
                      question=repetition.first().question, answer__correct=True).count()
@@ -115,6 +113,9 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
                 already_answered = list(ELearningUserAnswer.objects.filter(
                     session=eus, session_number=eus.active_session_number, phase="new_questions").values_list(
                     'question', flat=True))
+
+                if already_answered_repetition == 0:
+                    ELearningCorrection.objects.filter(session=eus).delete()
 
                 new_questions_left_current_session = eus.active_session.questions.exclude(pk__in=already_answered)
 
