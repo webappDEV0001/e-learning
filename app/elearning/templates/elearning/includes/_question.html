@@ -3,6 +3,12 @@
     text-align: end;
 }
 
+button.Forget-question.btn {
+    padding: 4px;
+    text-align: right;
+    margin-left: 285px;
+}
+
 </style>
 <div class="row">
 	<div id="question-box" data-phase="{{ phase }}" class="col-md-7">
@@ -43,11 +49,11 @@
 
 	</div>
 
-	<div id="forget_class" class="col-sm-5">
+<!--	<div id="forget_class" class="col-sm-5">-->
 
-		<button type="button" style="display:none;{% if correct_answered_count >= 2 %}display:block;{% endif %}" class="Forget-question btn btn-primary" data-toggle="modal" data-target="#popUpModal" data-whatever="@getbootstrap">Forget this Question Forever</button>
+<!--		<button type="button" style="display:none;{% if correct_answered_count >= 2 %}display:block;{% endif %}" class="Forget-question btn btn-primary" data-toggle="modal" data-target="#popUpModal" data-whatever="@getbootstrap">Forget this Question Forever</button>-->
 
-	</div>
+<!--	</div>-->
 
 	<div class="col-md-5">
 		<div id="explanation" class="d-none">
@@ -56,6 +62,9 @@
 		</div>
 	</div>
 	<div id="go_back" ><a href="/list/#elearnings">Return to User's Panel</a></div>
+	<div id="forget_class">
+		<button type="button" style="display:none;{% if correct_answered_count >= 2 %}display:block;{% endif %}" class="Forget-question btn" data-toggle="modal" data-target="#popUpModal" data-whatever="@getbootstrap">Forget this Question Forever</button>
+	</div>
 </div>
 
 <div class="modal fade" id="popUpModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
