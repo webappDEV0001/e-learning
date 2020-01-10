@@ -356,6 +356,17 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
             question_id = int(data.get('question', None))
             ELearningRepetition.objects.filter(session=eus, question_id=question_id).delete()
 
+            correctly_answered = ELearningUserAnswer.objects.filter(
+                user_id=request.user, question_id=question_id, answer__correct=True).count()
+            # print("correct answer count ",correctly_answered)
+
+            if correctly_answered < 5:
+                answer = Answer.objects.get(question_id=question_id, correct=True)
+                question= Question.objects.get(id=question_id)
+                for i in range(correctly_answered,5):
+                    ELearningUserAnswer.objects.create(session=eus,session_number=eus.active_session_number,
+                        user=request.user, question=question,answer=answer,phase="repitition")
+
             response = {
                 'status':"Forget question successfully",
             }
