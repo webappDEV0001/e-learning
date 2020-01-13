@@ -212,8 +212,16 @@ class ExamListView(LoginRequiredMixin, ListView):
         context['material_files'] = self.get_material_list()
 
         # context['topic'] =  Presentation.objects.values_list('topic', flat=True).distinct()
-        context['topic_dict'] = dict(Presentation.objects.values_list('topic', 'elearning').distinct())
-        context['presentation_elearnings'] = Presentation.objects.values_list('elearning', flat=True).distinct()
+
+
+        if self.request.user.is_demo:
+            context['topic_dict'] = dict(Presentation.objects.filter(is_demo=True)\
+                                         .values_list('topic', 'elearning').distinct())
+            context['presentation_elearnings'] = Presentation.objects.filter(is_demo=True)\
+                .values_list('elearning', flat=True).distinct()
+        else:
+            context['topic_dict'] = dict(Presentation.objects.values_list('topic', 'elearning').distinct())
+            context['presentation_elearnings'] = Presentation.objects.values_list('elearning', flat=True).distinct()
 
         if self.request.user.is_demo:
             context['elearnings'] = ELearning.objects.filter(demo=True, exam_type="elearning")

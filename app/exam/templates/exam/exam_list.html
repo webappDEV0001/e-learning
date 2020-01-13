@@ -143,6 +143,10 @@ div#tab-presentation label {
 
 			<div class="tab-pane fade" id="tab-dm">
 	        	<div class="container-fluid">
+					{% if request.user.is_demo %}
+							<p>The downloadable materials are not available for demo users,<br>
+							please contact us or your partner, if you need more information.</p>
+					{% else %}
 				        {% for obj in material_files %}
 							{% if forloop.counter|divisibleby:2 %}
 							{% else %}
@@ -163,6 +167,7 @@ div#tab-presentation label {
 								</div>
 							{% endif %}
 				        {% endfor %}
+					{% endif %}
 				    </div>
 				</div>
 	 </div>
