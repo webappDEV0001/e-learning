@@ -27,3 +27,8 @@ def memory_force_title(all_memory_force_values,current_exam_name):
         title="Medium"
     return title
 
+@register.filter(name='replace_spaces')
+def replace_spaces(class_name):
+    """Take memory force value dictionary and return current object value"""
+    return class_name.replace(" ","_")
+

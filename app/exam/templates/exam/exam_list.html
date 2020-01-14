@@ -205,7 +205,7 @@ div#tab-presentation label {
 							<select id="topic" name="topic">
 								<option value="----" class="empty_opition">-----</option>
 								{% for topic_name,el_name in topic_dict.items %}
-							  <option class="{{el_name}} all_options" value="{{topic_name}}">{{topic_name}}</option>
+							  <option class="{{el_name|replace_spaces}} all_options" value="{{topic_name}}">{{topic_name}}</option>
 								{% empty %}
 								{% endfor %}
 							</select>
