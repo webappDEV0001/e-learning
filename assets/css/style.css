@@ -110,7 +110,7 @@ section#contact-header {
 }
 .ppt_info_slide img {
    width: 100%;
-   height:93%;
+   height:92%;
 }
 
 /*18 nov Our Base css start here*/
@@ -295,7 +295,7 @@ div#exam-screen {
 }
 
 .full_screen .mySlides {
-    height: 100vh;
+    height: 96vh;
 }
 .ppt_info_slide {
     border: 2px solid #646464;
