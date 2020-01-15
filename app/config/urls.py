@@ -8,6 +8,7 @@ from users.views import set_timezone
 from users.views import ViewContact
 from users.views import DisplayPDFView, DisplayPDFView2
 from elearning import views as el_view
+from django.conf.urls import handler404
 
 from django.contrib.sitemaps.views import sitemap
 from .sitemaps import StaticViewSitemap
@@ -18,6 +19,7 @@ sitemaps = {
 
 
 dummy_view = TemplateView.as_view(template_name='index.html')
+
 
 urlpatterns = [
     path('', dummy_view, name='index'),
@@ -45,7 +47,6 @@ urlpatterns = [
 
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps},
          name='django.contrib.sitemaps.views.sitemap')
+    path('<slug:slug>',el_view.handler404)
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-#just test  for live git access
