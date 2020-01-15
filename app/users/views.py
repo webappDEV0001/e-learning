@@ -71,9 +71,15 @@ class ViewContact(FormView):
             messages.info(self.request, "We received your message and will contact you back soon.")
         return HttpResponseRedirect("/contact")
 
-    
+
 class DisplayPDFView(View):
 
     def get(self, request, *args, **kwargs):
-        path =  os.path.join(MEDIA_ROOT, 'terms_condition.pdf')
+        path =  os.path.join(MEDIA_ROOT, 'terms_conditions.pdf')
+        return FileResponse(open(path, 'rb'), content_type='application/pdf')
+
+class DisplayPDFView2(View):
+
+    def get(self, request, *args, **kwargs):
+        path =  os.path.join(MEDIA_ROOT, 'privacy_policy.pdf')
         return FileResponse(open(path, 'rb'), content_type='application/pdf')

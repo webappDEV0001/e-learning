@@ -42,6 +42,9 @@ def contact(request):
 def careers(request):
     return render(request, 'careers.html')
 
+def sitemapob(request):
+    return render(request, 'sitemap.xml')
+
 
 class OurBaseView(TemplateView):
     template_name = "exam/ifrs-17-e-learning.html"

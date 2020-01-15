@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'exam',
     'elearning',
     # 'import_export',
+    'django.contrib.sitemaps',
 ]
 
 # IMPORT_EXPORT_USE_TRANSACTIONS = False
@@ -83,7 +84,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 EMAIL_HOST = 'mail.privateemail.com'
 EMAIL_HOST_USER = 'contact@4actuaries.com'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-EMAIL_HOST_PASSWORD = 'VanDerSaar1'
+EMAIL_HOST_PASSWORD = 'Borysiatko1'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 

@@ -6,8 +6,16 @@ from django.conf.urls.static import static
 from exam.views import ExamListView, about, contact, careers, solutions, OurBaseView
 from users.views import set_timezone
 from users.views import ViewContact
-from users.views import DisplayPDFView
+from users.views import DisplayPDFView, DisplayPDFView2
 from elearning import views as el_view
+
+from django.contrib.sitemaps.views import sitemap
+from .sitemaps import StaticViewSitemap
+
+sitemaps = {
+    'static': StaticViewSitemap,
+}
+
 
 dummy_view = TemplateView.as_view(template_name='index.html')
 
@@ -19,6 +27,8 @@ urlpatterns = [
     #path('contact/', contact, name='contact'),
     path('contact/', ViewContact.as_view(), name='contact'),
     path('terms-condition/', DisplayPDFView.as_view(), name='terms-condition'),
+    path('privacy-policy/', DisplayPDFView2.as_view(), name='privacy-policy'),
+
 
     # Testing Url
     path('change_repitition_date/', el_view.repitiion_date_change, name='change_repitition_date'),
@@ -32,6 +42,10 @@ urlpatterns = [
 
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
+
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps},
+         name='django.contrib.sitemaps.views.sitemap')
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 #just test  for live git access
