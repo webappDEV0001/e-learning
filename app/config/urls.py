@@ -8,8 +8,10 @@ from users.views import set_timezone
 from users.views import ViewContact
 from users.views import DisplayPDFView
 from elearning import views as el_view
+from django.conf.urls import handler404
 
 dummy_view = TemplateView.as_view(template_name='index.html')
+
 
 urlpatterns = [
     path('', dummy_view, name='index'),
@@ -32,6 +34,8 @@ urlpatterns = [
 
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path('<slug:slug>',el_view.handler404)
 
+
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 #just test  for live git access

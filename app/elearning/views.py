@@ -7,12 +7,12 @@ import pdfkit
 from django.contrib import messages
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse, HttpResponseRedirect
-from django.template import loader
+from django.template import loader, RequestContext
 from django.urls import reverse_lazy, reverse
 from django.utils import timezone
 import random
 from django.views.generic.base import View, RedirectView
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, render_to_response
 from django.views.generic import TemplateView, FormView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
@@ -81,6 +81,13 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
         eus, crt = ELearningUserSession.objects.get_or_create(exam_id=pk, elearning_id=pk, user=request.user)
         get_object_or_404(Exam, pk=pk, exam_type__in=[Exam.ELEARNING])
 
+        if crt:
+            # print("+"*20)
+            # print(len(eus.active_session.questions.all()))
+            # print("+" * 20)
+            eus.n_questions = len(eus.active_session.questions.all())
+            eus.save()
+
         if not eus.started:
 
             response = {
@@ -128,6 +135,9 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
                                 eus.active_session = next_session
                                 eus.seen_slides = 0
                                 eus.save()
+                                eus.n_questions = len(eus.active_session.questions.all())
+                                eus.save()
+
 
                 context = {
                     'object': eus,
@@ -176,6 +186,12 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
 
             # Get new questions from active session
             questions = eus.active_session.questions.exclude(pk__in=already_answered)
+            print("*"*20)
+            print(len(questions))
+            print("questions left ",questions)
+            print("*" * 20)
+
+            print(len(already_answered),eus.n_questions)
             # If no new questions or questions limit reached
             if not questions or len(already_answered) >= eus.n_questions:
                 # Corrections Phase
@@ -204,6 +220,9 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
                         eus.active_session = next_session
                         eus.seen_slides = 0
                         eus.save()
+                        eus.n_questions = len(eus.active_session.questions.all())
+                        eus.save()
+
                     response = {
                         'state': 'end',
                         'session': self.serializer_class(eus).data,
@@ -211,6 +230,7 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
                                                                                           'obj': eus.elearning})
                     }
                 return Response(response)
+
 
             # Assign new question if not already assigned. Exclude already answered.
             if not eus.active_question:
@@ -452,7 +472,6 @@ class ELearningProgressListView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['elearning_sessions'] = ELearningUserSession.objects.filter(user=self.request.user)
         return context
-
 
 class ElearningResetProgress(RedirectView):
     template_name = "elearning/elearning_progress.html"
@@ -741,3 +760,6 @@ class PresentationImportView(AdminOrStaffLoginRequiredMixin, FormView):
         context = super(PresentationImportView, self).get_context_data()
         context["opts"] = Presentation._meta
         return context
+
+def handler404(request, *args, **kwargs):
+    return render(request,'404.html')
