@@ -47,7 +47,7 @@ def sitemapob(request):
 
 
 class OurBaseView(TemplateView):
-    template_name = "exam/ifrs-17-e-learning.html"
+    template_name = "exam/Solvency-2-e-learning.html"
 
 
 class ExamView(DetailView):
