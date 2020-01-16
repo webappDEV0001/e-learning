@@ -36,10 +36,16 @@ p.slide_counter {
     }
 }
 
-@media screen and (orientation:landscape) {
-.bottom_pagination {
-		padding: 3px;
-}
+@media screen and (orientation:landscape) and (max-width: 1290px) {
+		.bottom_pagination {
+				padding: 3px;
+		}
+		.bottom_pagination button {
+			font-size: 38px;
+		}
+		p.slide_counter {
+			font-size: 21px;
+		}
 }
 </style>
 <div class="row">
