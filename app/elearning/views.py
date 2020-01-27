@@ -82,9 +82,7 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
         get_object_or_404(Exam, pk=pk, exam_type__in=[Exam.ELEARNING])
 
         if crt:
-            # print("+"*20)
-            # print(len(eus.active_session.questions.all()))
-            # print("+" * 20)
+
             eus.n_questions = len(eus.active_session.questions.all())
             eus.save()
 
@@ -138,7 +136,6 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
                                 eus.n_questions = len(eus.active_session.questions.all())
                                 eus.save()
 
-
                 context = {
                     'object': eus,
                     'question': repetition.first().question,
@@ -186,12 +183,7 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
 
             # Get new questions from active session
             questions = eus.active_session.questions.exclude(pk__in=already_answered)
-            print("*"*20)
-            print(len(questions))
-            print("questions left ",questions)
-            print("*" * 20)
 
-            print(len(already_answered),eus.n_questions)
             # If no new questions or questions limit reached
             if not questions or len(already_answered) >= eus.n_questions:
                 # Corrections Phase
@@ -223,12 +215,23 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
                         eus.n_questions = len(eus.active_session.questions.all())
                         eus.save()
 
-                    response = {
-                        'state': 'end',
-                        'session': self.serializer_class(eus).data,
-                        'content': render_to_string('elearning/includes/_finished.html', {'next_session': next_session,
-                                                                                          'obj': eus.elearning})
-                    }
+                    check_progress = eus.user_progress
+
+                    if check_progress == 100:
+                        response = {
+                            'state': 'end',
+                            'session': self.serializer_class(eus).data,
+                            'content': render_to_string('elearning/includes/_congrats_completed.html',
+                                                        {'next_session': next_session,
+                                                         'obj': eus.elearning})
+                        }
+                    else:
+                        response = {
+                            'state': 'end',
+                            'session': self.serializer_class(eus).data,
+                            'content': render_to_string('elearning/includes/_finished.html', {'next_session': next_session,
+                                                                                              'obj': eus.elearning})
+                        }
                 return Response(response)
 
 
@@ -264,12 +267,22 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
             }
         elif eus.finished:
             # check if finish time is yesterday - if yes, level up session
-            # if eus.finished.date() <= timezone.now().date():
-            response = {
-                'state': 'end',
-                'session': self.serializer_class(eus).data,
-                'content': render_to_string('elearning/includes/_finished.html')
-            }
+            # if eus.finished.date() <= timezone.now().date():'
+
+            check_progress = eus.user_progress
+
+            if check_progress == 100:
+                response = {
+                    'state': 'end',
+                    'session': self.serializer_class(eus).data,
+                    'content': render_to_string('elearning/includes/_congrats_completed.html')
+                }
+            else:
+                response = {
+                    'state': 'end',
+                    'session': self.serializer_class(eus).data,
+                    'content': render_to_string('elearning/includes/_finished.html')
+                }
             return Response(response)
 
         return Response(response)
