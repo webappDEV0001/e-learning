@@ -16,11 +16,11 @@ class ELearning(Exam):
 	certificate_count = models.PositiveSmallIntegerField(default=369)
 
 class Slide(models.Model):
-	elearning = models.ForeignKey(ELearning, on_delete=models.DO_NOTHING)
+	elearning = models.ForeignKey(ELearning, on_delete=models.CASCADE)
 	image = models.ImageField(upload_to='slides/')
 
 class ELearningSession(models.Model):
-	elearning = models.ForeignKey(ELearning, on_delete=models.DO_NOTHING, related_name='sessions')
+	elearning = models.ForeignKey(ELearning, on_delete=models.CASCADE, related_name='sessions')
 	number = models.PositiveIntegerField(default=0)
 	slides = models.ManyToManyField(Slide, blank=True)
 	questions = models.ManyToManyField(Question, blank=True)
