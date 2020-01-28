@@ -271,7 +271,7 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
 
             check_progress = eus.user_progress
 
-            if check_progress == 100:
+            if int(check_progress) == 100:
                 response = {
                     'state': 'end',
                     'session': self.serializer_class(eus).data,
