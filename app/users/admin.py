@@ -2,9 +2,22 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 from .models import User
+from django.urls import path
+from users.views import UserImportView
 
 
 class UserAdmin(BaseUserAdmin):
+    change_list_template = "user_admin_changelist.html"
+
+    def get_urls(self):
+        urls = super(UserAdmin, self).get_urls()
+        my_urls = [
+            path('import-user/', self.admin_site.admin_view(UserImportView.as_view()),
+                 name="import-user"),
+        ]
+        return my_urls + urls
+
+
     fieldsets = (
         (None, {'fields': ('email', 'password', 'name', 'last_login', 'username', 'surname', 'is_demo')}),
         ('Permissions', {'fields': (
@@ -32,4 +45,4 @@ class UserAdmin(BaseUserAdmin):
     filter_horizontal = ('groups', 'user_permissions',)
 
 
-admin.site.register(User, UserAdmin)
+admin.site.register(User,UserAdmin)

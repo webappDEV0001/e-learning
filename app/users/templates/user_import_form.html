@@ -1,0 +1,15 @@
+{% extends 'admin/change_form.html' %}
+{% load i18n admin_urls %}
+{% block content %}
+
+    <div>
+        <form method="POST" enctype="multipart/form-data">
+            {{ form.as_p }}
+            {% csrf_token %}
+                <div class="submit-row">
+						<input type="submit" value="Upload CSV" class="default" name="Send Message">
+					</div>
+        </form>
+    </div>
+    <br />
+{% endblock %}

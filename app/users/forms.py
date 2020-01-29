@@ -137,3 +137,9 @@ class ConatctForm(forms.Form):
             raise ValidationError('Invalid captcha, please try again...')
 
 
+class UserImportForm(forms.Form):
+    """
+    This form handle the import file data.
+    """
+
+    csv_file = forms.FileField(label="file")
