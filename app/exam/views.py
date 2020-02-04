@@ -18,8 +18,10 @@ from exam.forms import ExamImportForm
 
 from question.models import Answer
 from .models import Exam
-from elearning.models import ELearningUserSession, ELearning, Presentation
+from elearning.models import ELearningUserSession, ELearning
+
 from question.models import Question, ExamUserSession, ExamUserAnswer
+from presentations.models import Presentation
 from question.serializers import ExamUserSessionSerializer
 from django.contrib.auth.mixins import AccessMixin
 import os
