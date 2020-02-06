@@ -39,7 +39,8 @@ def send_contact_email(data):
         "contact@4actuaries.com",
         ['contact@4actuaries.com'],
     )
-    msg.attach(file.name, file.read(), file.content_type)
+    if file:
+        msg.attach(file.name, file.read(), file.content_type)
     msg.send()
 
 
