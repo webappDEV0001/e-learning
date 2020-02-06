@@ -22,12 +22,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin, AccessMixin
 from rest_framework import viewsets, mixins
 from rest_framework.response import Response
 from config.common import TEMP_DIR
-
 from elearning.forms import ElearningImportForm
-
-from elearning.forms import PresentationImportForm
-from .models import ELearning, ELearningUserSession, ELearningRepetition, ELearningCorrection, ELearningSession, Slide, \
-    Presentation
+from .models import ELearning, ELearningUserSession, ELearningRepetition, ELearningCorrection, ELearningSession, Slide
 from exam.models import Exam
 from elearning.models import ELearningUserAnswer
 from question.models import Question, Answer, ExamUserSession
@@ -739,40 +735,7 @@ class ElearningImportView(AdminOrStaffLoginRequiredMixin, FormView):
         return context
 
 
-class PresentationImportView(AdminOrStaffLoginRequiredMixin, FormView):
-    """
-    This class handle the import data of presentation
-    """
 
-    form_class = PresentationImportForm
-    template_name = "elearning/presentation_import_form.html"
-
-    def get_success_url(self):
-        success_url = reverse_lazy('admin:elearning_presentation_changelist')
-        return success_url
-
-    def form_valid(self, form):
-        from os import path
-        csv_file = form.cleaned_data.get("csv_file")
-        df = pandas.read_excel(csv_file)
-        df.dropna(how="all", inplace=True)
-
-        for i in range(len(df)):
-            try:
-                presentation_name = df['presentation_name'][i]
-                topic = df['topic'][i]
-                slide = df['slide'][i]
-                presentation, crt = Presentation.objects.get_or_create(elearning=presentation_name, topic=topic,slide=slide)
-            except:
-                print("Skip row")
-        messages.info(self.request, "your presentation data imported successfully.")
-        return FormView.form_valid(self, form)
-
-    def get_context_data(self, **kwargs):
-
-        context = super(PresentationImportView, self).get_context_data()
-        context["opts"] = Presentation._meta
-        return context
 
 def handler404(request, *args, **kwargs):
     return render(request,'404.html')

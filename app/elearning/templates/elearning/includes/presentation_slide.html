@@ -41,6 +41,57 @@
 		margin-top: 25%;
 	}
 
+@media only screen and (max-width: 1290px) {
+  .ppt_info_slide img {
+        height: 90%;
+    }
+}
+
+@media screen and (orientation:landscape) and (max-width: 1290px) {
+		.bottom_pagination {
+				padding: 3px;
+		}
+		.bottom_pagination button {
+			font-size: 38px;
+		}
+		p.slide_counter {
+			font-size: 21px;
+		}
+}
+@media only screen and (max-width:767px) {
+p.slide_counter {
+    font-size: 18px;
+    left:10px;
+}
+img.mySlides.current {
+    padding-right: 15px;
+    padding-left: 15px;
+    padding-top: 15px;
+}
+.ppt_info_slide img {
+    object-fit: contain;
+}
+.full_screen .mySlides {
+    height: 90vh;
+    padding-top: 10px !important;
+}
+
+}
+@media only screen and (max-width:480px) {
+p.slide_counter {
+    font-size: 15px;
+}
+button#full-screen img {
+    width: 24px;
+}
+.ppt_info_slide {
+    height: 50vh;
+}
+.navbar .container {
+    flex-wrap: nowrap !importat;
+}
+}
+
 </style>
 <div id="exam-screen"  class="container mt-5 mb-12">
 

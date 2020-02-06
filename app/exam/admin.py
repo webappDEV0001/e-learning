@@ -16,6 +16,9 @@ import os
 class ExamAdmin(admin.ModelAdmin):
     change_list_template = "exam/examadmin_changelist.html"
 
+    def get_queryset(self, request):
+        return Exam.objects.filter(exam_type="exam")
+
     def get_urls(self):
         urls =  super(ExamAdmin, self).get_urls()
         my_urls = [
