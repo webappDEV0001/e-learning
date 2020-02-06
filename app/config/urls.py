@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
@@ -46,6 +46,6 @@ urlpatterns = [
 
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps},
          name='django.contrib.sitemaps.views.sitemap'),
-    path('<slug:slug>/',el_view.handler404)
+    re_path(r'^(?P<slug>[\w-]+)/', el_view.handler404)
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
