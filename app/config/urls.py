@@ -26,7 +26,6 @@ urlpatterns = [
     path('about/', about, name='about'),
     path('solutions/', solutions, name='solutions'),
     path('careers/', careers, name='careers'),
-    #path('contact/', contact, name='contact'),
     path('contact/', ViewContact.as_view(), name='contact'),
     path('terms-condition/', DisplayPDFView.as_view(), name='terms-condition'),
     path('privacy-policy/', DisplayPDFView2.as_view(), name='privacy-policy'),
@@ -47,6 +46,6 @@ urlpatterns = [
 
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps},
          name='django.contrib.sitemaps.views.sitemap'),
-    path('<slug:slug>',el_view.handler404)
+    path('<slug:slug>/',el_view.handler404)
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
