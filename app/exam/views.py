@@ -246,7 +246,7 @@ class ExamScoresListView(LoginRequiredMixin, TemplateView):
     template_name = 'exam/exam_score_list.html'
 
     def get(self, *args, **kwargs):
-        return redirect("/exam/score-reauthentication")
+        return redirect("/exam/score-reauthentication/")
 
     def post(self, *args, **kwargs):
 
