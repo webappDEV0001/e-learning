@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('4actuaries sites', '0003_auto_20200211_0551'),
+        ('Uploading', '0003_auto_20200211_0551'),
     ]
 
     operations = [
