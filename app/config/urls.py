@@ -3,7 +3,7 @@ from django.urls import path, include, re_path
 from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
-from exam.views import ExamListView, about, contact, careers, solutions, OurBaseView
+from exam.views import ExamListView, about, contact, careers, solutions, OurBaseView, UserProgressView
 from users.views import set_timezone
 from users.views import ViewContact
 from users.views import DisplayPDFView, DisplayPDFView2
@@ -30,7 +30,6 @@ urlpatterns = [
     path('terms-condition/', DisplayPDFView.as_view(), name='terms-condition'),
     path('privacy-policy/', DisplayPDFView2.as_view(), name='privacy-policy'),
 
-
     # Testing Url
     path('change_repitition_date/', el_view.repitiion_date_change, name='change_repitition_date'),
 
@@ -40,7 +39,7 @@ urlpatterns = [
     path('ifrs-17-e-learning/', OurBaseView.as_view(), name='ourbase'),
 	path('exam/', include('exam.urls')),
 	path('elearning/', include('elearning.urls')),
-
+    path('admin/user-progress/', UserProgressView.as_view(), name='user-progress'),
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
 

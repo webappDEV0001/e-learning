@@ -1,0 +1,27 @@
+{% extends "admin/index.html" %}
+
+{% block content %}
+{% block user-progress %}
+<div class="app-users module">
+        <table>
+        <caption>
+            <a href="/admin/users/" class="section" title="Models in the Users application">Elearing User Progress</a>
+        </caption>
+            <tbody><tr class="model-user">
+                <th scope="row"><a href="/admin/user-progress/">Progress</a></th>
+
+                <td><a href="/admin/users/user/add/" class="addlink"></a></td>
+
+
+
+
+                <td><a href="/admin/users/user/" class="changelink"></a></td>
+
+
+            </tr>
+
+        </tbody></table>
+        </div>
+{% endblock user-progress %}
+{{block.super}}
+{% endblock content %}

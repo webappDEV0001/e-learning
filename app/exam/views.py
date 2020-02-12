@@ -14,6 +14,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from rest_framework import viewsets
 from rest_framework.response import Response
 import pandas
+from users.models import User
 from exam.forms import ExamImportForm
 
 from question.models import Answer
@@ -41,6 +42,8 @@ def contact(request):
     return render(request, 'contact.html')
 
 
+
+
 def careers(request):
     return render(request, 'careers.html')
 
@@ -50,6 +53,40 @@ def sitemapob(request):
 
 class OurBaseView(TemplateView):
     template_name = "exam/Solvency-2-e-learning.html"
+
+class UserProgressView(TemplateView):
+    template_name = "user-progress.html"
+
+    def get_context_data(self, **kwargs):
+
+        context = super(UserProgressView, self).get_context_data()
+        users = list(User.objects.all().values_list('email', flat=True))
+        elearning = list(ELearning.objects.all().values_list('name', flat=True))
+
+        user_progress_report = {}
+
+        for user in User.objects.all():
+            user_el =  ELearningUserSession.objects.filter(user=user)
+            elearning_progress =  list(ELearning.objects.all().values_list('name', flat=True))
+
+            for el in user_el:
+                elearning_name = el.elearning.name
+                el_progress_value = el.user_progress
+                if elearning_name in elearning_progress:
+                    index = elearning_progress.index(elearning_name)
+                    elearning_progress[index] = el_progress_value
+
+            for el in elearning:
+                if el in elearning_progress:
+                    index_el = elearning_progress.index(el)
+                    elearning_progress[index_el] = '-'
+
+            user_progress_report[user.email] = elearning_progress
+
+        context['elearnings'] = elearning
+        context['user_progress_report'] = user_progress_report
+
+        return context
 
 
 class ExamView(DetailView):

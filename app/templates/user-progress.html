@@ -1,0 +1,28 @@
+{% extends "admin/index.html" %}
+{% block user-progress %} {% endblock user-progress %}
+{% block sidebar %}
+<div>
+    <table id="result_list" width=100%>
+			<tbody>
+				<thead>
+					<th>
+						users</th>
+					{% for elearning in elearnings %}
+					<th>{{elearning}}</th>
+					{% endfor %}
+				</thead>
+				{%for  user_email,progress_list in user_progress_report.items %}
+				<tr class="row1">
+					<td>{{user_email}}</td>
+					{% for progress_value in progress_list %}
+					<td> {{progress_value}}</td>
+					{% endfor %}
+				</tr>
+				{% endfor %}
+				<tr class="row2">
+					<td></td>
+				</tr>
+			</tbody>
+		</table>
+</div>
+{% endblock %}

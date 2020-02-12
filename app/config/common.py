@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'exam',
     'elearning',
     'presentations',
+    'sites',
     # 'import_export',
     'django.contrib.sitemaps',
 ]
