@@ -20,6 +20,10 @@ sitemaps = {
 
 dummy_view = TemplateView.as_view(template_name='index.html')
 
+error_url = [
+        re_path(r'^(?P<slug>[\w-]+)/', el_view.handler404)
+
+]
 
 urlpatterns = [
     path('', dummy_view, name='index'),
@@ -45,6 +49,6 @@ urlpatterns = [
 
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps},
          name='django.contrib.sitemaps.views.sitemap'),
-    re_path(r'^(?P<slug>[\w-]+)/', el_view.handler404)
 
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + error_url
