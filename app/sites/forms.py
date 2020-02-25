@@ -2,16 +2,10 @@ from django import forms
 import zipfile
 from zipfile import ZipFile
 from sites.models import UploadSlide
-from pptx import Presentation
-from pptx.enum.shapes import MSO_SHAPE_TYPE
-from wand.image import Image as wi
 from pdf2image import convert_from_path, convert_from_bytes
 import tempfile
 import os
 import glob
-from PIL import Image as PImage
-from PIL import Image
-import cv2
 from config.common import *
 from django.core.files import File
 
