@@ -7,6 +7,7 @@ import tempfile
 import os
 import glob
 from config.common import *
+import uuid
 from django.core.files import File
 
 class FormUploadSlide(forms.ModelForm):
@@ -27,16 +28,16 @@ class FormUploadSlide(forms.ModelForm):
             for info in zip.infolist():
                 zip_list.append(info.filename)
             result = [ele for ele in zip_list if (".pdf" in str(ele))]  # check if file contain pptx file
-            print(result)
             if bool(result) is True:
                 save_path = os.path.join(MEDIA_ROOT, "pdf_images/")
                 for file in result:
                     myfile = zip.read(file)
                     i = 1
+                    file_name = file.split(".")[0]
                     with tempfile.TemporaryDirectory() as path:
                         images_from_path = convert_from_bytes(myfile, output_folder=path)
                         for page in images_from_path:
-                            page.save(save_path+str(i)+".jpg", 'JPEG')  #save image in folder 'pdf_images' temporary
+                            page.save(save_path+file_name+"_"+str(i)+".jpg", 'JPEG')  #save image in folder 'pdf_images' temporary
                             i += 1
 
                 imagesList = glob.glob(save_path+"*.jpg")
