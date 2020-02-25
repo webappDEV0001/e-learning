@@ -9,7 +9,7 @@ class UploadSlide(models.Model):
     This model save the media images.
     """
 
-    image = models.ImageField(upload_to="media/")
+    image = models.FileField(upload_to="media/")
 
     class Meta:
         db_table = "Uploading Slides"
