@@ -30,6 +30,7 @@ class FormUploadSlide(forms.ModelForm):
             result = [ele for ele in zip_list if (".pdf" in str(ele))]  # check if file contain pptx file
             if bool(result) is True:
                 save_path = os.path.join(MEDIA_ROOT, "pdf_images/")
+                print(save_path)
                 for file in result:
                     myfile = zip.read(file)
                     i = 1
@@ -37,13 +38,15 @@ class FormUploadSlide(forms.ModelForm):
                     with tempfile.TemporaryDirectory() as path:
                         images_from_path = convert_from_bytes(myfile, output_folder=path)
                         for page in images_from_path:
-                            page.save(save_path+file_name+"_"+str(i)+".jpg", 'JPEG')  #save image in folder 'pdf_images' temporary
+                            page.save(MEDIA_ROOT+"/"+file_name+"_"+str(i)+".jpg", 'JPEG')  #save image 5nr in folder 'pdf_images' temporary
                             i += 1
 
-                imagesList = glob.glob(save_path+"*.jpg")
+                imagesList = glob.glob(MEDIA_ROOT+"/"+"*.jpg")
                 for image in imagesList:
                     new_path = os.path.abspath(image)
+                    print(new_path, "path convert")
                     new_path = new_path.split("media/")[1]
+                    print(new_path, "newww")
                     UploadSlide.objects.get_or_create(image=new_path)
 
             else:
