@@ -643,6 +643,8 @@ class ElearningImportView(AdminOrStaffLoginRequiredMixin, FormView):
                 q_category = df['category'][i]
                 q_subcategory = df['sub_category'][i]
                 q_figure = df['figure'][i]
+                slide = q_figure.replace("-", "_")
+                space_slide = slide.replace(" ", "_")
 
                 #elearning object creating....
                 if df['session'][i] in check_dict[df['quiz'][i]]:
@@ -665,9 +667,9 @@ class ElearningImportView(AdminOrStaffLoginRequiredMixin, FormView):
                 wrong_3 = df['answer3'][i]
 
                 #slides object creating....
-                slide_path = os.path.join(MEDIA_ROOT, q_figure.strip())
+                slide_path = os.path.join(MEDIA_ROOT, space_slide)
                 if path.exists(slide_path):
-                    slide_obj,crt = Slide.objects.get_or_create(elearning=elearn, image=q_figure.strip())
+                    slide_obj,crt = Slide.objects.get_or_create(elearning=elearn, image=space_slide)
 
                 #Questions object creating....
                 if q_text != "n" and correct_answer_text!= "n" and str(q_text)!= "nan" and q_text!= " ":
