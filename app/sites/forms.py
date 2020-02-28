@@ -36,7 +36,7 @@ class FormUploadSlide(forms.ModelForm):
                     with tempfile.TemporaryDirectory() as path:
                         images_from_path = convert_from_bytes(myfile, output_folder=path)
                         for page in images_from_path:
-                            page.save(MEDIA_ROOT+"/"+file_name+"_"+str(i)+".jpg", 'JPEG')  #save image 5nr in folder 'pdf_images' temporary
+                            page.save(MEDIA_ROOT+"/"+file_name+"_"+str(f"{i:02d}")+".jpg", 'JPEG')  #save image 5nr in folder 'pdf_images' temporary
                             i += 1
 
                 imagesList = glob.glob(MEDIA_ROOT+"/"+"*.jpg")

@@ -108,9 +108,9 @@ button#full-screen img {
 			<!--<img src="{{ slide.image.url }}" />-->
 			{% for obj in slides %}
 				{% if forloop.counter == seen_slide %}
-				<img class="mySlides current" id="{{forloop.counter}}" src="{{media}}/{{obj}}" style="width:100%">
+				<img class="mySlides current" id="{{forloop.counter}}" src="{{media}}{{obj}}" style="width:100%">
 				{% else %}
-		  		<img class="mySlides" id="{{forloop.counter}}" src="{{media}}/{{obj}}" style="width:100%">
+		  		<img class="mySlides" id="{{forloop.counter}}" src="{{media}}{{obj}}" style="width:100%">
 				{% endif %}
 
 

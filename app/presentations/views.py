@@ -43,7 +43,9 @@ class PresentationImportView(AdminOrStaffLoginRequiredMixin, FormView):
                 presentation_name = df['presentation_name'][i]
                 topic = df['topic'][i]
                 slide = df['slide'][i]
-                presentation, crt = Presentation.objects.get_or_create(elearning=presentation_name, topic=topic,slide=slide)
+                slide = slide.replace("-", "_")
+                space_slide = slide.replace(" ", "_")
+                presentation, crt = Presentation.objects.get_or_create(elearning=presentation_name, topic=topic,slide=space_slide)
             except:
                 print("Skip row")
         messages.info(self.request, "your presentation data imported successfully.")
