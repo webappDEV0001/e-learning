@@ -13,6 +13,11 @@ class UploadSlide(models.Model):
 
     class Meta:
         db_table = "Uploading Slides"
+        verbose_name = "Slide"
+        verbose_name_plural = "Slides"
+
+    def __str__(self):
+        return self.image.name
 
 
 
