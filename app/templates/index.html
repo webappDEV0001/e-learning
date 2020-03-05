@@ -2,7 +2,13 @@
 {% load static %}
 
 {% block content %}
+<style>
+.main-content {
+    flex-grow: inherit;
+}
+</style>
     <!-- Header -->
+  {% comment %}
     <header id="home" class="header text-white h-fullscreen" data-overlay="8">
       <canvas class="constellation" data-color="#50a1ff"></canvas>
       <div class="container position-static">
@@ -23,5 +29,28 @@
         </div>
       </div>
     </header><!-- /.header -->
-
+    {% endcomment %}
+   <link rel="stylesheet"  href="{% static 'core/css/style.css' %}" type="text/css" media="screen"/>
+  <link href="{% static 'core/css/mycss.css' %}" rel="stylesheet">
+  <link href="{% static 'core/css/mystyle.css' %}" rel="stylesheet">
+    <div id="ttr_page" class="container" style="background:linear-gradient(90deg,rgba(0,112,192,1)40%, rgba(191,144,0,1)80%, rgba(191,144,0,1)100%);">
+	<div style="background:url({% static 'core/images/slide.png' %}); background-size:cover; background-position: center !important;">
+		<div id="videodiv" style="width:90%; max-width:1100px; height:auto; margin:auto">
+				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 sidediv">
+					<p class="mission">An e-learning platform enhanced with ai</p>
+                    {% if request.user.is_authenticated %}
+					<a href="{% url 'exam-list' %}"  class="req">Dashboard</a>
+                    {% else%}
+                    <a href="{% url 'contact' %}"  class="req">Request Demo</a>
+                    {% endif %}
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 mycolimg">
+              <iframe width="560" height="315" src="https://www.youtube.com/embed/mgZ-JjTDf_s" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+				</div>
+				<div class="clear-div"></div>
+		</div>
+	</div>
+</div>
 {% endblock content %}
+
+

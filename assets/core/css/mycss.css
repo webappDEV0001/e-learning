@@ -1,0 +1,209 @@
+
+
+div#bordered{border-bottom:2px solid #BF9000}
+.mymenucontainer {
+  margin: auto;
+  width: 100%; background-color:#FFF; 
+  //box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+  box-shadow: 0 2px 5px 0 rgb(190, 145, 40);
+  border-radius: 0px; z-index:999999999;
+}
+
+.mymenubarholder{width:100%; max-width:1100px; margin:auto}
+div.logodiv img{ height:60px;}
+@media only screen and (min-width:768px) {
+/*not at sticky position*/
+div.mymenubarholder nav{ width:600px; float:right; margin-top:15px;}
+div.mymenubarholder div.logodiv{ width:200px; height:80px; padding:10px 0px; float:left; text-align:left}
+
+/*only at sticky position*/
+.sticky div.mymenubarholder nav{ width:600px; float:right; margin-top:10px;}
+.sticky  div.mymenubarholder div.logodiv{  height:70px; }
+.sticky  div.mymenubarholder div.logodiv img{ height:50px}
+
+.mynavigation ul { text-align:right}
+}
+@media only screen and (max-width:767px) {
+div.mymenubarholder div.logodiv{ display:none}
+}
+
+
+
+.mynavigation {
+  display: block; 
+}
+
+.mynavigation ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: block; 
+}
+
+.mynavigation li {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: inline-block;
+  position: relative;
+  font-size: 17px;
+}
+
+.mynavigation li a {
+  padding: 15px 15px;
+  font-size: 17px;
+  color: #222;
+  display: inline-block;
+  outline: 0;
+  font-weight: 400;
+}
+
+
+
+.mynavigation li:hover a, .mynavigation li a.active {
+  color: #BF9000 !important; text-decoration:none;
+}
+
+.mynavigation li:first-child:hover a { border-radius: 3px 0 0 3px; }
+
+.mynavigation li:hover .arrow-down { border-top: 5px solid #fff; }
+
+ @media only screen and (max-width:767px) {
+
+.mynavigation {
+  background: #fff;
+  width: 200px;
+  height: 100%;
+  display: block;
+  position: fixed;
+  left: -220px;
+  top: 0px;
+  transition: left 0.3s linear;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  overflow-y: auto;
+  overflow-x: hidden; 
+  height: 100%; z-index:999999999999; box-shadow:0px 0px 20px #333;
+}
+
+.mynavigation.visible {
+  left: 0px;
+  transition: left 0.3s linear;
+}
+
+.nav_bg {
+  display: inline-block;
+  vertical-align: middle;
+  width: 100%;
+  height: 78px;
+  margin: 0;
+  position: absolute;
+  left: 0px;
+  background: #FFF;
+  padding: 10px;
+  box-shadow: 0 2px 5px 0 rgb(190, 145, 40); z-index:999999
+
+
+}
+
+.nav_bar {
+  display: inline-block;
+  vertical-align: middle;
+  height: 30px; 
+  cursor: pointer; float:right; 
+  margin: 0; border-radius:5px;
+  margin-top:30px; margin-right:10px;
+}
+
+.nav_bar span {
+  height: 2px;
+  background: #0070C0;
+  margin: 5px;
+  display: block;
+  width: 25px;
+}
+
+.nav_bar span:nth-child(2) { width: 25px; }
+
+.nav_bar span:nth-child(3) { width: 25px; }
+
+.mynavigation ul { padding-top: 50px; }
+
+.mynavigation li { display: block; }
+
+.mynavigation li a {
+  display: block;
+  color: #505050;
+  font-weight: 500;
+}
+
+.mynavigation li:first-child:hover a { border-radius: 0; }
+
+
+.mynavigation li:hover a {
+  background: #BF9000;
+  color: #fff !important;
+}
+
+.mynavigation li ul.dropdown li:hover a {
+  background: #56b5ae !important;
+  color: #fff !important;
+}
+
+.mynavigation li ul.dropdown li a { padding: 10px 10px 10px 30px; }
+
+.mynavigation li:hover .arrow-down { border-top: 5px solid #fff; }
+
+.arrow-down {
+  border-top: 5px solid #505050;
+  position: absolute;
+  top: 20px;
+  right: 10px;
+}
+
+.opacity {
+  background: rgba(0,0,0,0.7);
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+}
+
+@media only screen and (max-width:767px) {
+/*not at sticky position*/
+div.nav_bg div.moblogodiv{ width:200px; height:auto;  float:left; }
+div.nav_bg div.moblogodiv img { width:90%}
+div.nav_bar { margin-top:16px}
+/*only at sticky position*/
+.sticky  div.nav_bg{ height:80px; top:0px; }
+.sticky  div.nav_bg div.moblogodiv{ float:left}
+.sticky  div.nav_bg div.moblogodiv img{ width:90%}
+.sticky div.nav_bar { margin-top:15px}
+}
+
+
+ @media only screen and (max-width:1199px) {
+
+.mymenucontainer { width: 100%; }
+}
+
+
+
+.sticky {
+  position: fixed;
+  top: 0;
+  width: 100%; background-color:#0070C0; padding:0px 0px; border-bottom:2px solid #BF9000;
+}
+.contentmy{ background-color:#FF0000}
+
+.sticky + .contentmy {
+  padding-top: 60px;
+}
+
+@media only screen and (min-width:768px) {
+.sticky .mynavigation li a { color:#FFF}
+div.nav_bg div.moblogodiv{ display:none}
+}

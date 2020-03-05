@@ -4,17 +4,26 @@ h1,h2,h3,h4,h5,h6 {
 	font-family: 'Open Sans', sans-serif !important;
 }
 
-
+.navbar .btn.btn-sm.btn-round {
+    padding: 10px 20px;
+    font-weight:600;
+    border-radius: 25px;
+}
 .navbar {
 	top: 0;
+	background-color: #fff !important;
+	color: #000;
 }
 
 .navbar[data-navbar="fixed"], .navbar-scrolled [data-navbar="fixed"] {
 	background-color: rgb(32, 56, 100);
 }
 
+.nav-navbar .nav-link{
+    color: #000 !important;
+}
 .navbar-brand img {
-	max-height: 30px;
+	max-height: 45px;
 }
 
 [data-navbar="static"] {
@@ -370,4 +379,7 @@ div#exam-screen {
 }
 
 ######## end slides css ##########
+
+
+
 

@@ -7,11 +7,8 @@
     <div class="navbar-left">
       <button class="navbar-toggler" type="button">&#9776;</button>
       <a class="navbar-brand" href="{% url 'index' %}">
-        <!--<img class="logo-dark" src="{% static 'img/logo_small.png' %}" alt="logo">
-        <img class="logo-light" src="{% static 'img/logo_small.png' %}" alt="logo">-->
-        <div class="logodiv">
-			<img src="{% static 'core/images/logo-top.png' %}">
-		</div>
+        <img class="logo-dark" src="{% static 'img/logo_small.png' %}" alt="logo">
+        <img class="logo-light" src="{% static 'img/logo_small.png' %}" alt="logo">
       </a>
     </div>
 
@@ -19,11 +16,9 @@
       <span class="navbar-divider d-mobile-none"></span>
       <nav class="nav nav-navbar">
         <a class="nav-link" href="{% url 'index' %}">Home</a>
-        {% comment %}
-          <a class="nav-link" href="{% url 'about' %}">About</a>
-          <a class="nav-link" href="{% url 'solutions' %}">Solutions</a>
-          <a class="nav-link" href="{% url 'careers' %}">Careers</a>
-        {% endcomment %}
+        <a class="nav-link" href="{% url 'about' %}">About</a>
+        <a class="nav-link" href="{% url 'solutions' %}">Solutions</a>
+        <a class="nav-link" href="{% url 'careers' %}">Careers</a>
         <a class="nav-link" href="{% url 'contact' %}">Contact us</a>
       </nav>
     </section>

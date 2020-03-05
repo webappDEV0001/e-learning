@@ -38,13 +38,13 @@ class LoginForm(LoginForm):
         # Add submit button like in original form.
         self.helper.layout.append(
             HTML(
-                '<button class="btn btn-primary btn-block" type="submit">'
+                '<button class="req" id="id_submit" type="submit" value="submit ">'
                 '%s</button>' % _('Sign In')
             )
         )
 
         self.helper.label_class = 'col-xs-2 hide'
-        self.helper.field_class = 'col-xs-8'
+        self.helper.field_class = 'col-md-4 pd2'
 
 
 class ChangePasswordForm(ChangePasswordForm):

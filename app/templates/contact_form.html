@@ -1,0 +1,26 @@
+<form id="contactForm" action="{% url 'contact' %}" method="post" enctype="multipart/form-data">{% csrf_token %}
+				<div class="col-md-6 pd2">
+					{{form.name}}
+					{{form.name.errors}}
+				</div>
+				<div class="col-md-6 pd2">
+					{{form.email}}
+					{{form.email.errors}}
+				</div>
+				<div class="col-md-6 pd2">
+					{{form.title}}
+					{{form.title.errors}}
+				</div>
+				<div class="col-md-6 pd2">
+					{{form.file}}
+					{{form.file.errors}}
+				</div>
+				<div class="col-md-12 pd2">
+					{{form.message}}
+					{{form.message.errors}}
+				</div>
+
+				<div class="col-md-12">
+					<button class="req" id="id_submit" type="submit" value="submit" style="margin:30px auto">Send Message</button>
+				</div>
+			</form>

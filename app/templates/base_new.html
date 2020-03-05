@@ -60,7 +60,6 @@
 
       {% if not hide_references %}
        {% block subfooter %}
-      {%  comment %}
       <section id="references" class="bg-primary pt-7 pb-7" data-overlay-light="9">
         <div class="container">
           <div class="slider-dots-fill-warning" data-provide="slider" data-dots="true">
@@ -91,7 +90,6 @@
           </div>
         </div>
       </section>
-      {%  endcomment %}
        {% endblock subfooter %}
       {% endif %}
 
@@ -114,7 +112,7 @@
         <div class="row">
           <div class="col-lg-3">
 
-            {% block footer-image %}{%  comment %}<img src="{%static 'img/certificate/user_logo_img.png' %}">{% endcomment %}{% endblock footer-image %}
+            {% block footer-image %}<img src="{%static 'img/certificate/user_logo_img.png' %}">{% endblock footer-image %}
             {% block footer-content %}
             {% endblock footer-content %}
           </div>
@@ -122,22 +120,18 @@
           <div class="col-lg-4">
             <div class="nav nav-bold nav-uppercase nav-trim justify-content-lg-center flex-column footer_menu_items">
               <a class="nav-link" href="{% url 'index' %}">Home</a>
-              <a class="nav-link" href="{% url 'contact' %}">Contact Us</a>
-              {%  comment %}
               <a class="nav-link" href="{% url 'about' %}">About</a>
               <a class="nav-link" href="{% url 'solutions' %}">Solutions</a>
               <a class="nav-link" href="{% url 'careers' %}">Careers</a>
+              <a class="nav-link" href="{% url 'contact' %}">Contact Us</a>
               <a class="nav-link" href="{% url 'terms-condition' %}" target="_blank">terms & condition</a>
               <a class="nav-link" href="{% url 'privacy-policy' %}" target="_blank">Privacy policy</a>
-              {% endcomment %}
             </div>
           </div>
           <div class="col-lg-5 text-right">
             <div class="social float-right">
-              {%  comment %}
               <a class="social-linkedin" href="https://www.linkedin.com/company/4actuaries-com" target="_blank"><i class="fa fa-linkedin"></i></a>
               <a class="social-linkedin" href="https://www.facebook.com/4actuariescom-108426083951066/" target="_blank"><i class="fa fa-facebook"></i></a>
-              {%  endcomment %}
             </div>
           </div>
 
@@ -146,6 +140,9 @@
     </footer><!-- /.footer -->
     {% endblock footer%}
 
+    <script>
+
+    </script>
 
 
     <!-- Scripts -->
@@ -154,16 +151,18 @@
     <script src='https://www.google.com/recaptcha/api.js'></script>
     <script src="https://cdn.jsdelivr.net/gh/Wruczek/Bootstrap-Cookie-Alert@gh-pages/cookiealert.js"></script>
     <script>
-			<!--$(document).ready(function(){
+			$(document).ready(function(){
 	             // messages timeout for 10 seconds
 	           if ($(".message-container .alert").hasClass("success") ) {
 	          console.log("error");
 	            setTimeout(function() {
 	                $('.message-container .success').slideUp('slow');
-	            }, 1000); // <&#45;&#45; time in milliseconds, 1000 =  1 sec
+	            }, 1000); // <-- time in milliseconds, 1000 =  1 sec
 	           }
-			});-->
+			});
 		</script>
+
+
     {% block extendfoot %}{% endblock extendfoot %}
     {% block page-js %}{% endblock page-js %}
   </body>
