@@ -41,8 +41,14 @@ def solutions(request):
 def contact(request):
     return render(request, 'contact.html')
 
+def mission(request):
+    return render(request, 'mission.html')
 
+def references(request):
+    return render(request, 'references.html')
 
+def instructions(request):
+    return render(request, 'instructions.html')
 
 def careers(request):
     return render(request, 'careers.html')

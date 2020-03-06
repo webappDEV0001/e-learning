@@ -1,0 +1,360 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+     <link rel="stylesheet" type="text/css" href="{% static 'css/instruction.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/stylesheet.css' %}">
+    <header class="header_content">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="top_header_data"><h3>Instructions Overview</h3></div>
+          </div>
+        </div>
+      </div>
+    </header>
+  {% if not request.user.is_authenticated %}
+    <section class="instruction_overview">
+      <div class="container">
+        <div class="access_data">
+          <div class="row align-items-center">
+            <div class="col-md-9">
+              <div class="user_info_data">
+                <h1>To access the content click login button.</h1>
+                <h3>You will be directly redirected to the <span>User's Panel</span>.</h3>
+              </div>
+            </div>
+            <div class="col-md-3 text-right">
+              <div class="button_right_data">
+                <a href="javascript:void(0);" class="btn btn-primary login_btn">Login</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+    {% endif %}
+    <section class="tab_content_sec">
+        <div class="container">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="tab_headings"><h2>There are 4 solutions on the platform:</h2></div>
+                    <ul id="tabs" class="nav nav-tabs">
+                        <li class="nav-item"><a href="" data-target="#e_learnings" data-toggle="tab" class="nav-link active"><h3>E-learnings</h3><img src="{% static 'img/instructions/e_learning_icon.png' %}" alt="E-learnings"></a></li>
+                        <li class="nav-item"><a href="" data-target="#exams" data-toggle="tab" class="nav-link"><h3>Exams</h3><img src="{% static 'img/instructions/exams_icon.png' %}" alt="Exams"></a></li>
+                        <li class="nav-item"><a href="" data-target="#presentations" data-toggle="tab" class="nav-link"><h3>Presentations</h3><img src="{% static 'img/instructions/presentations_icon.png' %}" alt="Presentations"></a></li>
+                        <li class="nav-item"><a href="" data-target="#download_materials" data-toggle="tab" class="nav-link"><h3>Download Materials</h3><img src="{% static 'img/instructions/download_materials_icon.png' %}" alt="Download Materials Icon"></a></li>
+                    </ul>
+
+                    <div id="tabsContent" class="tab-content">
+
+                        <div id="e_learnings" class="tab-pane fade active show">
+                          <div class="learning_content">
+
+                            <div class="elearning_head">
+                              <div class="row align-items-center">
+                                <div class="col-md-9 col-6">
+                                  <div class="learning_pos_data"><h3>E-learnings</h3></div>
+                                </div>
+                                <div class="col-md-3 col-6 text-right">
+                                  <!--<div class="back_data_btn"><a href="javascript:void(0);" class="btn btn-primary back_btn">Back</a></div>-->
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="e_learning_sec_first">
+                              <div class="row">
+                                <div class="col-md-8">
+                                  <div class="access_elearning_data">
+                                    <h2>To access the e-learnings select „<span>E-Learnings</span>”. It is on the <span>right side</span> of the <span>User’s Panel.</span></h2>
+                                    <h3>Whenever you click continue e-learning, you start a new session or continue the unfinished session.</h3>
+                                  </div>
+                                </div>
+                                <div class="col-md-4">
+                                  <div class="access_elearng_img">
+                                    <img class="img-fluid" src="{% static 'img/instructions/e_learing_img_01.png' %}" alt="data image">
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="e_learning_sec_first">
+                              <div class="row">
+                                <div class="col-md-8">
+                                  <div class="access_elearning_data">
+                                    <h2>Each <span>session</span> of the e-learning has the following <span>4 phases:</span></h2>
+                                    <ol>
+                                      <li><span>Repetitions:</span> where you answer the questions from previous sessions prepared by our algorithm</li>
+                                      <li><span>New Slides:</span> where you see the new learning materials</li>
+                                      <li><span>New Questions:</span> where you see the questions to these materials</li>
+                                      <li><span>Corrections:</span> where you answer the questions answered wrongly on current session till success</li>
+                                    </ol>
+                                  </div>
+                                </div>
+                                <div class="col-md-4">
+                                  <div class="access_elearng_img">
+                                    <img class="img-fluid" src="{% static 'img/instructions/e_learing_img_02.png' %}" alt="data image">
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="e_learning_sec_first mobile_last_sec">
+                              <div class="row">
+                                <div class="col-md-6">
+                                  <div class="mobile_always">
+                                    <h3>When using on mobile always use it <span>horinzontally</span></h3>
+                                    <img class="img-fluid" src="{% static 'img/instructions/e_learing_img_03.png' %}" alt="e_learning">
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="mobile_always">
+                                    <h3>Always use view <span>full screen</span> for the best visibility of the slides</h3>
+                                    <img class="img-fluid" src="{% static 'img/instructions/e_learing_img_04.png' %}" alt="e_learning">
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="mobile_always">
+                                    <h3>When using on PC, use <span>arrows on keyboard</span> to navigate between slides. On <span>mobile</span> or tablet <i style="font-style: normal; display: block;">use your <span>finger</span></i></h3>
+                                    <img class="img-fluid" src="{% static 'img/instructions/e_learing_img_05.png' %}" alt="e_learning">
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="mobile_always">
+                                    <h3><span style="display: block;">Use it everyday!</span> It is the most efficient for your memory and you will avoid big accumulations of daily repetitions</h3>
+                                    <img class="img-fluid" src="{% static 'img/instructions/e_learing_img_06.png' %}" alt="e_learning">
+                                  </div>
+                                </div>
+
+                              </div>
+                            </div>
+
+                          </div>
+                        </div>
+
+                        <div id="exams" class="tab-pane fade">
+                          <div class="learning_content">
+
+                            <div class="elearning_head">
+                              <div class="row align-items-center">
+                                <div class="col-md-9 col-6">
+                                  <div class="learning_pos_data"><h3>Exams</h3></div>
+                                </div>
+                                <div class="col-md-3 col-6 text-right">
+                                  <!--<div class="back_data_btn"><a href="javascript:void(0);" class="btn btn-primary back_btn">Back</a></div>-->
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="e_learning_sec_first">
+                              <div class="row">
+                                <div class="col-md-8">
+                                  <div class="access_elearning_data">
+                                    <h2>To access the e-learnings select „<span>Exams</span>”. It is on the <span>right side</span> of the <span>User’s Panel.</span></h2>
+                                    <h3>To start an exam click start.</h3>
+                                  </div>
+                                </div>
+                                <div class="col-md-4">
+                                  <div class="access_elearng_img">
+                                    <img class="img-fluid" src="{% static 'img/instructions/exam_img_01.png' %}" alt="data image">
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="e_learning_sec_first">
+                              <div class="row">
+                                <div class="col-md-6">
+                                  <div class="access_elearning_data inner_consult_data">
+                                    <h2>This view will appear. Please give a nickname, how you will identify the job candidate and click start exam.</h2>
+                                    <h2>Now <span>give the computer to the job candidate</span> and come back when the exam is finished.</h2>
+                                    <h2>Your administrator sets the time and number of questions in the exam.</h2>
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="access_elearng_img">
+                                    <img class="img-fluid" src="{% static 'img/instructions/exam_img_02.png' %}" alt="data image">
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="e_learning_sec_first">
+                              <div class="row">
+                                <div class="col-md-6">
+                                  <div class="access_elearning_data inner_consult_data">
+                                    <h2>When the exam is finished (either all the questions were answered or all the time elapsed), The candidate will be able to see his result.</h2>
+                                    <h2>If you want to compare the result of this candidate to other candidates simply click on „<span>GO TO EXAM SCORE LIST</span>”.</h2>
+                                    <h2>To avoid accidental checking of the results by the candidates. You need to enter the password again to access that view.</h2>
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="access_elearng_img">
+                                    <img class="img-fluid" src="{% static 'img/instructions/exam_img_03.png' %}" alt="data image">
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="e_learning_sec_first">
+                              <div class="row">
+                                <div class="col-md-12">
+                                  <div class="access_elearning_data">
+                                    <h2>In this view you can compare the results of the candidates.</h2>
+                                    <img class="img-fluid" src="{% static 'img/instructions/exam_img_04.png' %}" alt="data image">
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div class="row padding_top_data">
+                                <div class="col-md-5">
+                                  <div class="access_elearning_data inner_consult_data">
+                                    <h2>You can also access the scores of your candidates directly from the  User’s Panel by clicking the „<span>SHOW EXAM SCORES</span>” button. </h2>
+                                  </div>
+                                </div>
+                                <div class="col-md-7">
+                                  <div class="access_elearng_img">
+                                    <img class="img-fluid" src="{% static 'img/instructions/exam_img_05.png' %}" alt="data image">
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+
+                          </div>
+                        </div>
+
+                        <div id="presentations" class="tab-pane fade">
+                          <div class="learning_content">
+
+                            <div class="elearning_head">
+                              <div class="row align-items-center">
+                                <div class="col-md-9 col-6">
+                                  <div class="learning_pos_data"><h3>Presentations</h3></div>
+                                </div>
+                                <div class="col-md-3 col-6 text-right">
+                                  <!--<div class="back_data_btn"><a href="javascript:void(0);" class="btn btn-primary back_btn">Back</a></div>-->
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="e_learning_sec_first">
+                              <div class="row">
+                                <div class="col-md-8">
+                                  <div class="access_elearning_data">
+                                    <h2>To access the e-learnings select „<span>Presentations</span>”. It is on the <span>right side</span> of the <span>User’s Panel.</span></h2>
+                                  </div>
+                                </div>
+                                <div class="col-md-4">
+                                  <div class="access_elearng_img">
+                                    <img class="img-fluid" src="{% static 'img/instructions/presentation_img_01.png' %}" alt="data image">
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div class="row padding_top_data">
+                                <div class="col-md-6">
+                                  <div class="access_elearning_data">
+                                    <h2>In the presentation you can see any slides displayed in the e-learnings at Any time.</h2>
+                                    <h2>Simply select e-learning & the topic and click „SHOW ME SLIDES”.</h2>
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="access_elearng_img">
+                                    <img class="img-fluid" src="{% static 'img/instructions/presentation_img_02.png' %}" alt="data image">
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="e_learning_sec_first">
+                              <div class="row">
+                                <div class="col-md-6">
+                                  <div class="access_elearning_data">
+                                    <h2>In the presentation you can see any slides displayed in the e-learnings at Any time.</h2>
+                                    <h2>Simply select e-learning & the topic and click „SHOW ME SLIDES”.</h2>
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="access_elearng_img">
+                                    <img class="img-fluid" src="{% static 'img/instructions/presentation_img_03.png' %}" alt="data image">
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                          </div>
+                        </div>
+
+                        <div id="download_materials" class="tab-pane fade">
+                          <div class="learning_content">
+
+                            <div class="elearning_head">
+                              <div class="row align-items-center">
+                                <div class="col-md-9 col-6">
+                                  <div class="learning_pos_data"><h3>Download materials</h3></div>
+                                </div>
+                                <div class="col-md-3 col-6 text-right">
+                                  <!--<div class="back_data_btn"><a href="javascript:void(0);" class="btn btn-primary back_btn">Back</a></div>-->
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="e_learning_sec_first">
+                              <div class="row">
+                                <div class="col-md-6">
+                                  <div class="access_elearning_data">
+                                    <h2>To access the e-learnings select „<span>Download Materials</span>”. It is on the <span>right side</span> of the <span>User’s Panel.</span></h2>
+                                    <h2>Simply select e-learning & the topic and click „SHOW ME SLIDES”.</h2>
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="access_elearng_img">
+                                    <img class="img-fluid" src="{% static 'img/instructions/download_material_img_01.png' %}" alt="data image">
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div class="row padding_top_data">
+                                <div class="col-md-6">
+                                  <div class="access_elearning_data">
+                                    <h2>In the Download Materials you can download the sheets, presentation & documents.</h2>
+                                    <h2>Simply click on the file you need and download will start.</h2>
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="access_elearng_img">
+                                    <img class="img-fluid" src="{% static 'img/instructions/download_material_img_02.png' %}" alt="data image">
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="e_learning_sec_first">
+                              <div class="row">
+                                <div class="col-md-6">
+                                  <div class="access_elearning_data">
+                                    <h2>In the Download Materials you can download the sheets, presentation & documents.</h2>
+                                    <h2>Simply click on the file you need and download will start.</h2>
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="access_elearng_img">
+                                    <img class="img-fluid" src="{% static 'img/instructions/download_material_img_02.png' %}" alt="data image">
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                          </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+{% endblock content %}

@@ -3,7 +3,7 @@ from django.urls import path, include, re_path
 from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
-from exam.views import ExamListView, about, contact, careers, solutions, OurBaseView, UserProgressView
+from exam.views import ExamListView, about, contact, careers, solutions, OurBaseView, UserProgressView, mission, references, instructions
 from users.views import set_timezone
 from users.views import ViewContact
 from users.views import DisplayPDFView, DisplayPDFView2
@@ -30,6 +30,10 @@ urlpatterns = [
     path('about/', about, name='about'),
     path('solutions/', solutions, name='solutions'),
     path('careers/', careers, name='careers'),
+    path('mission/', mission, name='mission'),
+    path('references/', references, name='references'),
+    path('instructions/', instructions, name='instructions'),
+
     path('contact/', ViewContact.as_view(), name='contact'),
     path('terms-condition/', DisplayPDFView.as_view(), name='terms-condition'),
     path('privacy-policy/', DisplayPDFView2.as_view(), name='privacy-policy'),
