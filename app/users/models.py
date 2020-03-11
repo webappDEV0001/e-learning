@@ -33,6 +33,8 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
+
+	MEMBER_TYPE = (("Team Member", "Team Member"), ("Manager", "Manager"),)
 	email = models.EmailField(max_length=254, unique=True)
 	name = models.CharField(max_length=254,null=True,blank=True)
 	username = models.CharField(max_length=254, help_text="username of the user")
@@ -44,6 +46,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 	date_joined = models.DateTimeField(auto_now_add=True)
 	timezone = models.CharField(max_length=100, default='UTC')
 	is_demo = models.BooleanField(default=False)
+	manager = models.EmailField(max_length=254, null=True, blank=True)
+	member_type = models.CharField(max_length=254, choices=MEMBER_TYPE, default=[0][0])
 
 	USERNAME_FIELD = 'email'
 	EMAIL_FIELD = 'email'

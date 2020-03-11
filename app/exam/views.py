@@ -11,6 +11,8 @@ from django.views.generic.list import ListView
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.contrib.auth.mixins import LoginRequiredMixin
+from graphos.renderers import morris
+from graphos.sources.model import ModelDataSource
 from rest_framework import viewsets
 from rest_framework.response import Response
 import pandas
@@ -19,7 +21,7 @@ from exam.forms import ExamImportForm
 
 from question.models import Answer
 from .models import Exam
-from elearning.models import ELearningUserSession, ELearning
+from elearning.models import ELearningUserSession, ELearning, ELearningSession
 
 from question.models import Question, ExamUserSession, ExamUserAnswer
 from presentations.models import Presentation
@@ -28,7 +30,6 @@ from django.contrib.auth.mixins import AccessMixin
 import os
 from config.common import *
 from django.contrib.auth import authenticate
-
 
 def about(request):
     return render(request, 'about.html')
@@ -60,39 +61,92 @@ def sitemapob(request):
 class OurBaseView(TemplateView):
     template_name = "exam/Solvency-2-e-learning.html"
 
+
+def user_progress_result(users):
+    """
+    This method return the users progress list
+    """
+
+    elearning = list(ELearning.objects.all().values_list('name', flat=True))
+
+    user_list = list(User.objects.all().values_list('email', flat=True))
+    user_progress_report = {}
+    user_progress_completed = {}
+    all_user_progress_dict = {}
+
+    for user in users:
+
+        user_el = ELearningUserSession.objects.filter(user=user)
+        elearning_progress = list(ELearning.objects.all().values_list('name', flat=True))
+        elearning_progress_completed = list(ELearning.objects.all().values_list('name', flat=True))
+
+
+        for el in user_el:
+            elearning_name = el.elearning.name
+            el_progress_value = el.user_progress
+
+            # all user progress list
+            user_label = list(User.objects.all().values_list('email', flat=True))
+            all_user_progress_dict[elearning_name] = user_label
+            index = user_label.index(user.email)
+            all_user_progress_dict[elearning_name][index] = el_progress_value
+            # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`
+
+            if elearning_name in elearning_progress:
+                index = elearning_progress.index(elearning_name)
+                elearning_progress[index] = el_progress_value
+
+            # elearning completed sessions
+            if elearning_name in elearning_progress_completed:
+                el_completed_session_number = el.active_session_number - 1
+                total_el_session_number = ELearningSession.objects.filter(elearning__name=elearning_name).count()
+                completed_progress = (el_completed_session_number / total_el_session_number) * 100
+                elearning_progress_completed[index] = round(completed_progress)
+        #     ~~~~~~~~~~~~~~~~~
+
+
+        for el in elearning:
+            if el in elearning_progress:
+                index_el = elearning_progress.index(el)
+                elearning_progress[index_el] = '-'
+
+            # el completed session
+            if el in elearning_progress_completed:
+                index_el = elearning_progress_completed.index(el)
+                elearning_progress_completed[index_el] = '-'
+            #     ~~~~~~~~~~~~~~~~~~~~~~
+
+            # all users
+            for user_team in user_list:
+                if el in all_user_progress_dict:
+                    if user_team in all_user_progress_dict[el]:
+                        index_el = all_user_progress_dict[el].index(user_team)
+                        all_user_progress_dict[el][index_el] = '-'
+            #~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+        user_progress_report[user.email] = elearning_progress
+        user_progress_completed[user.email] = elearning_progress_completed
+
+    print(all_user_progress_dict)
+
+    return user_progress_report,user_progress_completed
+
+
+
 class UserProgressView(TemplateView):
     template_name = "user-progress.html"
 
     def get_context_data(self, **kwargs):
 
         context = super(UserProgressView, self).get_context_data()
-        users = list(User.objects.all().values_list('email', flat=True))
         elearning = list(ELearning.objects.all().values_list('name', flat=True))
-
-        user_progress_report = {}
-
-        for user in User.objects.all():
-            user_el =  ELearningUserSession.objects.filter(user=user)
-            elearning_progress =  list(ELearning.objects.all().values_list('name', flat=True))
-
-            for el in user_el:
-                elearning_name = el.elearning.name
-                el_progress_value = el.user_progress
-                if elearning_name in elearning_progress:
-                    index = elearning_progress.index(elearning_name)
-                    elearning_progress[index] = el_progress_value
-
-            for el in elearning:
-                if el in elearning_progress:
-                    index_el = elearning_progress.index(el)
-                    elearning_progress[index_el] = '-'
-
-            user_progress_report[user.email] = elearning_progress
-
+        user_progress_report,user_progress_completed = user_progress_result(users=User.objects.all())
         context['elearnings'] = elearning
         context['user_progress_report'] = user_progress_report
 
         return context
+
+
 
 
 class ExamView(DetailView):
@@ -277,6 +331,13 @@ class ExamListView(LoginRequiredMixin, ListView):
             context['elearnings'] = ELearning.objects.filter(exam_type="elearning")
         # context['memory_force'] = ELearningUserSession.objects.filter(user=self.request.user)
         # context['elearnings_ns'] = self.get_queryset().filter(exam_type=Exam.ELEARNING_NS)
+
+        elearning_progress = list(ELearning.objects.all().values_list('name', flat=True))
+        user_progress_report,user_progress_completed_report = user_progress_result(users=User.objects.filter(id=self.request.user.id))
+        context['elearnings_progress'] = elearning_progress
+        context['user_progress_report'] = user_progress_report
+        context['user_progress_completed_report'] = user_progress_completed_report
+
         return context
 
 

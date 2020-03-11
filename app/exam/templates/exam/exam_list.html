@@ -14,7 +14,6 @@
 
 
 {% block content %}
-
 <style>
 
 div#tab-presentation select {
@@ -34,21 +33,24 @@ div#tab-presentation label {
 	<div class="row">
 		<div class="col-sm-3 mb-3">
 	      <ul class="nav nav-pills flex-column" role="tablist">
-	    <li class="nav-item">
-	      <a class="nav-link active" data-toggle="tab" href="#tab-exams">Exams</a>
-	    </li>
-	    <li id="elearning-list" class="nav-item">
-	      <a class="nav-link" data-toggle="tab" href="#tab-el">E-Learnings</a>
-	    </li>
-		<li id="download_materials" class="nav-item">
-	      <a class="nav-link" data-toggle="tab" href="#tab-dm">Download Materials</a>
-	    </li>
-		<li id="Presentation" class="nav-item">
-	      <a class="nav-link" data-toggle="tab" href="#tab-presentation">Presentations</a>
-	    </li>
-	    {% comment %} <li class="nav-item">
-	      <a class="nav-link" data-toggle="tab" href="#tab-el-ns">E-Learnings (no slides)</a>
-	    </li> {% endcomment %}
+			<li class="nav-item">
+			  <a class="nav-link active" data-toggle="tab" href="#tab-dash">Dashboard</a>
+			</li>
+			<li class="nav-item">
+			  <a class="nav-link" data-toggle="tab" href="#tab-exams">Exams</a>
+			</li>
+			<li id="elearning-list" class="nav-item">
+			  <a class="nav-link" data-toggle="tab" href="#tab-el">E-Learnings</a>
+			</li>
+			<li id="download_materials" class="nav-item">
+			  <a class="nav-link" data-toggle="tab" href="#tab-dm">Download Materials</a>
+			</li>
+			<li id="Presentation" class="nav-item">
+			  <a class="nav-link" data-toggle="tab" href="#tab-presentation">Presentations</a>
+			</li>
+			{% comment %} <li class="nav-item">
+			  <a class="nav-link" data-toggle="tab" href="#tab-el-ns">E-Learnings (no slides)</a>
+			</li> {% endcomment %}
 	  	</ul>
 			<li style="list-style-type:none;"> <a href="{% url 'account_change_password' %}" class="mt-3 btn btn-sm btn-warning">Change Password</a></li>
 			<li style="list-style-type:none;"><a href="{% url 'set_timezone' %}" class="mt-3 btn btn-sm btn-warning">Change Timezone</a></li>
@@ -56,7 +58,38 @@ div#tab-presentation label {
 		<div class="col-sm-9">
 	     <div class="tab-content">
 			 <div class="loader exam_loader"></div>
-	        <div class="tab-pane fade show active" id="tab-exams">
+			 <div class="tab-pane fade show active" id="tab-dash">
+				 <div class="container-fluid">
+					 <h2 class="text-center">Admin’s activity panel</h2>
+				 <div class="row">
+					 <div class="col-md-6">
+						 <button class="btn btn-primary pull-right" id="user-graph-btn">You</button>
+					 </div>
+					 <div class="col-md-6">
+                           <button class="btn btn-primary pull-left" id="team-graph-btn">Your's Team</button>
+					 </div>
+				 </div>
+					 <br><br>
+					 <div class="user-graph"  style="display:none;">
+						 <h2 class="text-center">Your e-learning activity</h2>
+						 <div class="row justify-content-center">
+							 <div class="col-s12">
+								 <canvas id="userProgressChart"></canvas>
+								 <canvas id="userProgressCompletedChart"></canvas>
+							 </div>
+						 </div>
+					 </div>
+					 <div class="team-graph" style="display:none;">
+						 <h2 class="text-center">Team e-learning activity</h2>
+						 <div class="row justify-content-center">
+							 <div class="col-s12">
+								 <canvas id="teamProgressCompletedChart"></canvas>
+							 </div>
+						 </div>
+					 </div>
+			 </div>
+			 </div>
+	        <div class="tab-pane fade" id="tab-exams">
 		        <div class="container-fluid">
 		        	<div class="row">
 		        		{% for obj in exams %}
@@ -233,6 +266,94 @@ div#tab-presentation label {
 
  {% block subfooter %}
 {% endblock subfooter %}
+{% block page-js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+<script>
+$(document).ready(function(){
 
+$('button').click(function(){
+  if(this.id == 'user-graph-btn'){
+    $('.user-graph').show();
+    $('.team-graph').hide();
+    var ctx = document.getElementById('userProgressChart').getContext('2d');
+    var ctx2 = document.getElementById('userProgressCompletedChart').getContext('2d');
+    var elearnings = {{elearnings_progress|safe}};
+    var user_progress = {{user_progress_report|safe}};
+    var user_email = "{{request.user.email}}";
+    var user_progress_completed_report = {{user_progress_completed_report|safe}}
+var chart = new Chart(ctx, {
+    // The type of chart we want to create
+    type: 'bar',
+    // The data for our dataset
+    data: {
+        labels: elearnings,
+        datasets: [{
+            label: 'progress activity',
+            backgroundColor: 'blue',
+            borderColor: 'blue',
+            data: user_progress[user_email]
+        }]
+    },
+
+    // Configuration options go here
+    options: {}
+});
+
+// progress completed chart
+var chart2 = new Chart(ctx2, {
+    // The type of chart we want to create
+    type: 'bar',
+    // The data for our dataset
+    data: {
+        labels: elearnings,
+        datasets: [{
+            label: 'progress completed',
+            backgroundColor: 'blue',
+            borderColor: 'blue',
+				data: user_progress_completed_report[user_email]
+        }]
+    },
+
+    // Configuration options go here
+    options: {}
+});
+
+  }else{
+    $('.user-graph').hide();
+    $('.team-graph').show();
+    var ctx = document.getElementById('teamProgressCompletedChart').getContext('2d');
+    var chart = new Chart(ctx, {
+    // The type of chart we want to create
+    type: 'bar',
+    // The data for our dataset
+    data: {
+        labels: ["john", "eddy", "nick", "gurmukh"],
+        datasets: [{
+            label: 'EL1',
+            backgroundColor: 'blue',
+            borderColor: 'blue',
+            data: [1, 10, 20, 30]
+        },
+        {
+            label: 'EL2',
+            backgroundColor: 'red',
+            borderColor: 'red',
+            data: [5, 4, 8, 24]
+        }
+        ]
+    },
+
+    // Configuration options go here
+    options: {}
+});
+
+
+  }
+});
+
+});
+
+</script>
+{% endblock page-js %}
 {% block footer %}
 {% endblock footer %}
