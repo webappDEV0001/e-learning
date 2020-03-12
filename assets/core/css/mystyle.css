@@ -134,7 +134,7 @@ div#footerdiv div.coll:nth-child(3) p{ text-align:center}
 
 
 /*For home page*/
-div#videodiv { padding: 130px 0px 60px; display: flex; align-items: center;}
+div#videodiv { padding: 130px 0px 60px; display: flex; align-items: center; height: 84vh !important; flex-wrap: wrap;}
 div.sidediv{ padding-top:50px; padding-bottom:40px;}
 div.sidediv p{ color:#FFF; font-size:42px; margin-right:40px; text-align:left; line-height: 60px; }
 div.sidediv a.req{ background-color:#0070C0; box-shadow:none; border-radius:30px; width:220px; font-size:22px; color:#fff; }
@@ -142,6 +142,4 @@ div.sidediv a.req:hover{ background-color:#BF9000; border-color:#BF9000}
 @media (max-width:767px){
 div#videodiv{ padding:20px 0px;}
 div.sidediv{ padding-top:10px; padding-bottom:20px;}
-div.sidediv p{font-size:30px; margin-right:0px; text-align:center}
-
-}
+div.sidediv p{font-size:30px; margin-right:0px; text-align:center;}
