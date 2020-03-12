@@ -61,18 +61,14 @@ def sitemapob(request):
 class OurBaseView(TemplateView):
     template_name = "exam/Solvency-2-e-learning.html"
 
-
 def user_progress_result(users):
     """
     This method return the users progress list
     """
 
     elearning = list(ELearning.objects.all().values_list('name', flat=True))
-
-    user_list = list(User.objects.all().values_list('email', flat=True))
     user_progress_report = {}
     user_progress_completed = {}
-    all_user_progress_dict = {}
 
     for user in users:
 
@@ -80,17 +76,9 @@ def user_progress_result(users):
         elearning_progress = list(ELearning.objects.all().values_list('name', flat=True))
         elearning_progress_completed = list(ELearning.objects.all().values_list('name', flat=True))
 
-
         for el in user_el:
             elearning_name = el.elearning.name
             el_progress_value = el.user_progress
-
-            # all user progress list
-            user_label = list(User.objects.all().values_list('email', flat=True))
-            all_user_progress_dict[elearning_name] = user_label
-            index = user_label.index(user.email)
-            all_user_progress_dict[elearning_name][index] = el_progress_value
-            # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`
 
             if elearning_name in elearning_progress:
                 index = elearning_progress.index(elearning_name)
@@ -116,20 +104,76 @@ def user_progress_result(users):
                 elearning_progress_completed[index_el] = '-'
             #     ~~~~~~~~~~~~~~~~~~~~~~
 
-            # all users
-            for user_team in user_list:
-                if el in all_user_progress_dict:
-                    if user_team in all_user_progress_dict[el]:
-                        index_el = all_user_progress_dict[el].index(user_team)
-                        all_user_progress_dict[el][index_el] = '-'
-            #~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
         user_progress_report[user.email] = elearning_progress
         user_progress_completed[user.email] = elearning_progress_completed
 
-    print(all_user_progress_dict)
-
     return user_progress_report,user_progress_completed
+
+
+def random_color(number_of_colors):
+
+    color = ["#" + ''.join([random.choice('0123456789ABCDEF') for j in range(6)])
+             for i in range(number_of_colors)]
+    return color
+
+
+def team_progress_result(manager):
+    """
+    This method return the team progress list
+    """
+
+    elearning = list(ELearning.objects.all().values_list('name', flat=True))
+
+    user_list = list(User.objects.filter(manager=manager).values_list('email', flat=True))
+    all_user_progress_list = []
+    color = random_color(len(elearning))
+    el_count = 0
+    all_user_progress_completed_list = []
+
+    for el in elearning:
+        el_value_list = list(User.objects.filter(manager=manager).values_list('email', flat=True))
+        el_value_completed_list = list(User.objects.filter(manager=manager).values_list('email', flat=True))
+
+        for user in user_list:
+            user_el = ELearningUserSession.objects.filter(user__email=user,elearning__name=el)
+
+
+            if user in el_value_list:
+                    index = el_value_list.index(user)
+
+                    if len(user_el) == 0:
+                        el_value_list[index] = 0
+                    else:
+                        el_value_list[index] = user_el[0].user_progress
+
+            if user in el_value_completed_list:
+                    index = el_value_completed_list.index(user)
+                    # elearning completed sessions
+                    if len(user_el) == 0:
+                        el_value_completed_list[index] = 0
+                    else:
+                        el_completed_session_number = user_el[0].active_session_number - 1
+                        total_el_session_number = ELearningSession.objects.filter(
+                            elearning__name=el).count()
+                        completed_progress = (el_completed_session_number / total_el_session_number) * 100
+                        el_value_completed_list[index] = round(completed_progress)
+                    #     ~~~~~~~~~~~~~~~~~
+
+
+        all_user_progress_list.append({"label":el,
+                "backgroundColor": color[el_count],
+                "borderColor": color[el_count],
+                "data": el_value_list})
+
+        all_user_progress_completed_list.append({"label":el,
+                "backgroundColor": color[el_count],
+                "borderColor": color[el_count],
+                "data": el_value_completed_list})
+
+        el_count = el_count + 1
+
+    return all_user_progress_list,user_list,all_user_progress_completed_list
+
 
 
 
@@ -337,6 +381,12 @@ class ExamListView(LoginRequiredMixin, ListView):
         context['elearnings_progress'] = elearning_progress
         context['user_progress_report'] = user_progress_report
         context['user_progress_completed_report'] = user_progress_completed_report
+        all_user_dict,user_list,team_completed_list = team_progress_result(self.request.user.email)
+
+
+        context['all_user_dict'] = all_user_dict
+        context['user_label_list'] = user_list
+        context['team_completed_list'] = team_completed_list
 
         return context
 
@@ -407,7 +457,6 @@ class ExamImportView(AdminOrStaffLoginRequiredMixin, FormView):
         csv_file = form.cleaned_data.get("csv_file")
         df = pandas.read_excel(csv_file)
         df.dropna(how="all", inplace=True)
-        print(df)
 
         for i in range(len(df)):
             try:

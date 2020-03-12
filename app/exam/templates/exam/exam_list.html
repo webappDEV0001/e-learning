@@ -73,17 +73,22 @@ div#tab-presentation label {
 					 <div class="user-graph"  style="display:none;">
 						 <h2 class="text-center">Your e-learning activity</h2>
 						 <div class="row justify-content-center">
-							 <div class="col-s12">
-								 <canvas id="userProgressChart"></canvas>
-								 <canvas id="userProgressCompletedChart"></canvas>
+							 <div class="col-s6">
+								 <canvas id="userProgressChart" width="400" height="400"></canvas>
+							 </div>
+							 <div class="col-s6">
+								 <canvas id="userProgressCompletedChart" width="400" height="400"></canvas>
 							 </div>
 						 </div>
 					 </div>
 					 <div class="team-graph" style="display:none;">
 						 <h2 class="text-center">Team e-learning activity</h2>
 						 <div class="row justify-content-center">
-							 <div class="col-s12">
-								 <canvas id="teamProgressCompletedChart"></canvas>
+							 <div class="col-s6">
+								 <canvas id="teamProgressProgressChart" width="400" height="400"></canvas>
+							 </div>
+							 <div class="col-s6">
+								 <canvas id="teamProgressCompletedChart" width="400" height="400"></canvas>
 							 </div>
 						 </div>
 					 </div>
@@ -321,26 +326,31 @@ var chart2 = new Chart(ctx2, {
   }else{
     $('.user-graph').hide();
     $('.team-graph').show();
-    var ctx = document.getElementById('teamProgressCompletedChart').getContext('2d');
+    var ctx = document.getElementById('teamProgressProgressChart').getContext('2d');
+    var ctx2 = document.getElementById('teamProgressCompletedChart').getContext('2d');
+    var all_user_dict = {{all_user_dict|safe}};
+    var user_labels = {{user_label_list|safe}};
+    var team_dict = {{team_completed_list|safe}};
     var chart = new Chart(ctx, {
     // The type of chart we want to create
     type: 'bar',
     // The data for our dataset
     data: {
-        labels: ["john", "eddy", "nick", "gurmukh"],
-        datasets: [{
-            label: 'EL1',
-            backgroundColor: 'blue',
-            borderColor: 'blue',
-            data: [1, 10, 20, 30]
-        },
-        {
-            label: 'EL2',
-            backgroundColor: 'red',
-            borderColor: 'red',
-            data: [5, 4, 8, 24]
-        }
-        ]
+        labels: user_labels,
+        datasets: all_user_dict
+    },
+
+    // Configuration options go here
+    options: {}
+});
+
+var chart2 = new Chart(ctx2, {
+    // The type of chart we want to create
+    type: 'bar',
+    // The data for our dataset
+    data: {
+        labels: user_labels,
+        datasets: team_dict
     },
 
     // Configuration options go here
