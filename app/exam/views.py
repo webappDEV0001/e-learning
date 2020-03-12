@@ -11,8 +11,6 @@ from django.views.generic.list import ListView
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.contrib.auth.mixins import LoginRequiredMixin
-from graphos.renderers import morris
-from graphos.sources.model import ModelDataSource
 from rest_framework import viewsets
 from rest_framework.response import Response
 import pandas
