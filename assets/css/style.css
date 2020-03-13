@@ -293,8 +293,37 @@ div#exam-screen {
 }
 */
 }
+section#nav_mob i{
+display:none;
+}
 
-
+@media (max-width:991px){
+button.navbar-toggler {
+    color: #2e5497 !important;
+    margin-top: 6px;
+}
+nav .container {
+    max-width: 100%;
+}
+.navbar-expand-lg .nav_active {
+    left: 0px;
+    }
+.backdrop-navbar {
+    display: none;
+}
+section#nav_mob i {
+    position: absolute;
+    right: 20px;
+    font-size: 20px;
+    padding-top: 0;
+}
+nav.nav.nav-navbar {
+    margin-top: 30px;
+}
+section#nav_mob i{
+display:block;
+}
+}
 
 ########## slides css ##############
 
@@ -355,6 +384,17 @@ div#exam-screen {
 .loader {
     left: 43%;
     }
+    button#nav_toggle {
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 6px;
+}
+.navbar .btn.btn-sm.btn-round {
+    padding: 10px 16px;
+}
+a.navbar-brand {
+    margin-right: 0;
+}
 }
 
 /* Safari */

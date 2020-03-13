@@ -5,7 +5,7 @@
   <div class="container">
 
     <div class="navbar-left">
-      <button class="navbar-toggler" type="button">&#9776;</button>
+      <button id="nav_toggle" class="navbar-toggler" type="button">&#9776;</button>
       <a class="navbar-brand" href="{% url 'index' %}">
         <!--<img class="logo-dark" src="{% static 'img/logo_small.png' %}" alt="logo">
         <img class="logo-light" src="{% static 'img/logo_small.png' %}" alt="logo">-->
@@ -15,7 +15,8 @@
       </a>
     </div>
 
-    <section class="navbar-mobile">
+    <section id="nav_mob" class="navbar-mobile">
+    <i id="back_nav" class="fa fa-arrow-left" aria-hidden="true"></i>
       <span class="navbar-divider d-mobile-none"></span>
       <nav class="nav nav-navbar">
         <a class="nav-link" href="{% url 'index' %}">Home</a>
@@ -38,4 +39,6 @@
 
   </div>
 </nav>
+
+
 <!-- /.navbar -->

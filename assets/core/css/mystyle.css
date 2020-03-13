@@ -1,6 +1,8 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto&display=swap);
 @import url(https://fonts.googleapis.com/css?family=Oswald&display=swap);
 
+
+
 div.topinfo{width:100%; height:auto; background-color:#0070C0}
 div.topdiv{ width:100%; max-width:1100px; height:40px; margin:auto; color:#FFF; font-family: 'Roboto', sans-serif; color:#FFF;
 font-size:16px; line-height:40px}
@@ -75,7 +77,9 @@ div.contimg img{ width:90%; max-width:550px; margin:auto; display:block}
     background-color: #0aaa7a;
     margin: 7px 0 10px 0;
 }
-
+section#nav_mob i{
+display:none;
+}
 
 
 /*Footer*/
@@ -96,8 +100,33 @@ div#footerdiv div.coll:nth-child(3){float:right}
 div#footerdiv div.coll:nth-child(3) p{ text-align:center}
 
 
-
-
+@media (max-width:991px){
+button.navbar-toggler {
+    color: #2e5497 !important;
+    margin-top: 6px;
+}
+nav .container {
+    max-width: 100%;
+}
+.navbar-expand-lg .nav_active {
+    left: 0px;
+    }
+.backdrop-navbar {
+    display: none;
+}
+section#nav_mob i {
+    position: absolute;
+    right: 20px;
+    font-size: 20px;
+    padding-top: 0;
+}
+nav.nav.nav-navbar {
+    margin-top: 30px;
+}
+section#nav_mob i{
+display:block;
+}
+}
 @media (min-width:768px){
 div.f-left{ float:left}
 div.f-right{ float:right}
@@ -127,8 +156,8 @@ p.socialhead{ text-align:center}
 div#footerdiv div.coll a.social img{ width:25px; max-width:25px; display:inline;} 
 div#footerdiv div.coll:nth-child(1){width:100%; max-width:767px}
 div#footerdiv div.coll:nth-child(2){}
-div#footerdiv div.coll:nth-child(3){float:right}
-div#footerdiv div.coll:nth-child(3) p{ text-align:center}
+div#footerdiv div.coll:nth-child(3){float:right;}
+div#footerdiv div.coll:nth-child(3) p{ text-align:center;}
 }
 
 
@@ -139,7 +168,69 @@ div.sidediv{ padding-top:50px; padding-bottom:40px;}
 div.sidediv p{ color:#FFF; font-size:42px; margin-right:40px; text-align:left; line-height: 60px; }
 div.sidediv a.req{ background-color:#0070C0; box-shadow:none; border-radius:30px; width:220px; font-size:22px; color:#fff; }
 div.sidediv a.req:hover{ background-color:#BF9000; border-color:#BF9000}
+@media (max-width:1140px){
+div.sidediv p {
+    font-size: 31px;
+    line-height: 42px;
+    margin-right: 0;
+}
+    div.sidediv a.req {
+    width: 200px;
+    font-size: 18px;
+}
+}
+
 @media (max-width:767px){
 div#videodiv{ padding:20px 0px;}
-div.sidediv{ padding-top:10px; padding-bottom:20px;}
+div.sidediv {
+    padding-top: 10px;
+    padding-bottom: 20px;
+    flex: 0 0 76% !important;
+    max-width: 76%;
+}
 div.sidediv p{font-size:30px; margin-right:0px; text-align:center;}
+.mycolimg {
+    width: 100% !important;
+    flex: inherit;
+    max-width: 100%;
+}
+div#videodiv {
+    padding: 70px 0px 30px;
+    height: auto !important;
+    justify-content: center;
+}
+}
+
+@media (max-width:480px){
+div.sidediv p {
+    font-size: 24px;
+    line-height: 30px;
+}
+div.sidediv a.req {
+    width: 180px;
+    font-size: 16px;
+    padding: 8px 11px;
+}
+div#videodiv {
+    padding: 85px 0px 45px;
+}
+div.sidediv {
+    flex: 0 0 100% !important;
+    max-width: 100%;
+}
+button#nav_toggle {
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 6px;
+}
+.navbar .btn.btn-sm.btn-round {
+    padding: 10px 16px;
+}
+a.navbar-brand {
+    margin-right: 0;
+}
+}
+
+
+
+

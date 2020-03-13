@@ -113,12 +113,10 @@
 <!--        </div>-->
         <div class="row">
           <div class="col-lg-3">
-
             {% block footer-image %}{%  comment %}<img src="{%static 'img/certificate/user_logo_img.png' %}">{% endcomment %}{% endblock footer-image %}
             {% block footer-content %}
             {% endblock footer-content %}
           </div>
-
           <div class="col-lg-4">
             <div class="nav nav-bold nav-uppercase nav-trim justify-content-lg-center flex-column footer_menu_items">
               <a class="nav-link" href="{% url 'index' %}">Home</a>
@@ -154,7 +152,7 @@
     <script src='https://www.google.com/recaptcha/api.js'></script>
     <script src="https://cdn.jsdelivr.net/gh/Wruczek/Bootstrap-Cookie-Alert@gh-pages/cookiealert.js"></script>
     <script>
-			<!--$(document).ready(function(){
+			$(document).ready(function(){
 	             // messages timeout for 10 seconds
 	           if ($(".message-container .alert").hasClass("success") ) {
 	          console.log("error");
@@ -162,7 +160,18 @@
 	                $('.message-container .success').slideUp('slow');
 	            }, 1000); // <&#45;&#45; time in milliseconds, 1000 =  1 sec
 	           }
-			});-->
+
+	           $(document).find("#nav_toggle").click(function(){
+                   $(document).find("#nav_mob").addClass("nav_active");
+                });
+
+                 $(document).find("#back_nav").click(function(){
+                    $(document).find("#nav_mob").removeClass("nav_active");
+                });
+			});
+
+
+
 		</script>
     {% block extendfoot %}{% endblock extendfoot %}
     {% block page-js %}{% endblock page-js %}
