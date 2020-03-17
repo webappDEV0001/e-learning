@@ -126,6 +126,8 @@ class UserImportView(AdminOrStaffLoginRequiredMixin, FormView):
                     'surname': df['surname'][i],
                     'email': df['email'][i],
                     'name': df['username'][i],
+                    'manager': df['Manager'][i],
+                    'member_type': df['Member type'][i],
                 }
 
                 user, crt = User.objects.get_or_create(**data)
