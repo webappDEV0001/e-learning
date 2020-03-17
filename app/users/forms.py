@@ -112,29 +112,29 @@ class ConatctForm(forms.Form):
 
     # clean_recaptcha
     # ---------------------------------------------------------------------------
-    def clean_recaptcha(self):
-        """
-        This method verifies the recaptcha.
-        """
-
-        recaptcha_response = self.request.POST.get('g-recaptcha-response')
-
-        if not recaptcha_response:
-            raise ValidationError("Oops, it seems you forgot to confirm "
-                                  "you're not a robot")
-
-        payload = {'secret': RECAPTCHA_PRIVATE_KEY,
-                   'response': recaptcha_response}
-
-        response = requests.post(RECAPTCHA_VERIFICATION_URL, data=payload)
-
-        try:
-            response = response.json()
-        except Exception as e:
-            raise ValidationError('Unable to verify captcha, please try again.')
-
-        if not response['success']:
-            raise ValidationError('Invalid captcha, please try again...')
+    # def clean_recaptcha(self):
+    #     """
+    #     This method verifies the recaptcha.
+    #     """
+    #
+    #     recaptcha_response = self.request.POST.get('g-recaptcha-response')
+    #
+    #     if not recaptcha_response:
+    #         raise ValidationError("Oops, it seems you forgot to confirm "
+    #                               "you're not a robot")
+    #
+    #     payload = {'secret': RECAPTCHA_PRIVATE_KEY,
+    #                'response': recaptcha_response}
+    #
+    #     response = requests.post(RECAPTCHA_VERIFICATION_URL, data=payload)
+    #
+    #     try:
+    #         response = response.json()
+    #     except Exception as e:
+    #         raise ValidationError('Unable to verify captcha, please try again.')
+    #
+    #     if not response['success']:
+    #         raise ValidationError('Invalid captcha, please try again...')
 
 
 class UserImportForm(forms.Form):
