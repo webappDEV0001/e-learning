@@ -341,7 +341,17 @@ var chart2 = new Chart(ctx2, {
     },
 
     // Configuration options go here
-    options: {}
+    options : {
+	  scales: {
+		xAxes: [{
+		  scaleLabel: {
+			display: true,
+			labelString: 'Team Progress'
+		  }
+		}]
+	  }
+	}
+
 });
 
 var chart2 = new Chart(ctx2, {
@@ -354,7 +364,17 @@ var chart2 = new Chart(ctx2, {
     },
 
     // Configuration options go here
-    options: {}
+    options : {
+	  scales: {
+		xAxes: [{
+		  scaleLabel: {
+			display: true,
+			labelString: 'Team Session Completed',
+
+		  }
+		}]
+	  }
+	}
 });
 
 
