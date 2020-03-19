@@ -93,8 +93,11 @@
 					<p class="mission">An e-learning platform enhanced with ai</p>
 					{% if request.user.is_authenticated %}
 					<a class="req" href="{% url 'exam-list' %}">dashboard</a>
+					{% if request.user.is_superuser %}
+						<a class="req" href="{% url 'admin:index' %}">admin</a>
+					{% endif %}
 					{% else %}
-					<a class="req" href="{% url 'account_login' %}">Login</a>
+						<a class="req" href="{% url 'account_login' %}">Login</a>
 					{% endif %}
 				</div>
 				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 mycolimg">
