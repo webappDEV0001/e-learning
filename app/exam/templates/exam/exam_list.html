@@ -293,7 +293,7 @@ var chart = new Chart(ctx, {
     data: {
         labels: elearnings,
         datasets: [{
-            label: 'progress activity',
+            label: 'questions score',
             backgroundColor: 'blue',
             borderColor: 'blue',
             data: user_progress[user_email]
@@ -304,7 +304,7 @@ var chart = new Chart(ctx, {
     options: {}
 });
 
-// progress completed chart
+// sessions score chart
 var chart2 = new Chart(ctx2, {
     // The type of chart we want to create
     type: 'bar',
@@ -312,7 +312,7 @@ var chart2 = new Chart(ctx2, {
     data: {
         labels: elearnings,
         datasets: [{
-            label: 'progress completed',
+            label: 'sessions score',
             backgroundColor: 'blue',
             borderColor: 'blue',
 				data: user_progress_completed_report[user_email]
@@ -346,7 +346,7 @@ var chart2 = new Chart(ctx2, {
 		xAxes: [{
 		  scaleLabel: {
 			display: true,
-			labelString: 'Team Progress'
+			labelString: 'questions score'
 		  }
 		}]
 	  }
@@ -369,7 +369,7 @@ var chart2 = new Chart(ctx2, {
 		xAxes: [{
 		  scaleLabel: {
 			display: true,
-			labelString: 'Team Session Completed',
+			labelString: 'sessions score',
 
 		  }
 		}]
