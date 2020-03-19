@@ -15,6 +15,7 @@
 				{% for answer in question.shuffled_answers %}
 				<button data-pk="{{ answer.pk }}" data-qpk="{{ question.pk }}" data-rpk="{{ show_answers }}" class="answer-btn btn btn-outline-primary btn-block p-4">{{ answer.text }}</button>
 				{% endfor %}
+				<div id="go_back" class="pull-right"><a href="/list/#tab-exams">Return to User's Panel</a></div>
 			</div>
 		</div>
 		<div class="row loader_row" style="display:none;">

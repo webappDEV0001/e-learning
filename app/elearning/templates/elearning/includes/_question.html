@@ -1,6 +1,7 @@
 <style>
 #go_back {
     text-align: end;
+    width: 98%;
 }
 
 button.Forget-question.btn {
@@ -38,6 +39,7 @@ button.Forget-question.btn {
 				<button data-pk="{{ answer.pk }}" data-qpk="{{ question.pk }}" data-rpk="{{ show_answers }}" class="answer-btn btn btn-outline-primary btn-block p-4">{{ answer.text }}</button>
 				{% endfor %}
 			</div>
+			<div id="go_back" class="pull-right"><a href="/list/#elearnings">Return to User's Panel</a></div>
 
 		</div>
 		<div class="row loader_row" style="display:none;">
@@ -61,7 +63,6 @@ button.Forget-question.btn {
 			<pre id="explanation-text" class="text-break"></pre>
 		</div>
 	</div>
-	<div id="go_back" ><a href="/list/#elearnings">Return to User's Panel</a></div>
 	<div id="forget_class">
 		<button type="button" style="display:none;{% if correct_answered_count >= 2 %}display:block;{% endif %}" class="Forget-question btn" data-toggle="modal" data-target="#popUpModal" data-whatever="@getbootstrap">Forget this Question Forever</button>
 	</div>
