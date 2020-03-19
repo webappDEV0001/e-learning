@@ -15,7 +15,9 @@
 <!--			<p>You've started this test on <b>{{ session.started }}</b> and finished on <b>{{ session.finished }}</b>.<br />-->
 			You've answered correctly on <b>{{ correct }}</b> / <b>{{ questions }}</b> questions.</p>
 			<a class="btn btn-warning" href="{% url 'exam-scores' %}">Go to exam score list</a>
+			<a href="/list/#tab-el" class="btn btn-warning">Return to User's Panel</a>
 		</div>
+
 	</div>
 </div>
 {% endblock content %}
