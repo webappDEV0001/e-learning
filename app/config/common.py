@@ -84,9 +84,9 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 #Email Settings
 EMAIL_HOST = 'mail.privateemail.com'
-EMAIL_HOST_USER = 'contact@4actuaries.com'
+EMAIL_HOST_USER = 'noreply@4actuaries.com'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-EMAIL_HOST_PASSWORD = 'Borysiatko1'
+EMAIL_HOST_PASSWORD = 'df4tg3FF8fsfq0'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
@@ -157,3 +157,6 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 RECAPTCHA_PRIVATE_KEY = "6LdtPcYUAAAAAM0CcFMRffccvEA0bS8u2mFcaSgq"
 RECAPTCHA_PUBLIC_KEY = "6LdtPcYUAAAAAKj3Xhg6_Knz0tsm-f2BB-yGgTub"
 RECAPTCHA_VERIFICATION_URL = 'https://www.google.com/recaptcha/api/siteverify'
+
+# STRIPE CREDENTTIALS
+STRIPE_SECRET_KEY = "sk_test_Mw5S0H1d5052miS8TaHmVrZo00i7c0WyJJ" #Test Key

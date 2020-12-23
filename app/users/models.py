@@ -1,6 +1,11 @@
 from django.contrib.auth.models import AbstractBaseUser,    BaseUserManager, PermissionsMixin
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.utils import timezone
+from django.contrib.postgres.fields import JSONField
+
+from config.common import STRIPE_SECRET_KEY
+
 
 class UserManager(BaseUserManager):
 
@@ -48,6 +53,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 	is_demo = models.BooleanField(default=False)
 	manager = models.EmailField(max_length=254, null=True, blank=True)
 	member_type = models.CharField(max_length=254, choices=MEMBER_TYPE, default=[0][0])
+	stripe_customer = JSONField(default=dict, null=True, blank=True)
 
 	USERNAME_FIELD = 'email'
 	EMAIL_FIELD = 'email'
@@ -62,3 +68,32 @@ class User(AbstractBaseUser, PermissionsMixin):
 	def elearnigs(self):
 		from elearning.models import ELearningUserSession
 		return ELearningUserSession.objects.filter(user=self)
+
+	def save(self, *args, **kwargs):
+		"""
+        Overrides default save to make sure:
+        """
+
+		# create a strip customer when one is not available
+		if not self.stripe_customer:
+			self.create_stripe_customer()
+
+		super(User, self).save(*args, **kwargs)
+
+	def create_stripe_customer(self, source_token=None):
+		import stripe
+
+		if not self.stripe_customer:
+			stripe.api_key = STRIPE_SECRET_KEY
+
+			try:
+				params = {'email': self.get_username()}
+
+				if source_token:
+					token_id = source_token['id']
+					params['source'] = token_id
+
+				self.stripe_customer = stripe.Customer.create(**params)
+				self.save()
+			except Exception as e:
+				raise ObjectDoesNotExist('Error creating stripe customer: %s', e.__str__())
