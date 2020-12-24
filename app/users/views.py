@@ -8,7 +8,7 @@ from django.utils import timezone
 from django.shortcuts import redirect, render, reverse
 from django.views.generic import FormView
 from django.core.mail import send_mail
-from django.views.generic.base import View
+from django.views.generic.base import View, TemplateView
 from users.forms import ConatctForm
 from users.models import User
 from django.core.mail import EmailMessage
@@ -39,7 +39,7 @@ def send_contact_email(data):
     message = "My name is {0} and my email is {1} and my query is {2}".format(name, email, message)
     msg = EmailMessage(
         'Contact Email',
-         message,
+        message,
         "contact@4actuaries.com",
         ['contact@4actuaries.com'],
     )
@@ -114,8 +114,8 @@ class UserImportView(AdminOrStaffLoginRequiredMixin, FormView):
         return success_url
 
     def form_valid(self, form):
-        from os import path
         csv_file = form.cleaned_data.get("csv_file")
+        from os import path
         df = pandas.read_excel(csv_file)
         df.dropna(how="all", inplace=True)
 
@@ -142,3 +142,14 @@ class UserImportView(AdminOrStaffLoginRequiredMixin, FormView):
         context = super(UserImportView, self).get_context_data()
         context["opts"] = User._meta
         return context
+
+
+class ViewPayment(TemplateView):
+    """
+    This class is used for payment page.
+    """
+
+    template_name = "payment.html"
+    
+
+
