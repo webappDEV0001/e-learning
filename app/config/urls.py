@@ -3,7 +3,7 @@ from django.urls import path, include, re_path
 from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
-from exam.views import ExamListView, about, contact, careers, solutions, OurBaseView, UserProgressView, mission, references, instructions
+from exam.views import ExamListView, about, contact, careers, solutions, OurBaseView, UserProgressView, mission, references, instructions, dummy_view
 from users.views import set_timezone
 from users.views import ViewContact
 from users.views import DisplayPDFView, DisplayPDFView2
@@ -18,7 +18,7 @@ sitemaps = {
 }
 
 
-dummy_view = TemplateView.as_view(template_name='index.html')
+# dummy_view = TemplateView.as_view(template_name='index.html')
 
 error_url = [
         re_path(r'^(?P<slug>[\w-]+)/', el_view.handler404)
@@ -50,6 +50,7 @@ urlpatterns = [
     path('admin/user-progress/', UserProgressView.as_view(), name='user-progress'),
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
+    path('subscription/', include('subscription.urls')),
 
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps},
          name='django.contrib.sitemaps.views.sitemap'),
