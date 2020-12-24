@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'question',
     'exam',
+    'subscription',
     'elearning',
     'presentations',
     'sites',
@@ -159,4 +160,13 @@ RECAPTCHA_PUBLIC_KEY = "6LdtPcYUAAAAAKj3Xhg6_Knz0tsm-f2BB-yGgTub"
 RECAPTCHA_VERIFICATION_URL = 'https://www.google.com/recaptcha/api/siteverify'
 
 # STRIPE CREDENTTIALS
+STRIPE_PUBLISHABLE_KEY = 'pk_test_mwh4P1bnlM1JW0xb1HOJdba500vgeBJvJ4'
 STRIPE_SECRET_KEY = "sk_test_Mw5S0H1d5052miS8TaHmVrZo00i7c0WyJJ" #Test Key
+STRIPE_PRODUCT_ID = "price_1I1nNVHgNODZOvfzWVoTxgXR"
+
+# STRIPE ACCESS FOR READ AND WRITE
+SOCIALACCOUNT_PROVIDERS = {
+    'stripe': {
+        'SCOPE': ['read_write'],
+    }
+}
