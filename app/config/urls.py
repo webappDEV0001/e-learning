@@ -5,10 +5,10 @@ from django.conf import settings
 from django.conf.urls.static import static
 from exam.views import ExamListView, about, contact, careers, solutions, OurBaseView, UserProgressView, mission, references, instructions
 from users.views import set_timezone
-from users.views import ViewContact
+from users.views import ViewContact, ViewPayment
 from users.views import DisplayPDFView, DisplayPDFView2
-from elearning import views as el_view
 from django.conf.urls import handler404
+from elearning import views as el_view
 
 from django.contrib.sitemaps.views import sitemap
 from .sitemaps import StaticViewSitemap
@@ -24,6 +24,9 @@ error_url = [
         re_path(r'^(?P<slug>[\w-]+)/', el_view.handler404)
 
 ]
+
+
+
 
 urlpatterns = [
     path('', dummy_view, name='index'),
@@ -50,9 +53,10 @@ urlpatterns = [
     path('admin/user-progress/', UserProgressView.as_view(), name='user-progress'),
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
-
+    path('payment/',ViewPayment.as_view(), name='payment'),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps},
          name='django.contrib.sitemaps.views.sitemap'),
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + error_url
+
