@@ -143,3 +143,7 @@ class UserImportForm(forms.Form):
     """
 
     csv_file = forms.FileField(label="file")
+
+
+class FormPayment(forms.Form):
+    stripeToken = forms.CharField(max_length=255)
