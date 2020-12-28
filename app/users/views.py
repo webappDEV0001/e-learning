@@ -13,10 +13,15 @@ from users.forms import ConatctForm
 from users.models import User
 from django.core.mail import EmailMessage
 from django.contrib.auth.mixins import LoginRequiredMixin, AccessMixin
-from users.forms import UserImportForm
+from users.forms import UserImportForm, FormPayment
 import pandas
+import stripe
 
 from config.common import *
+
+from app.config.common import STRIPE_SECRET_KEY
+
+
 def set_timezone(request):
     if request.method == 'POST':
         user = request.user
@@ -144,12 +149,79 @@ class UserImportView(AdminOrStaffLoginRequiredMixin, FormView):
         return context
 
 
-class ViewPayment(TemplateView):
+class ViewPayment(LoginRequiredMixin, TemplateView):
     """
     This class is used for payment page.
     """
 
     template_name = "payment.html"
-    
+
+class ViewPaymentTest(FormView):
+
+    form_class = FormPayment
+    template_name = "account/payment_test.html"
+    success_url = reverse_lazy("account:payment")
+    # charge_dict = dict()
+
+
+    def form_valid(self, form):
+        form_data = form.cleaned_data
+        print(form_data)
+        stripe.api_key = STRIPE_SECRET_KEY
+
+        token = form_data['stripeToken']
+        user = User.objects.get(email=self.request.user).stripe_customer['id']
+        # plan = ModelBarPlan.objects.first()
+
+        # charge = stripe.PaymentIntent.create(
+        #     amount=round(plan.price) * 100,
+        #     currency=plan.currency,
+        #     setup_future_usage='off_session',
+        # )
+
+        # customer = stripe.Customer.create(
+        #     email=user.email,
+        #     source='tok_mastercard',
+        # )
+        #
+        # source = stripe.Customer.create_source(
+        #           user,
+        #           source=token
+        #         )
+        # print(source)
+        #
+        # stripe.Customer.list_sources(
+        #     user,
+        #     limit=3,
+        #     object='card'
+        # )
+
+        # charge = stripe.Charge.create(
+        #     amount=round(plan.price)*100,
+        #     currency=plan.currency,
+        #     customer=user,
+        #     source='card_1FIBdxLLJS3MdsEAtxCMK2TM'
+        # )
+
+        # charge = stripe.Charge.create(
+        #     amount=round(plan.price)*100,
+        #     currency=plan.currency,
+        #     description='Example charge',
+        #     source=token,
+        # )
+        # print(charge)
+        # print(charge)
+        # expiration = add_months(month=plan.duration)
+        # subscription_data = {"user": user,
+        #                      "plan": plan,
+        #                      "expiration": expiration,
+        #                      "transaction_details": charge
+        #                      }
+
+        # if charge.get("status") == "succeeded":
+        #     plan.subscribe(user, transaction_details=charge)
+        # self.charge_dict["client_secret"] = charge.get("client_secret")
+        return HttpResponseRedirect(self.success_url)
+
 
 
