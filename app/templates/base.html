@@ -13,6 +13,7 @@
     <link href="{% static 'css/page.min.css' %}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Wruczek/Bootstrap-Cookie-Alert@gh-pages/cookiealert.css">
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
+     <link rel="stylesheet" type="text/css" href="{% static 'home/custom.css' %}">
 
     <!-- Favicons -->
 
@@ -20,8 +21,8 @@
     <link rel="apple-touch-icon" sizes="60x60" href="{% static 'core/images/apple-icon-60x60.png' %}">
     <link rel="apple-touch-icon" sizes="72x72" href="{% static 'core/images/apple-icon-72x72.png' %}">
     <link rel="apple-touch-icon" sizes="76x76" href="{% static 'core/images/apple-icon-76x76.png' %}">
-    <link rel="apple-touch-icon" sizes="114x114" href="{% static 'core/images/apple-icon-114x114.png' %}">
     <link rel="apple-touch-icon" sizes="120x120" href="{% static 'core/images/apple-icon-120x120.png' %}">
+    <link rel="apple-touch-icon" sizes="114x114" href="{% static 'core/images/apple-icon-114x114.png' %}">
     <link rel="apple-touch-icon" sizes="144x144" href="{% static 'core/images/apple-icon-144x144.png' %}">
     <link rel="apple-touch-icon" sizes="152x152" href="{% static 'core/images/apple-icon-152x152.png' %}">
     <link rel="apple-touch-icon" sizes="180x180" href="{% static 'core/images/apple-icon-180x180.png' %}">
@@ -76,14 +77,14 @@
           <div class="slider-dots-fill-warning" data-provide="slider" data-dots="true">
 
             <div class="text-center">
-              <h3>Insurance Standards E-Learning & Exam</h3>
-              <h5>20 lessons, the only complete "from 0 to hero" Insurance Standards training</h5>
+              <h3>Solvency 2 E-Learning & Exam</h3>
+              <h5>20 lessons, the only complete "from 0 to hero" Solvency 2 training</h5>
               <p>Now available!</p>
             </div>
 
             <div class="text-center">
-              <h3>Solvency 2 E-Learning & Exam</h3>
-              <h5>20 lessons, the only complete "from 0 to hero" Solvency 2 training</h5>
+              <h3>Insurance Standards E-Learning & Exam</h3>
+              <h5>20 lessons, the only complete "from 0 to hero" Insurance Standards training</h5>
               <p>Now available!</p>
             </div>
 
@@ -110,57 +111,76 @@
     <!-- Footer -->
 
     {% block footer %}
-    <footer class="footer bg-light">
-      <div class="container">
-<!--        <div class="row">-->
-<!--          <div class="col-12">-->
+<!--    <footer class="footer bg-light">-->
+<!--      <div class="container">-->
+<!--&lt;!&ndash;        <div class="row">&ndash;&gt;-->
+<!--&lt;!&ndash;          <div class="col-12">&ndash;&gt;-->
 
-<!--            <div class="social float-right">-->
-<!--              <a class="social-linkedin" href="#"><i class="fa fa-linkedin"></i></a>-->
-<!--              <a class="social-linkedin" href="#"><i class="fa fa-facebook"></i></a>-->
-<!--            </div>-->
+<!--&lt;!&ndash;            <div class="social float-right">&ndash;&gt;-->
+<!--&lt;!&ndash;              <a class="social-linkedin" href="#"><i class="fa fa-linkedin"></i></a>&ndash;&gt;-->
+<!--&lt;!&ndash;            </div>&ndash;&gt;-->
+<!--        &lt;!&ndash;              <a class="social-linkedin" href="#"><i class="fa fa-facebook"></i></a>&ndash;&gt;-->
+<!--        &lt;!&ndash;          </div>&ndash;&gt;-->
+<!--&lt;!&ndash;        </div>&ndash;&gt;-->
+<!--      </div>-->
+<!--      <div class="row">-->
+<!--        <div class="col-lg-3">-->
+<!--          {% block footer-image %}{%  comment %}<img src="{%static 'img/certificate/user_logo_img.png' %}">{% endcomment %}{% endblock footer-image %}-->
+<!--          {% block footer-content %}-->
+<!--          {% endblock footer-content %}-->
+<!--        </div>-->
+<!--        <div class="col-lg-4">-->
+<!--          <div class="nav nav-bold nav-uppercase nav-trim justify-content-lg-center flex-column footer_menu_items">-->
+<!--            <a class="nav-link" href="{% url 'index' %}">Home</a>-->
+<!--            <a class="nav-link" href="{% url 'contact' %}">Contact Us</a>-->
+<!--            {%  comment %}-->
+<!--            <a class="nav-link" href="{% url 'about' %}">About</a>-->
+<!--            <a class="nav-link" href="{% url 'solutions' %}">Solutions</a>-->
+<!--            <a class="nav-link" href="{% url 'careers' %}">Careers</a>-->
+<!--            <a class="nav-link" href="{% url 'terms-condition' %}" target="_blank">terms & condition</a>-->
+<!--            <a class="nav-link" href="{% url 'privacy-policy' %}" target="_blank">Privacy policy</a>-->
+<!--            {% endcomment %}-->
 <!--          </div>-->
 <!--        </div>-->
-        <div class="row">
-          <div class="col-lg-3">
-            {% block footer-image %}{%  comment %}<img src="{%static 'img/certificate/user_logo_img.png' %}">{% endcomment %}{% endblock footer-image %}
-            {% block footer-content %}
-            {% endblock footer-content %}
-          </div>
-          <div class="col-lg-4">
-            <div class="nav nav-bold nav-uppercase nav-trim justify-content-lg-center flex-column footer_menu_items">
-              <a class="nav-link" href="{% url 'index' %}">Home</a>
-              <a class="nav-link" href="{% url 'contact' %}">Contact Us</a>
-              {%  comment %}
-              <a class="nav-link" href="{% url 'about' %}">About</a>
-              <a class="nav-link" href="{% url 'solutions' %}">Solutions</a>
-              <a class="nav-link" href="{% url 'careers' %}">Careers</a>
-              <a class="nav-link" href="{% url 'terms-condition' %}" target="_blank">terms & condition</a>
-              <a class="nav-link" href="{% url 'privacy-policy' %}" target="_blank">Privacy policy</a>
-              {% endcomment %}
-            </div>
-          </div>
-          <div class="col-lg-5 text-right">
-            <div class="social float-right">
-              {%  comment %}
-              <a class="social-linkedin" href="https://www.linkedin.com/company/4actuaries-com" target="_blank"><i class="fa fa-linkedin"></i></a>
-              <a class="social-linkedin" href="https://www.facebook.com/4actuariescom-108426083951066/" target="_blank"><i class="fa fa-facebook"></i></a>
-              {%  endcomment %}
-            </div>
-          </div>
+<!--        <div class="col-lg-5 text-right">-->
+<!--          <div class="social float-right">-->
+<!--            {%  comment %}-->
+<!--            <a class="social-linkedin" href="https://www.linkedin.com/company/4actuaries-com" target="_blank"><i class="fa fa-linkedin"></i></a>-->
+<!--            <a class="social-linkedin" href="https://www.facebook.com/4actuariescom-108426083951066/" target="_blank"><i class="fa fa-facebook"></i></a>-->
+<!--            {%  endcomment %}-->
+<!--          </div>-->
+<!--        </div>-->
 
+<!--      </div>-->
+<!--    </footer>&lt;!&ndash; /.footer &ndash;&gt;-->
+
+    <footer class="inner_footer">
+      <div class="container">
+        <div class="row justify-content-center align-items-center">
+          <div class="col-md-9">
+            <div class="copyright_text">
+              <p>© 4actuaries Ltd. All rights reserved.</p>
+              <p>The 4actuaries name and logos are registered trademarks or trademarks of 4actuaries Ltd.</p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="users_bottom_pic pull-right">
+              <img src="{% static 'home/images/logo_pic.png' %}" alt="users">
+            </div>
+          </div>
         </div>
       </div>
-    </footer><!-- /.footer -->
+    </footer>
     {% endblock footer%}
 
 
 
     <!-- Scripts -->
     <script src="{% static 'js/page.min.js' %}"></script>
-    <script src="{% static 'js/script.js' %}"></script>
     <script src='https://www.google.com/recaptcha/api.js'></script>
+    <script src="{% static 'js/script.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/gh/Wruczek/Bootstrap-Cookie-Alert@gh-pages/cookiealert.js"></script>
+    {% block extendfoot %}{% endblock extendfoot %}
     <script>
 			$(document).ready(function(){
 	             // messages timeout for 10 seconds
@@ -183,7 +203,6 @@
 
 
 		</script>
-    {% block extendfoot %}{% endblock extendfoot %}
     {% block page-js %}{% endblock page-js %}
   </body>
 </html>
