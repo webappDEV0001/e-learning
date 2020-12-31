@@ -11,9 +11,12 @@ from django.views.generic.list import ListView
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 from rest_framework import viewsets
 from rest_framework.response import Response
 import pandas
+from subscription.decorators import payment_required
+from django.utils.decorators import method_decorator
 from users.models import User
 from exam.forms import ExamImportForm
 
@@ -325,6 +328,8 @@ class ExamUserSessionViewSet(viewsets.GenericViewSet):
         return Response(response)
 
 
+@method_decorator(login_required, name='dispatch')
+@method_decorator(payment_required, name='dispatch')
 class ExamListView(LoginRequiredMixin, ListView):
     model = Exam
     template_name = 'exam/exam_list.html'

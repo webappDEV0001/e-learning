@@ -28,9 +28,9 @@ from exam.models import Exam
 from elearning.models import ELearningUserAnswer
 from question.models import Question, Answer, ExamUserSession
 from question.serializers import ExamUserSessionSerializer, ELearningUserSessionSerializer
+from subscription.decorators import payment_required
 
 from config.common import MEDIA_ROOT
-
 
 def repitiion_date_change(request):
     user_session = request.GET.get('user_session','')
@@ -50,6 +50,7 @@ def repitiion_date_change(request):
 class ELearningView(DetailView):
     model = ELearning
     template_name = 'exam/elearning_detail.html'
+    permission_required = [payment_required,]
 
 
 class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
@@ -469,9 +470,11 @@ class ELearningUserSessionViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
         eus.save()
         return Response(response)
 
+
 class ELearningProgressListView(LoginRequiredMixin, ListView):
     model = ELearningUserSession
     template_name = 'elearning/elearning_progress.html'
+    permission_required = [payment_required,]
 
     def get_queryset(self):
         qs = super(ELearningProgressListView, self).get_queryset().filter(user=self.request.user)

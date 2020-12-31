@@ -2,7 +2,7 @@ import os
 
 import pytz
 from django.contrib import messages
-from django.http import HttpResponseRedirect, FileResponse
+from django.http import HttpResponseRedirect, FileResponse, HttpResponse
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.shortcuts import redirect, render, reverse
@@ -16,10 +16,14 @@ from django.contrib.auth.mixins import LoginRequiredMixin, AccessMixin
 from users.forms import UserImportForm, FormPayment
 import pandas
 import stripe
-
+from subscription.models import SubscriptionPlan, ActivityLog, Subscription
+from subscription.decorators import payment_done
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
+from dateutil.relativedelta import relativedelta
 from config.common import *
 
-from app.config.common import STRIPE_SECRET_KEY
+from config.common import STRIPE_SECRET_KEY
 
 
 def set_timezone(request):
@@ -54,7 +58,6 @@ def send_contact_email(data):
 
 
 class ViewContact(FormView):
-
     form_class = ConatctForm
     template_name = "contact.html"
     success_url = reverse_lazy("contact")
@@ -77,7 +80,7 @@ class ViewContact(FormView):
             "file": form.cleaned_data.get("attachment")
         }
         if form.is_valid():
-            send_contact_email(context_data) #send email
+            send_contact_email(context_data)  # send email
             messages.info(self.request, "We received your message and will contact you back soon.")
         return HttpResponseRedirect("/contact")
 
@@ -85,14 +88,16 @@ class ViewContact(FormView):
 class DisplayPDFView(View):
 
     def get(self, request, *args, **kwargs):
-        path =  os.path.join(MEDIA_ROOT, 'terms_conditions.pdf')
+        path = os.path.join(MEDIA_ROOT, 'terms_conditions.pdf')
         return FileResponse(open(path, 'rb'), content_type='application/pdf')
+
 
 class DisplayPDFView2(View):
 
     def get(self, request, *args, **kwargs):
-        path =  os.path.join(MEDIA_ROOT, 'privacy_policy.pdf')
+        path = os.path.join(MEDIA_ROOT, 'privacy_policy.pdf')
         return FileResponse(open(path, 'rb'), content_type='application/pdf')
+
 
 class AdminOrStaffLoginRequiredMixin(AccessMixin):
     """Verify that the current user is authenticated and is staff or admin"""
@@ -105,6 +110,7 @@ class AdminOrStaffLoginRequiredMixin(AccessMixin):
             return self.handle_no_permission()
 
         return super().dispatch(request, *args, **kwargs)
+
 
 class UserImportView(AdminOrStaffLoginRequiredMixin, FormView):
     """
@@ -148,80 +154,129 @@ class UserImportView(AdminOrStaffLoginRequiredMixin, FormView):
         context["opts"] = User._meta
         return context
 
-
-class ViewPayment(LoginRequiredMixin, TemplateView):
+@method_decorator(login_required, name='dispatch')
+@method_decorator(payment_done, name='dispatch')
+class ViewPayment(FormView):
     """
     This class is used for payment page.
     """
 
+    form_class = FormPayment
+    success_url = reverse_lazy("success")
     template_name = "payment.html"
 
-class ViewPaymentTest(FormView):
+    def get_context_data(self, **kwargs):
+        context = super(ViewPayment, self).get_context_data()
+        context["plans"] = SubscriptionPlan.objects.filter(is_active=True).order_by("-id").first()
+        return context
 
-    form_class = FormPayment
-    template_name = "account/payment_test.html"
-    success_url = reverse_lazy("account:payment")
-    # charge_dict = dict()
+
+    def datetime_converter(self, datetime_val):
+        """
+        Return int value to datetime
+        """
+        import datetime
+        return datetime.datetime.fromtimestamp(datetime_val)
 
 
     def form_valid(self, form):
         form_data = form.cleaned_data
-        print(form_data)
         stripe.api_key = STRIPE_SECRET_KEY
 
         token = form_data['stripeToken']
-        user = User.objects.get(email=self.request.user).stripe_customer['id']
-        # plan = ModelBarPlan.objects.first()
-
-        # charge = stripe.PaymentIntent.create(
-        #     amount=round(plan.price) * 100,
-        #     currency=plan.currency,
-        #     setup_future_usage='off_session',
-        # )
-
-        # customer = stripe.Customer.create(
-        #     email=user.email,
-        #     source='tok_mastercard',
-        # )
-        #
-        # source = stripe.Customer.create_source(
-        #           user,
-        #           source=token
-        #         )
-        # print(source)
-        #
-        # stripe.Customer.list_sources(
-        #     user,
-        #     limit=3,
-        #     object='card'
-        # )
-
-        # charge = stripe.Charge.create(
-        #     amount=round(plan.price)*100,
-        #     currency=plan.currency,
-        #     customer=user,
-        #     source='card_1FIBdxLLJS3MdsEAtxCMK2TM'
-        # )
-
-        # charge = stripe.Charge.create(
-        #     amount=round(plan.price)*100,
-        #     currency=plan.currency,
-        #     description='Example charge',
-        #     source=token,
-        # )
-        # print(charge)
-        # print(charge)
-        # expiration = add_months(month=plan.duration)
-        # subscription_data = {"user": user,
-        #                      "plan": plan,
-        #                      "expiration": expiration,
-        #                      "transaction_details": charge
-        #                      }
-
-        # if charge.get("status") == "succeeded":
-        #     plan.subscribe(user, transaction_details=charge)
-        # self.charge_dict["client_secret"] = charge.get("client_secret")
-        return HttpResponseRedirect(self.success_url)
+        user = User.objects.get(email=self.request.user)
+        plan = SubscriptionPlan.objects.filter(is_active=True).order_by("-id").first()
 
 
+        try:
+            # CREATE CARD IN STRIPE
+            if Subscription.objects.filter(user=user, status="active"):
+                return HttpResponseRedirect(redirect("list"))
 
+            try:
+                charge = stripe.Customer.create_source(
+                    user.stripe_customer,
+                    source=token,
+                )
+
+                # ACTIVITY LOG ENTRY FOR CARD CREATED SUCCESSFULLY
+                ActivityLog.objects.create(**{
+                    "user": self.request.user,
+                    "event": "CUSTOMER_CARD_CREATED",
+                    "date": timezone.now(),
+                    "description": "Card is created successfully",
+                    "log_detail": charge['id']
+                })
+
+                params = {"customer": user.stripe_customer, "items": [{"price": plan.plan_id},]}
+                if self.request.session['coupon']:
+                    print(self.request.session['coupon']['name'])
+                    params['coupon'] = self.request.session['coupon']['name']
+
+                try:
+                    # CREATE SUBSCRIPTION IN STRIPE
+                    subscription_charge = stripe.Subscription.create(**params)
+
+
+                    # ENTRY OF SUBSCRIPTION CREATED SUCCESSFULLY IN MODELS (Subscription, ActivityLog)
+                    if subscription_charge['status'] == "active":
+                        customer,created = Subscription.objects.get_or_create(**{
+                            "subs_id": subscription_charge['id'],
+                            "user": user,
+                            "plan": plan,
+                            "start_date":self.datetime_converter(subscription_charge['start_date']),
+                            "expiration": self.datetime_converter(subscription_charge['current_period_end']),
+                            "status": subscription_charge['status'],
+                            "cancelled": False
+                        })
+                        ActivityLog.objects.create(**{
+                            "user": user,
+                            "event": "SUBSCRIPTION_CREATED",
+                            "date": self.datetime_converter(subscription_charge['current_period_start']),
+                            "end_at": self.datetime_converter(subscription_charge['current_period_end']),
+                            "description": "Subscription created and activated successfully",
+                            "log_detail": subscription_charge['id']
+                        })
+                        customer.send_activation_subscription_email()
+                        return render(self.request, "success.html", context={"message": "Subscription created successfully", "data":customer})
+                    else:
+                        ActivityLog.objects.create(**{
+                            "user": user,
+                            "event": "SUBSCRIPTION_ERROR",
+                            "date": self.datetime_converter(subscription_charge['current_period_start']),
+                            "end_at": self.datetime_converter(subscription_charge['current_period_end']),
+                            "description": "Subscription status: "+subscription_charge['status'],
+                            "log_detail": subscription_charge['id']
+                        })
+                        messages.error(self.request, "Issue cause in subscription or payment")
+                        return HttpResponseRedirect("/payment")
+                except Exception as e:
+                    # LOG FOR SUBSCRIPTION NOT CREATED
+                    ActivityLog.objects.create(**{
+                        "user": user,
+                        "event": "SUBSCRIPTION_ERROR",
+                        "date": timezone.now(),
+                        "description": e.__str__(),
+                    })
+                    messages.error(self.request, "Issue cause in subscription or payment")
+                    return HttpResponseRedirect("/payment")
+            except Exception as e:
+                # LOG FOR CUSTOMER CARD ERROR
+                ActivityLog.objects.create(**{
+                    "user": user,
+                    "event": "CARD_ERROR",
+                    "date": timezone.now(),
+                    "description": e.__str__(),
+                })
+                messages.error(self.request, "Issue cause in subscription or payment")
+                return HttpResponseRedirect("/payment")
+        except Exception as e:
+            # ERROR LOG
+            ActivityLog.objects.create(**{
+                "user": user,
+                "event": "SERVER_ERROR",
+                "date": timezone.now(),
+                "description": e.__str__(),
+            })
+            messages.error(self.request, "Issue cause in subscription or payment")
+            return HttpResponseRedirect("/payment")

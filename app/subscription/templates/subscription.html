@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load date_converter %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h1>Subscription Details</h1>
+      <div style="border:2px solid black;border-radius: 5px; padding: 2rem;">
+            <ul>
+                <li>Email: {{ data.user.email }}</li>
+                <li>Plan Details:
+                <ul>
+                    <li>Title: {{ data.plan.title }}</li>
+                    <li>Price: {{ data.plan.price }}</li>
+                    <li>Duration: {{ data.plan.duration }} / {{ data.plan.interval }}</li>
+                </ul>
+                </li>
+                <li>Start Date: {{ data.start_date }}</li>
+                <li>Validity: {{ data.expiration }}</li>
+            </ul>
+        </div>
+        <br><br>
+        {% if data.cancelled %}
+        <p class="alert alert-danger">You cancelled your subscription but you can access this Dashboard till {{ data.expiration|datetime_format }}</p>
+        {% else %}
+        <div style="text-align: center;"><div id="cancelbtn" class="btn btn-outline-danger w-50">UNSUBSCRIBE</div></div>
+        {% endif %}
+        <div style="text-align: center;"><a href="{% url 'exam-list' %}" class="btn btn-outline-success w-50"> << Back</a></div>
+    </div>
+  </section>
+
+<script>
+    var cancelbtn = document.getElementById('cancelbtn');
+    cancelbtn.addEventListener('click', function () {
+        var result = confirm("Are you sure you want to unsubscribe?")
+        if (result==true){
+            window.location.href = '{% url "cancelsubscription" %}'
+        }
+    })
+</script>
+
+{% endblock %}

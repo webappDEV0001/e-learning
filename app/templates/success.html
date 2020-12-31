@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+      <p>{{ message }}</p>
+      <div style="border:2px solid black;border-radius: 5px; padding: 2rem;">
+            <ul>
+                <li>Email: {{ data.user.email }}</li>
+                <li>Plan Details:
+                <ul>
+                    <li>Title: {{ data.plan.title }}</li>
+                    <li>Price: {{ data.plan.price }}</li>
+                    <li>Duration: {{ data.plan.duration }} / {{ data.plan.interval }}</li>
+                </ul>
+                </li>
+                <li>Validity: {{ data.expiration }}</li>
+                <li>Start Date: {{ data.start_date }}</li>
+            </ul>
+        </div>
+        <a href="{% url 'exam-list' %}" class="btn btn-outline-danger">Welcome to Dashboard!</a>
+    </div>
+  </section>
+{% endblock %}

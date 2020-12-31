@@ -1,10 +1,10 @@
-from django.contrib.auth.models import AbstractBaseUser,    BaseUserManager, PermissionsMixin
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.utils import timezone
 from django.contrib.postgres.fields import JSONField
-
 from config.common import STRIPE_SECRET_KEY
+import datetime
 
 
 class UserManager(BaseUserManager):
@@ -53,7 +53,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 	is_demo = models.BooleanField(default=False)
 	manager = models.EmailField(max_length=254, null=True, blank=True)
 	member_type = models.CharField(max_length=254, choices=MEMBER_TYPE, default=[0][0])
-	stripe_customer = JSONField(default=dict, null=True, blank=True)
+	stripe_customer = models.CharField(max_length=254, blank=True, null=True)
 
 	USERNAME_FIELD = 'email'
 	EMAIL_FIELD = 'email'
@@ -63,6 +63,12 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 	def get_absolute_url(self):
 		return "/users/%i/" % (self.pk)
+
+	def get_name(self):
+		if self.name:
+			return self.name
+		else:
+			return self.username
 
 	@property
 	def elearnigs(self):
@@ -77,11 +83,11 @@ class User(AbstractBaseUser, PermissionsMixin):
 		# create a strip customer when one is not available
 		if not self.stripe_customer:
 			self.create_stripe_customer()
-
 		super(User, self).save(*args, **kwargs)
 
 	def create_stripe_customer(self, source_token=None):
 		import stripe
+		from subscription.models import ActivityLog
 
 		if not self.stripe_customer:
 			stripe.api_key = STRIPE_SECRET_KEY
@@ -93,7 +99,22 @@ class User(AbstractBaseUser, PermissionsMixin):
 					token_id = source_token['id']
 					params['source'] = token_id
 
-				self.stripe_customer = stripe.Customer.create(**params)
+				customer = stripe.Customer.create(**params)
+				self.stripe_customer = customer.id
 				self.save()
+				ActivityLog.objects.create(**{
+					"user": self,
+					"event": "CUSTOMER_CREATED",
+					"date": datetime.datetime.fromtimestamp(customer['created']),
+					"description": "Customer created successfully",
+					"log_detail": customer['id']
+				})
+
 			except Exception as e:
+				ActivityLog.objects.create(**{
+					"user": self,
+					"event": "CUSTOMER_ERROR",
+					"date": timezone.now(),
+					"description": e.__str__(),
+				})
 				raise ObjectDoesNotExist('Error creating stripe customer: %s', e.__str__())
