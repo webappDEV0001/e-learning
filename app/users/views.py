@@ -166,8 +166,11 @@ class ViewPayment(FormView):
     template_name = "payment.html"
 
     def get_context_data(self, **kwargs):
+        usersubscription = SubscriptionPlan.objects.filter(is_active=True).order_by("-id").first()
         context = super(ViewPayment, self).get_context_data()
-        context["plans"] = SubscriptionPlan.objects.filter(is_active=True).order_by("-id").first()
+        context["plans"] = usersubscription
+        if "coupon" in self.request.session:
+            context['coupon'] = self.request.session['coupon']['discounted_price']
         return context
 
 
@@ -176,7 +179,8 @@ class ViewPayment(FormView):
         Return int value to datetime
         """
         import datetime
-        return datetime.datetime.fromtimestamp(datetime_val)
+        import pytz
+        return datetime.datetime.fromtimestamp(datetime_val, tz=pytz.UTC)
 
 
     def form_valid(self, form):

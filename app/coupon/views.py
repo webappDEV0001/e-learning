@@ -1,26 +1,39 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from .models import UserCoupon, Coupon
 from django.db.models import Q
 from subscription.models import SubscriptionPlan
-
-def couponApply(request):
-    if request.method == "GET":
-        coupon = Coupon.objects.filter(name=request.GET.get("coupon"), active=True).first()
+from django.views import View
+import json
 
 
+class CouponApplyView(View):
+    """
+    This is the coupon apply ajax view
+    """
+    content_type = 'application/javascript'
+
+    def get(self, request):
+        coupon = Coupon.objects.filter(name=self.request.GET.get("coupon"), active=True).first()
+        context = {}
         if coupon and ("coupon" not in request.session):
             if UserCoupon.objects.filter(Q(user=request.user) & Q(coupon=coupon)):
-                return HttpResponse("coupon expired/used")
+                context['message'] = "coupon expired/used"
             else:
                 plan = SubscriptionPlan.objects.filter(is_active=True).order_by("-id").first()
-                usercoupon = UserCoupon(user=request.user, coupon=coupon, plan=plan)
-                usercoupon.save()
-                request.session['coupon'] = {"name": coupon.name}
-            return HttpResponse("success")
+                user_coupon = UserCoupon(user=request.user, coupon=coupon, plan=plan)
+                user_coupon.save()
+                discounted_price = plan.price - (plan.price * coupon.percent / 100)
+
+                # This is the coupon session
+                request.session['coupon'] = {"name": coupon.name, "percent": coupon.percent,
+                                             "discounted_price": discounted_price}
+                context['message'] =  "success"
+                context['coupon'] = discounted_price
         else:
+            context['message'] = "Invalid Coupon"
             try:
                 del request.session['coupon']
-            except:
+            except Exception as e:
                 pass
-            return HttpResponse("Invalid Coupon")
+        return JsonResponse(context, safe=False)

@@ -88,6 +88,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 	def create_stripe_customer(self, source_token=None):
 		import stripe
 		from subscription.models import ActivityLog
+		import pytz
 
 		if not self.stripe_customer:
 			stripe.api_key = STRIPE_SECRET_KEY
@@ -105,7 +106,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 				ActivityLog.objects.create(**{
 					"user": self,
 					"event": "CUSTOMER_CREATED",
-					"date": datetime.datetime.fromtimestamp(customer['created']),
+					"date": datetime.datetime.fromtimestamp(customer['created'], tz=pytz.UTC),
 					"description": "Customer created successfully",
 					"log_detail": customer['id']
 				})

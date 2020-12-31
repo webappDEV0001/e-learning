@@ -8,7 +8,7 @@ import json
 
 class Coupon(models.Model):
     """
-    Coupon Model
+    This model stores the data of coupon.
     """
     name = models.CharField(max_length=150, help_text="coupon name", unique=True)
     percent = models.FloatField(help_text="coupon price")
@@ -16,9 +16,19 @@ class Coupon(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
+    # ---------------------------------------------------------------------------
+    # __str__
+    # ---------------------------------------------------------------------------
     def __str__(self):
+        """
+        Returns the string representation of the Coupons.
+        """
+
         return self.name
 
+    # -------------------------------------------------------------------------
+    # Meta
+    # -------------------------------------------------------------------------
     class Meta:
         verbose_name = "Coupon"
         verbose_name_plural = "Coupons"
@@ -28,10 +38,9 @@ class Coupon(models.Model):
         Overrides default save to make sure:
         """
 
-        # create a strip COUPON when one is not available
+        # create a strip COUPON.
         import stripe
         from django.core.exceptions import ObjectDoesNotExist
-        from subscription.models import ActivityLog
 
         stripe.api_key = STRIPE_SECRET_KEY
         try:
@@ -41,16 +50,14 @@ class Coupon(models.Model):
                 duration="forever",
                 id = self.name
             )
-            print(json.dumps(coupon))
         except Exception as e:
             raise ObjectDoesNotExist('Error creating stripe coupon: %s', e.__str__())
         super(Coupon, self).save(*args, **kwargs)
 
 
-
 class UserCoupon(models.Model):
     """
-    All the used coupon model
+    This model store the data for the applied coupon user.
     """
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user")
     coupon = models.ForeignKey(Coupon, on_delete=models.CASCADE)
@@ -58,9 +65,20 @@ class UserCoupon(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
+    # ---------------------------------------------------------------------------
+    # __str__
+    # ---------------------------------------------------------------------------
     def __str__(self):
+        """
+        Returns the string representation of the User Applied Coupon.
+        """
+
         return self.user.get_name() + " has used the coupon: " + self.coupon.name
 
+
+    # -------------------------------------------------------------------------
+    # Meta
+    # -------------------------------------------------------------------------
     class Meta:
         verbose_name = "User Coupon"
         verbose_name_plural = "User Coupons"

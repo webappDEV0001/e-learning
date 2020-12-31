@@ -25,7 +25,7 @@
         box-shadow: 0 1px 3px 0 #cfd7df;
         color: #ffffff;
 
-    .
+    }
     .StripeElement--invalid {
         border-color: #fa755a;
     }
@@ -47,7 +47,14 @@
             <ul>
                 <li>Title: {{ plans.title }}</li>
                 <li>Duration: {{ plans.duration }}/{{ plans.interval }}</li>
-                <li>Price: $ {{ plans.currency }} {{ plans.price }}</li>
+                <li >Price: $
+                {% if coupon %}
+                    {{ coupon }}
+                {% else %}
+                    <span id="coupon_price_li">{{ plans.price }}</span>
+                {% endif %}
+                    {{ plans.currency }}
+                </li>
                 <li>Description: {{ plans.description }}</li>
             </ul>
         </div>
@@ -58,7 +65,7 @@
             <input type="text" name="coupon" id="id_coupon" class="form-control mt-3 mb-3"
                    placeholder="Enter the coupon code">
             <div id="id_coupon_error" style="color: red"></div>
-            <button class="btn btn-outline-dark">Apply</button>
+            <button class="btn btn-outline-dark" id="couponApplyBtn">Apply</button>
         </form>
         <hr>
         </div>
@@ -163,28 +170,39 @@
 </script>
 {% if not request.session.coupon %}
 <script>
+    // This is the coupon apply function on button click.
     var couponForm = document.querySelector('#couponForm');
+    var couponApplyBtn = document.querySelector("#couponApplyBtn");
     couponForm.addEventListener('submit', function (e) {
         e.preventDefault();
+        couponApplyBtn.disabled = true;
         var couponField = document.querySelector("#id_coupon").value;
         if (couponField != "") {
             couponHandler(couponField);
         }
         if (couponField == "") {
+            document.querySelector("#couponApplyBtn").disabled = true;
             document.querySelector("#id_coupon_error").innerHTML = "Please enter the coupon code"
+            couponApplyBtn.disabled = false;
         }
     })
 
-    // Submit the form with the token ID.
+    // Submit the form with the coupon ID.
     function couponHandler(coupon) {
+        var coupon_form_div = document.querySelector("#couponFormdiv");
+        var coupon_price_li = document.querySelector("#coupon_price_li");
+        var id_coupon_error = document.querySelector("#id_coupon_error")
+
         var xml = new XMLHttpRequest();
         xml.onreadystatechange = function () {
             if (xml.readyState == 4 && xml.status == 200) {
-                var result = xml.response;
-                if (result == "success"){
-                    document.getElementById("couponFormdiv").style.display = "none";
+                var result = JSON.parse(xml.response);
+                if (result['message'] == "success"){
+                    coupon_form_div.style.display = "none";
+                    coupon_price_li.innerHTML = result['coupon'];
                 }else{
-                     document.querySelector("#id_coupon_error").innerHTML = result;
+                     id_coupon_error.innerHTML = result['message'];
+                     couponApplyBtn.disabled = false;
                 }
             }
         }

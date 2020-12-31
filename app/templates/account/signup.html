@@ -36,14 +36,19 @@
             </div>
             <div class="row">
                 <div class="col-6 mx-auto">
-                    <input type="checkbox" class="form-control" name="termandconditions" required="true"><a href="">Terms & Conditions.</a>
+                    <input type="checkbox" name="termandconditions" required="true">&nbsp;&nbsp;Do you accept
+                    <a href="{% url 'terms-condition' %}"><u> Terms & Conditions</u></a>
                 </div>
             </div>
+            <br>
             <div class="row">
                 <div class="col-6 mx-auto">
                     <button type="submit" class="btn btn-primary">Sign up</button>
-                    <p>{% blocktrans %}Already have an account? Then please <a href="{{ login_url }}">sign in</a>.{%
-                        endblocktrans %}</p>
+                    <p>
+                        {% blocktrans %}
+                        Already have an account? Then please <a href="{{ login_url }}">sign in</a>.
+                        {% endblocktrans %}
+                    </p>
                 </div>
             </div>
 

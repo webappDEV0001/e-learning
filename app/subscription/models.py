@@ -8,7 +8,7 @@ from django.conf import settings
 
 class SubscriptionPlan(models.Model):
     """
-    This model store the data of bar plans.
+    This model store the data of subscription plans.
     """
 
     CURRENCIES_TYPES = (('usd', 'USD'), ("eur", 'EUR'))
@@ -50,7 +50,7 @@ class SubscriptionPlan(models.Model):
     # ---------------------------------------------------------------------------
     def __str__(self):
         """
-        Returns the string representation of the bar plan object.
+        Returns the string representation of the subscription plan object.
         """
 
         return self.title
@@ -66,8 +66,8 @@ class SubscriptionPlan(models.Model):
 
 class Subscription(models.Model):
     """
-        This model store the data of bar subscription.
-        """
+    This model store the data of user subscription.
+    """
     STATUS_TYPES = (('active', 'ACTIVE'), ("cancelled", 'CANCELLED'), ("halted", 'HALTED'), ("inactive", 'INACTIVE'))
 
     subs_id = models.CharField(max_length=250, blank=True, null=True, help_text="Subscription id of stripe")
@@ -103,7 +103,7 @@ class Subscription(models.Model):
     # ---------------------------------------------------------------------------
     def __str__(self):
         """
-        Returns the string representation of the bar subscription object.
+        Returns the string representation of the user subscription object.
         """
         if self.user:
             return "Plan:{0}, Taken by: {1}".format(self.plan.title, self.user.email)
@@ -113,11 +113,11 @@ class Subscription(models.Model):
     
 
     # ---------------------------------------------------------------------------
-    # send_verification_email
+    # send_subscription_mail and send_subscription_cancel_mail
     # ---------------------------------------------------------------------------
     def send_activation_subscription_email(self, cancel=False):
         """
-        Sends the activation subscription mail to the user.
+        Sends the activation/cancellation subscription mail to the user.
         """
 
         if cancel:
@@ -151,7 +151,7 @@ class Subscription(models.Model):
 
 class ActivityLog(models.Model):
     """
-    Activity Log Model
+    This model store the data of Activity Log.
     """
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     event = models.CharField(help_text="Events Log Activity", null=True, blank=True, max_length=100)
@@ -162,6 +162,9 @@ class ActivityLog(models.Model):
     created_on = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     updated_on = models.DateTimeField(auto_now=True, blank=True, null=True)
 
+    # --------------------------------------------------------------------------
+    # Meta
+    # --------------------------------------------------------------------------
     class Meta:
         verbose_name = "ActivityLog"
         verbose_name_plural = "ActivityLogs"
@@ -172,6 +175,6 @@ class ActivityLog(models.Model):
     # ---------------------------------------------------------------------------
     def __str__(self):
         """
-        Returns the string representation of the bar subscription object.
+        Returns the string representation of the activity log object.
         """
-        return str(self.event)
+        return self.event
