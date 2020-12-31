@@ -1,0 +1,176 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+
+<!-- Favicons -->
+<link rel="apple-touch-icon" sizes="57x57" href="{% static 'core/images/apple-icon-57x57.png' %}">
+<link rel="apple-touch-icon" sizes="60x60" href="{% static 'core/images/apple-icon-60x60.png' %}">
+<link rel="apple-touch-icon" sizes="72x72" href="{% static 'core/images/apple-icon-72x72.png' %}">
+<link rel="apple-touch-icon" sizes="76x76" href="{% static 'core/images/apple-icon-76x76.png' %}">
+<link rel="apple-touch-icon" sizes="114x114" href="{% static 'core/images/apple-icon-114x114.png' %}">
+<link rel="apple-touch-icon" sizes="120x120" href="{% static 'core/images/apple-icon-120x120.png' %}">
+<link rel="apple-touch-icon" sizes="144x144" href="{% static 'core/images/apple-icon-144x144.png' %}">
+<link rel="apple-touch-icon" sizes="152x152" href="{% static 'core/images/apple-icon-152x152.png' %}">
+<link rel="apple-touch-icon" sizes="180x180" href="{% static 'core/images/apple-icon-180x180.png' %}">
+<link rel="icon" type="image/png" sizes="192x192"  href="{% static 'core/images/android-icon-192x192.png' %}">
+<link rel="icon" type="image/png" sizes="32x32" href="{% static 'core/images/favicon-32x32.png' %}">
+<link rel="icon" type="image/png" sizes="96x96" href="{% static 'core/images/favicon-96x96.png' %}">
+<link rel="icon" type="image/png" sizes="16x16" href="{% static 'core/images/favicon-16x16.png' %}">
+<link rel="manifest" href="{% static 'core/images/manifest.json' %}">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="msapplication-TileImage" content="{% static 'core/images/ms-icon-144x144.png' %}">
+<meta name="theme-color" content="#ffffff">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>E-learning Platform</title>
+<link rel="stylesheet"  href="{% static 'core/css/bootstrap.css' %}" type="text/css" media="screen"/>
+<link rel="stylesheet"  href="{% static 'core/css/style.css' %}" type="text/css" media="screen"/>
+<link href="{% static 'core/css/mycss.css' %}" rel="stylesheet">
+<link href="{% static 'core/css/mystyle.css' %}" rel="stylesheet">
+<style>
+	ul.errorlist {
+	    color: red;
+    	font-size: 12px;
+    }
+    div#footerwrap{
+    box-shadow: 0px -5px 10px #be9128;
+    }
+    .mymenucontainer{
+    	position: fixed;
+    	border-bottom: 2px solid ##be9128!important;
+    }
+    #top-gap{
+    	min-height: 80px;
+    }
+</style>
+{% block css %}{% endblock %}
+</head>
+<body class="Home">
+<div class="topinfo" style="display: none;">
+	<div class="topdiv">
+		<div id="mail">
+			<img src="{% static 'core/images/mail.jpg' %}"/>info@elearnai.com</div>
+		<div id="soc">
+				<a href=""><img src="{% static 'core/images/fb2.png' %}"/></a>
+				<a href=""><img src="{% static 'core/images/link2.png' %}"/></a>
+		</div>
+		<div class="clear-div"></div>
+	</div>
+</div>
+<div class="mymenucontainer"  id="sticymenubar">
+    <div class="mymenubarholder" >
+		<div class="logodiv">
+			<a href="{% url 'index' %}"><img src="{% static 'core/images/logo-top.png' %}"></a>
+		</div>
+		<nav>
+		  <div class="mynavigation">
+			<ul>
+				<li><a href="{% url 'index' %}" class="{{homeActive}}">Home</a></li>
+				<li><a href="{% url 'contact' %}" class="{{contactActive}}">Contact Us</a></li>
+				<li><a href="{% url 'instructions' %}" class="{{contactActive}}">Instructions</a></li>
+			</ul>
+		  </div>
+		  <div class="nav_bg">
+			<div class="moblogodiv">
+				<a href="{% url 'index' %}"><img id="moblogo" src="{% static 'core/images/logo-top.png' %}"></a>
+			</div>
+			<div class="nav_bar" onClick="myFunction()"> <span></span> <span></span> <span></span> </div>
+			<div style="width:100%; height:0px; clear:both"></div>
+		  </div>
+		</nav>
+		<div style="width:100%; height:0px; clear:both"></div>
+	</div>
+  </div>
+<div id="top-gap"></div>
+{% block container %}
+
+<div id="ttr_page" class="container" style="background:linear-gradient(90deg,rgba(0,112,192,1)40%, rgba(191,144,0,1)80%, rgba(191,144,0,1)100%);">
+	<div style="background:url({% static 'core/images/slide.png' %}); background-size:cover; background-position: center !important;">
+			<div id="videodiv" style="width:90%; max-width:1100px; height:auto; margin:auto">
+					<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 sidediv">
+						<p class="mission">An e-learning platform enhanced with ai</p>
+						{% if request.user.is_authenticated %}
+						<a class="req" href="{% url 'exam-list' %}">dashboard</a>
+						{% if request.user.is_superuser %}
+							<a class="req" href="{% url 'admin:index' %}">admin</a>
+						{% endif %}
+						{% else %}
+							<a class="req" href="{% url 'account_login' %}">Login</a>
+							<a class="req" href="{% url 'admin:index' %}">admin</a>
+						{% endif %}
+					</div>
+					<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 mycolimg">
+						<iframe width="560" height="315" src="https://www.youtube.com/embed/6i8dainQzWk" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+					</div>
+					<div class="clear-div"></div>
+			</div>
+	</div>
+</div>
+
+
+<div style="height:0px;width:0px;overflow:hidden;"></div>
+{% endblock %}
+
+<div class="ttr_Home_html_row0 row" id="footerwrap">
+	<div class="ttr_Home_html_row0 row" id="footercont">
+		<div class="ttr_Home_html_row0 row" id="footerdiv">
+			<div class="col-lg-5 col-md-5 col-sm-5 col-xs-12 coll text-center">
+				<ul>
+				  	<li><a href="{% url 'index' %}">Home</a></li>
+					<li><a href="{% url 'contact' %}">Contact Us</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+{% block jquery %}
+<script type="text/javascript" src="{% static 'core/js/jquery.js' %}"></script>
+{% endblock %}
+<script type="text/javascript" src="{% static 'core/js/jquery-ui.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'core/js/tt_slideshow.js' %}"></script>
+<script type="text/javascript" src="{% static 'core/js/bootstrap.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'core/js/Customjs.js' %}"></script>
+<script type="text/javascript" src="{% static 'core/js/contactform.js' %}"></script>
+<script type="text/javascript" src="{% static 'core/totop.js' %}"></script>
+
+
+
+<!--  Comment this portail for activate image slider-->
+<script>
+$(document).ready(function(){
+		$('.nav_bar').click(function(){
+			$('.mynavigation').toggleClass('visible');
+			$('body').toggleClass('opacity');
+		});
+	});
+</script>
+<!--  Till here-->
+
+
+<script>
+window.onscroll = function() {myFunction()};
+
+{% if homeActive %}
+offSetTop = 70
+{% else %}
+offSetTop = 140
+{% endif %}
+var navbar = document.getElementById("sticymenubar");
+var sticky = navbar.offsetTop+offSetTop;
+//navbar.classList.add("sticky")
+
+/*
+function myFunction() {
+  if (window.pageYOffset >= sticky) {
+    navbar.classList.add("sticky")
+  } else {
+    navbar.classList.remove("sticky");
+  }
+}
+*/
+</script>
+
+</body>
+</html>
