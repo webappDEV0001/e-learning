@@ -1,8 +1,8 @@
 from django.db import models
 from users.models import User
 from django.utils import timezone
-from subscription.models import SubscriptionPlan
 from config.common import STRIPE_SECRET_KEY
+from django.contrib import messages
 import json
 
 
@@ -51,7 +51,15 @@ class Coupon(models.Model):
                 id = self.name
             )
         except Exception as e:
-            raise ObjectDoesNotExist('Error creating stripe coupon: %s', e.__str__())
+            from subscription.models import ActivityLog
+
+            ActivityLog.objects.create(**{
+                "event": "COUPON_ERROR",
+                "date": timezone.now(),
+                "description": e.__str__(),
+            })
+
+            raise ObjectDoesNotExist("Error in creating coupon: "+e.__str__())
         super(Coupon, self).save(*args, **kwargs)
 
 
@@ -59,6 +67,8 @@ class UserCoupon(models.Model):
     """
     This model store the data for the applied coupon user.
     """
+    from subscription.models import SubscriptionPlan
+
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user")
     coupon = models.ForeignKey(Coupon, on_delete=models.CASCADE)
     plan = models.ForeignKey(SubscriptionPlan, on_delete=models.CASCADE)

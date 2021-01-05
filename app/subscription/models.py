@@ -52,7 +52,6 @@ class SubscriptionPlan(models.Model):
         """
         Returns the string representation of the subscription plan object.
         """
-
         return self.title
 
 
@@ -68,6 +67,8 @@ class Subscription(models.Model):
     """
     This model store the data of user subscription.
     """
+    from coupon.models import Coupon
+
     STATUS_TYPES = (('active', 'ACTIVE'), ("cancelled", 'CANCELLED'), ("halted", 'HALTED'), ("inactive", 'INACTIVE'))
 
     subs_id = models.CharField(max_length=250, blank=True, null=True, help_text="Subscription id of stripe")
@@ -77,6 +78,10 @@ class Subscription(models.Model):
 
     plan = models.ForeignKey(SubscriptionPlan, on_delete=models.SET_NULL,
                              null=True, related_name="subscriptions")
+
+    amount_paid = models.FloatField(help_text="Amount paid for the subscription plan.", null=True, blank=True)
+
+    coupon = models.ForeignKey(Coupon, on_delete = models.SET_NULL, null=True, blank = True, help_text="Applied coupon")
 
     start_date = models.DateField(blank=True, null=True)
     expiration = models.DateField()
@@ -108,7 +113,7 @@ class Subscription(models.Model):
         if self.user:
             return "Plan:{0}, Taken by: {1}".format(self.plan.title, self.user.email)
         else:
-            return self.plan
+            return self.plan.title
 
     
 
@@ -153,7 +158,6 @@ class ActivityLog(models.Model):
     """
     This model store the data of Activity Log.
     """
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
     event = models.CharField(help_text="Events Log Activity", null=True, blank=True, max_length=100)
     date = models.DateTimeField(null=True, blank=True, help_text="Date")
     end_at = models.DateTimeField(null=True, blank=True, help_text="End Date")

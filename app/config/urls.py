@@ -3,7 +3,7 @@ from django.urls import path, include, re_path
 from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
-from exam.views import ExamListView, about, contact, careers, solutions, OurBaseView, UserProgressView, mission, references, instructions, dummy_view
+from exam.views import ExamListView, about, contact, careers, solutions, OurBaseView, UserProgressView, mission, references, instructions
 from users.views import set_timezone
 from users.views import ViewContact, ViewPayment
 from users.views import DisplayPDFView, DisplayPDFView2
@@ -11,14 +11,16 @@ from django.conf.urls import handler404
 from elearning import views as el_view
 
 from django.contrib.sitemaps.views import sitemap
+from subscription.views import stripe_webhook
 from .sitemaps import StaticViewSitemap
+from coupon.views import CouponApplyView
 
 sitemaps = {
     'static': StaticViewSitemap,
 }
 
 
-# dummy_view = TemplateView.as_view(template_name='index.html')
+dummy_view = TemplateView.as_view(template_name='index.html')
 
 error_url = [
         re_path(r'^(?P<slug>[\w-]+)/', el_view.handler404)
@@ -55,6 +57,8 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
     path('subscription/', include('subscription.urls')),
     path('payment/',ViewPayment.as_view(), name='payment'),
+    path('coupon/',CouponApplyView.as_view(), name='coupon'),
+    path('webhook/', stripe_webhook, name="webhook"),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps},
          name='django.contrib.sitemaps.views.sitemap'),
 

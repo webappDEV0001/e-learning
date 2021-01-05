@@ -54,6 +54,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 	manager = models.EmailField(max_length=254, null=True, blank=True)
 	member_type = models.CharField(max_length=254, choices=MEMBER_TYPE, default=[0][0])
 	stripe_customer = models.CharField(max_length=254, blank=True, null=True)
+	card = models.CharField(max_length=250, null=True, blank=True, help_text="Enter the card stripe id")
 
 	USERNAME_FIELD = 'email'
 	EMAIL_FIELD = 'email'
@@ -103,17 +104,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 				customer = stripe.Customer.create(**params)
 				self.stripe_customer = customer.id
 				self.save()
-				ActivityLog.objects.create(**{
-					"user": self,
-					"event": "CUSTOMER_CREATED",
-					"date": datetime.datetime.fromtimestamp(customer['created'], tz=pytz.UTC),
-					"description": "Customer created successfully",
-					"log_detail": customer['id']
-				})
-
 			except Exception as e:
 				ActivityLog.objects.create(**{
-					"user": self,
 					"event": "CUSTOMER_ERROR",
 					"date": timezone.now(),
 					"description": e.__str__(),

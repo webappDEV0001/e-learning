@@ -168,30 +168,32 @@
     }
 
 </script>
+
 {% if not request.session.coupon %}
 <script>
     // This is the coupon apply function on button click.
     var couponForm = document.querySelector('#couponForm');
     var couponApplyBtn = document.querySelector("#couponApplyBtn");
-    couponForm.addEventListener('submit', function (e) {
-        e.preventDefault();
-        couponApplyBtn.disabled = true;
+    var id_coupon_error = document.querySelector("#id_coupon_error");
+
+    couponForm.addEventListener('submit', function (event) {
+        event.preventDefault();
         var couponField = document.querySelector("#id_coupon").value;
+        couponApplyBtn.disabled = true;
         if (couponField != "") {
             couponHandler(couponField);
         }
-        if (couponField == "") {
-            document.querySelector("#couponApplyBtn").disabled = true;
-            document.querySelector("#id_coupon_error").innerHTML = "Please enter the coupon code"
+        if (couponField === "") {
+            id_coupon_error.innerHTML = "Please enter the coupon code"
             couponApplyBtn.disabled = false;
         }
     })
 
-    // Submit the form with the coupon ID.
+    // Submit the form with the coupon code.
     function couponHandler(coupon) {
         var coupon_form_div = document.querySelector("#couponFormdiv");
         var coupon_price_li = document.querySelector("#coupon_price_li");
-        var id_coupon_error = document.querySelector("#id_coupon_error")
+
 
         var xml = new XMLHttpRequest();
         xml.onreadystatechange = function () {
@@ -200,15 +202,17 @@
                 if (result['message'] == "success"){
                     coupon_form_div.style.display = "none";
                     coupon_price_li.innerHTML = result['coupon'];
+                    couponApplyBtn.disabled = true;
                 }else{
                      id_coupon_error.innerHTML = result['message'];
                      couponApplyBtn.disabled = false;
                 }
             }
         }
-        xml.open("GET", "/couponApply?coupon=" + coupon, true);
+        xml.open("GET", "/coupon?coupon=" + coupon, true);
         xml.send();
     }
 </script>
 {% endif %}
+
 {% endblock page-js %}

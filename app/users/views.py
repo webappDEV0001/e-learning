@@ -166,11 +166,17 @@ class ViewPayment(FormView):
     template_name = "payment.html"
 
     def get_context_data(self, **kwargs):
-        usersubscription = SubscriptionPlan.objects.filter(is_active=True).order_by("-id").first()
+        """
+        Return context data to template
+        """
+        plans = SubscriptionPlan.objects.filter(is_active=True).order_by("-id").first()
         context = super(ViewPayment, self).get_context_data()
-        context["plans"] = usersubscription
+        context["plans"] = plans
+
+        # Applies coupon in session
         if "coupon" in self.request.session:
             context['coupon'] = self.request.session['coupon']['discounted_price']
+
         return context
 
 
@@ -186,66 +192,78 @@ class ViewPayment(FormView):
     def form_valid(self, form):
         form_data = form.cleaned_data
         stripe.api_key = STRIPE_SECRET_KEY
-
         token = form_data['stripeToken']
         user = User.objects.get(email=self.request.user)
         plan = SubscriptionPlan.objects.filter(is_active=True).order_by("-id").first()
 
 
         try:
-            # CREATE CARD IN STRIPE
+
             if Subscription.objects.filter(user=user, status="active"):
                 return HttpResponseRedirect(redirect("list"))
 
             try:
-                charge = stripe.Customer.create_source(
+
+                # CREATE CARD IN STRIPE
+                card = stripe.Customer.create_source(
                     user.stripe_customer,
                     source=token,
                 )
 
                 # ACTIVITY LOG ENTRY FOR CARD CREATED SUCCESSFULLY
                 ActivityLog.objects.create(**{
-                    "user": self.request.user,
                     "event": "CUSTOMER_CARD_CREATED",
                     "date": timezone.now(),
                     "description": "Card is created successfully",
-                    "log_detail": charge['id']
+                    "log_detail": card.id,
                 })
 
                 params = {"customer": user.stripe_customer, "items": [{"price": plan.plan_id},]}
-                if self.request.session['coupon']:
-                    print(self.request.session['coupon']['name'])
+
+                if "coupon" in self.request.session:
                     params['coupon'] = self.request.session['coupon']['name']
 
                 try:
                     # CREATE SUBSCRIPTION IN STRIPE
+                    from coupon.models import Coupon
+
                     subscription_charge = stripe.Subscription.create(**params)
 
 
+
+
+
                     # ENTRY OF SUBSCRIPTION CREATED SUCCESSFULLY IN MODELS (Subscription, ActivityLog)
-                    if subscription_charge['status'] == "active":
-                        customer,created = Subscription.objects.get_or_create(**{
-                            "subs_id": subscription_charge['id'],
+                    if subscription_charge.status == "active":
+
+                        subscription_params = {
+                            "subs_id": subscription_charge.id,
                             "user": user,
                             "plan": plan,
-                            "start_date":self.datetime_converter(subscription_charge['start_date']),
-                            "expiration": self.datetime_converter(subscription_charge['current_period_end']),
-                            "status": subscription_charge['status'],
+                            "start_date": self.datetime_converter(subscription_charge.start_date),
+                            "expiration": self.datetime_converter(subscription_charge.current_period_end),
+                            "status": subscription_charge.status,
                             "cancelled": False
-                        })
-                        ActivityLog.objects.create(**{
-                            "user": user,
-                            "event": "SUBSCRIPTION_CREATED",
-                            "date": self.datetime_converter(subscription_charge['current_period_start']),
-                            "end_at": self.datetime_converter(subscription_charge['current_period_end']),
-                            "description": "Subscription created and activated successfully",
-                            "log_detail": subscription_charge['id']
-                        })
+                        }
+
+                        if "coupon" in self.request.session:
+                            coupon = Coupon.objects.filter(name=self.request.session['coupon']['name']).first()
+                            amount = self.request.session['coupon']['discounted_price']
+                            subscription_params["amount_paid"]=amount
+                            subscription_params["coupon"]= coupon
+                        else:
+                            amount = float(plan.price)
+                            subscription_params["amount_paid"]= amount
+
+                        # Subscription Created
+                        customer,created = Subscription.objects.get_or_create(**subscription_params)
+
+                        # Activation mail send
                         customer.send_activation_subscription_email()
+
                         return render(self.request, "success.html", context={"message": "Subscription created successfully", "data":customer})
                     else:
                         ActivityLog.objects.create(**{
-                            "user": user,
                             "event": "SUBSCRIPTION_ERROR",
                             "date": self.datetime_converter(subscription_charge['current_period_start']),
                             "end_at": self.datetime_converter(subscription_charge['current_period_end']),
@@ -257,7 +275,6 @@ class ViewPayment(FormView):
                 except Exception as e:
                     # LOG FOR SUBSCRIPTION NOT CREATED
                     ActivityLog.objects.create(**{
-                        "user": user,
                         "event": "SUBSCRIPTION_ERROR",
                         "date": timezone.now(),
                         "description": e.__str__(),
@@ -267,7 +284,6 @@ class ViewPayment(FormView):
             except Exception as e:
                 # LOG FOR CUSTOMER CARD ERROR
                 ActivityLog.objects.create(**{
-                    "user": user,
                     "event": "CARD_ERROR",
                     "date": timezone.now(),
                     "description": e.__str__(),
@@ -277,7 +293,6 @@ class ViewPayment(FormView):
         except Exception as e:
             # ERROR LOG
             ActivityLog.objects.create(**{
-                "user": user,
                 "event": "SERVER_ERROR",
                 "date": timezone.now(),
                 "description": e.__str__(),

@@ -12,22 +12,24 @@
                 <li>Plan Details:
                 <ul>
                     <li>Title: {{ data.plan.title }}</li>
-                    <li>Price: {{ data.plan.price }}</li>
+                    <li>Price: {{ data.plan.price }} {{ data.plan.currency }}</li>
                     <li>Duration: {{ data.plan.duration }} / {{ data.plan.interval }}</li>
                 </ul>
                 </li>
+                <li>Amount Paid: {{ data.amount_paid }} {{ data.plan.currency }}</li>
                 <li>Start Date: {{ data.start_date }}</li>
                 <li>Validity: {{ data.expiration }}</li>
             </ul>
         </div>
         <br><br>
+        <div style="text-align: center;display: inline">
         {% if data.cancelled %}
         <p class="alert alert-danger">You cancelled your subscription but you can access this Dashboard till {{ data.expiration|datetime_format }}</p>
         {% else %}
-        <div style="text-align: center;"><div id="cancelbtn" class="btn btn-outline-danger w-50">UNSUBSCRIBE</div></div>
+        <div id="cancelbtn" class="btn btn-outline-danger w-25">UNSUBSCRIBE</div>
         {% endif %}
-        <div style="text-align: center;"><a href="{% url 'exam-list' %}" class="btn btn-outline-success w-50"> << Back</a></div>
-    </div>
+        <a href="{% url 'exam-list' %}" class="btn btn-outline-success w-25"> << Back</a></div>
+        </div>
   </section>
 
 <script>

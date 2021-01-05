@@ -1,10 +1,8 @@
-from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from .models import UserCoupon, Coupon
 from django.db.models import Q
 from subscription.models import SubscriptionPlan
 from django.views import View
-import json
 
 
 class CouponApplyView(View):

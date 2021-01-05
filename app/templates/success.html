@@ -11,15 +11,19 @@
                 <li>Plan Details:
                 <ul>
                     <li>Title: {{ data.plan.title }}</li>
-                    <li>Price: {{ data.plan.price }}</li>
+                    <li>Price: {{ data.plan.price }} {{ data.plan.currency }}</li>
                     <li>Duration: {{ data.plan.duration }} / {{ data.plan.interval }}</li>
                 </ul>
                 </li>
-                <li>Validity: {{ data.expiration }}</li>
+                <li>Amount Paid: {{ data.amount_paid }} {{ data.plan.currency }}</li>
                 <li>Start Date: {{ data.start_date }}</li>
+                <li>Validity: {{ data.expiration }}</li>
             </ul>
         </div>
+        <hr>
+        <div style="text-align: center">
         <a href="{% url 'exam-list' %}" class="btn btn-outline-danger">Welcome to Dashboard!</a>
+        </div>
     </div>
   </section>
 {% endblock %}
