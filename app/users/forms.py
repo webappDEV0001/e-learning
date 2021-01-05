@@ -17,6 +17,7 @@ class LoginForm(LoginForm):
     def __init__(self, *args, **kwargs):
         super(LoginForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper(self)
+
         # Add magic stuff to redirect back.
         self.helper.layout.append(
             HTML(
@@ -40,6 +41,16 @@ class LoginForm(LoginForm):
             HTML(
                 '<button class="req" id="id_submit" type="submit" value="submit ">'
                 '%s</button>' % _('Sign In')
+            )
+        )
+
+        # Redirects to signup page
+        self.helper.layout.append(
+            HTML(
+                "<a style='text-decoration: underline;margin-left: 10px' href={url}>{text}</a>".format(
+                    url=reverse('account_signup'),
+                    text=_('Sign Up')
+                )
             )
         )
 
