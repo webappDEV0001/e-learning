@@ -50,6 +50,7 @@ class Coupon(models.Model):
                 duration="forever",
                 id = self.name
             )
+            super(Coupon, self).save(*args, **kwargs)
         except Exception as e:
             from subscription.models import ActivityLog
 
@@ -60,7 +61,7 @@ class Coupon(models.Model):
             })
 
             raise ObjectDoesNotExist("Error in creating coupon: "+e.__str__())
-        super(Coupon, self).save(*args, **kwargs)
+
 
 
 class UserCoupon(models.Model):
