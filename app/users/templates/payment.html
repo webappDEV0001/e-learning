@@ -26,6 +26,7 @@
         color: #ffffff;
 
     }
+
     .StripeElement--invalid {
         border-color: #fa755a;
     }
@@ -48,12 +49,12 @@
             <ul>
                 <li>Title: {{ plans.title }}</li>
                 <li>Duration: {{ plans.duration }}/{{ plans.interval }}</li>
-                <li >Price: $
-                {% if coupon %}
+                <li>Price: $
+                    {% if coupon %}
                     {{ coupon }}
-                {% else %}
+                    {% else %}
                     <span id="coupon_price_li">{{ plans.price }}</span>
-                {% endif %}
+                    {% endif %}
                     {{ plans.currency }}
                 </li>
                 <li>Description: {{ plans.description }}</li>
@@ -61,18 +62,25 @@
         </div>
         {% if not request.session.coupon %}
         <div id="couponFormdiv">
-        <hr>
-        <form id="couponForm">
-            <input type="text" name="coupon" id="id_coupon" class="form-control mt-3 mb-3"
-                   placeholder="Enter the coupon code">
-            <div id="id_coupon_error" style="color: red"></div>
-            <button class="btn btn-outline-dark" id="couponApplyBtn">Apply</button>
-        </form>
-        <hr>
+            <hr>
+            <form id="couponForm">
+                <input type="text" name="coupon" id="id_coupon" class="form-control mt-3 mb-3"
+                       placeholder="Enter the coupon code">
+                <div id="id_coupon_error" style="color: red"></div>
+                <button class="btn btn-outline-dark" id="couponApplyBtn">Apply</button>
+            </form>
+            <hr>
         </div>
         {% endif %}
+
         <form method="post" id="payment-form">
             {% csrf_token %}
+            {% if request.user.card_id is not None %}
+             <p>If you want to use previous card for payment. </p>
+                <input type="checkbox" name="old_card_value_checked" id="old_card_value_checked"> &nbsp;&nbsp; ***** {{ request.user.credit_card_number }}
+            <hr>
+            {% endif %}
+            <div id="new_card_value_checked_div">
             {{form.errors}}
             {{form.referral_code}}
             <div class="form-row">
@@ -86,8 +94,8 @@
                 <!-- Used to display form errors. -->
                 <div id="card-errors" role="alert"></div>
             </div>
-
-            <button class="mt-3 btn btn-primary">Submit Payment</button>
+            </div>
+            <button class="mt-3 btn btn-primary d-block">Submit Payment</button>
         </form>
 
     </div>
@@ -141,17 +149,29 @@
     var form = document.getElementById('payment-form');
     form.addEventListener('submit', function (event) {
         event.preventDefault();
+        if ((document.getElementById("old_card_value_checked") != null) && (document.getElementById("old_card_value_checked").checked == true)){
+            var form = document.getElementById('payment-form');
+            var hiddenInput = document.getElementById('old_card_value_checked');
+            hiddenInput.setAttribute('name', 'old_card_value_checked');
+            hiddenInput.setAttribute('value', true);
+            form.appendChild(hiddenInput);
+            console.log(hiddenInput)
+            // Submit the form
+            form.submit();
 
-        stripe.createToken(card).then(function (result) {
-            if (result.error) {
-                // Inform the user if there was an error.
-                var errorElement = document.getElementById('card-errors');
-                errorElement.textContent = result.error.message;
-            } else {
-                // Send the token to your server.
-                stripeTokenHandler(result.token);
-            }
-        });
+        }else {
+
+            stripe.createToken(card).then(function (result) {
+                if (result.error) {
+                    // Inform the user if there was an error.
+                    var errorElement = document.getElementById('card-errors');
+                    errorElement.textContent = result.error.message;
+                } else {
+                    // Send the token to your server.
+                    stripeTokenHandler(result.token);
+                }
+            });
+        }
     });
 
     // Submit the form with the token ID.
@@ -200,19 +220,32 @@
         xml.onreadystatechange = function () {
             if (xml.readyState == 4 && xml.status == 200) {
                 var result = JSON.parse(xml.response);
-                if (result['message'] == "success"){
+                if (result['message'] == "success") {
                     coupon_form_div.style.display = "none";
                     coupon_price_li.innerHTML = result['coupon'];
                     couponApplyBtn.disabled = true;
-                }else{
-                     id_coupon_error.innerHTML = result['message'];
-                     couponApplyBtn.disabled = false;
+                } else {
+                    id_coupon_error.innerHTML = result['message'];
+                    couponApplyBtn.disabled = false;
                 }
             }
         }
         xml.open("GET", "/coupon?coupon=" + coupon, true);
         xml.send();
     }
+</script>
+{% endif %}
+
+{% if request.user.card_id is not None %}
+<script>
+    var old_card_value_checked = document.querySelector("#old_card_value_checked");
+    old_card_value_checked.addEventListener("change", function(){
+        if (old_card_value_checked.checked == true){
+            document.getElementById("new_card_value_checked_div").style.display = "none";
+        }else{
+            document.getElementById("new_card_value_checked_div").style.display = "block";
+        }
+    })
 </script>
 {% endif %}
 

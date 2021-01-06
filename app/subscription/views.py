@@ -99,6 +99,20 @@ def stripe_webhook(request):
             "log_detail": event.id
         })
 
+    elif event.type == "customer.deleted":
+        from users.models import User
+
+        user = User.objects.filter(stripe_customer = response.id).first()
+
+        user.delete()
+
+        ActivityLog.objects.create(**{
+            "event": "CUSTOMER_DELETED",
+            "date": datetime.datetime.fromtimestamp(response.created, tz=pytz.utc),
+            "description": "Customer deleted successfully with email: "+response.email,
+            "log_detail": event.id
+        })
+
     elif event.type == "customer.subscription.created":
 
         ActivityLog.objects.create(**{
@@ -109,46 +123,31 @@ def stripe_webhook(request):
             "log_detail": event.id
         })
 
+    elif event.type == "customer.subscription.deleted":
+        subscription = Subscription.objects.filter(subs_id=response.id).first()
+
+        subscription.status = response.status
+
+        subscription.save()
+
+        ActivityLog.objects.create(**{
+            "event": "SUBSCRIPTION_DELETED",
+            "date": datetime.datetime.fromtimestamp(response.current_period_start, tz=pytz.utc),
+            "end_at": datetime.datetime.fromtimestamp(response.current_period_end, tz=pytz.utc),
+            "description": "Subscription has been cancelled/deleted.",
+            "log_detail": event.id
+        })
+
+
     elif event.type == "customer.subscription.updated":
 
         if response.cancel_at_period_end == True:
 
             ActivityLog.objects.create(**{
-                "event": "SUBSCRIPTION_CANCELLED",
+                "event": "SUBSCRIPTION_CANCELLED_FOR_PERIOD_END",
                 "date": timezone.now(),
-                "description": "Subscription cancelled successfully",
-                "log_detail": event.id
-            })
-
-        else:
-            # Renewing Subscription
-
-            subscription = Subscription.objects.filter(subs_id=response.id).first()
-            subscription.status = "active"
-            subscription.amount_paid = subscription.plan.price,
-            subscription.coupon = None,
-            subscription.card_id = subscription.card_id,
-            subscription.start_date = datetime.datetime.fromtimestamp(response.current_period_start, tz=pytz.utc)
-            subscription.expiration = datetime.datetime.fromtimestamp(response.current_period_end, tz=pytz.utc)
-            subscription.cancelled = False
-            subscription.save()
-
-            try:
-                renew_subscription = stripe.Customer.modify_source(
-                          request.user.stripe_customer,
-                          "card_1I5sbOHgNODZOvfzP9iA8o4p",
-                )
-            except Exception as e:
-                pass
-
-
-            # Renew activation mail send
-            subscription.send_activation_subscription_email()
-
-            ActivityLog.objects.create(**{
-                "event": "SUBSCRIPTION_RENEWED",
-                "date": timezone.now(),
-                "description": "Subscription renewed successfully",
+                "description": "Subscription cancelled successfully. No new payments get reducted from"
+                               " account from next time",
                 "log_detail": event.id
             })
 

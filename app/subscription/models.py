@@ -69,7 +69,15 @@ class Subscription(models.Model):
     """
     from coupon.models import Coupon
 
-    STATUS_TYPES = (('active', 'ACTIVE'), ("cancelled", 'CANCELLED'), ("halted", 'HALTED'), ("inactive", 'INACTIVE'))
+    STATUS_TYPES = (
+        ('active', 'ACTIVE'),
+        ("canceled", 'CANCELLED'),
+        ("past_due", 'PAST_DUE'),
+        ('unpaid','UNPAID'),
+        ('incomplete', 'INCOMPLETE'),
+        ('incomplete_expired', 'INCOMPLETE_EXPIRED') ,
+        ("inactive", 'INACTIVE')
+    )
 
     subs_id = models.CharField(max_length=250, blank=True, null=True, help_text="Subscription id of stripe")
     user = models.ForeignKey(User,
@@ -86,7 +94,7 @@ class Subscription(models.Model):
     start_date = models.DateField(blank=True, null=True)
     expiration = models.DateField()
 
-    status = models.CharField(max_length=150, choices=STATUS_TYPES,default=STATUS_TYPES[3][0],
+    status = models.CharField(max_length=150, choices=STATUS_TYPES,default=STATUS_TYPES[6][0],
                                  help_text="The status subscription of the user")
 
     created_on = models.DateTimeField(auto_now_add=True, null=True, blank=True)

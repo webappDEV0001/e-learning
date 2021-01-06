@@ -83,9 +83,9 @@
                 {% if request.user.is_authenticated %}
                   <a class="login_button" href="{% url 'exam-list' %}">Dashboard</a>
                 {% else %}
-                  <a class="login_button" href="{% url 'account_login' %}">Login</a>
+                  <a class="login_button" href="{% url 'account_login' %}">Login/Subscribe</a>
                 {% endif %}
-                <a href="javascript:void(0);">Request Demo</a>
+                <a href="{% url 'contact' %}">Contact Us</a>
                 <a href="javascript:void(0);">Follow us on <i class="fa fa-linkedin-square" aria-hidden="true"></i></a>
               </div>
             </div>

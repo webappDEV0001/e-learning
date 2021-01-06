@@ -156,28 +156,21 @@ class UserImportView(AdminOrStaffLoginRequiredMixin, FormView):
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(payment_done, name='dispatch')
-class ViewPayment(FormView):
+class ViewPayment(View):
     """
     This class is used for payment page.
     """
 
-    form_class = FormPayment
     success_url = reverse_lazy("success")
-    template_name = "payment.html"
 
-    def get_context_data(self, **kwargs):
-        """
-        Return context data to template
-        """
-        plans = SubscriptionPlan.objects.filter(is_active=True).order_by("-id").first()
-        context = super(ViewPayment, self).get_context_data()
-        context["plans"] = plans
+    def get(self, request, *args, **kwargs):
+        context = dict()
+        context["plans"] = SubscriptionPlan.objects.filter(is_active=True).order_by("-id").first()
 
         # Applies coupon in session
         if "coupon" in self.request.session:
             context['coupon'] = self.request.session['coupon']['discounted_price']
-
-        return context
+        return render(request, "payment.html", context)
 
 
     def datetime_converter(self, datetime_val):
@@ -189,12 +182,13 @@ class ViewPayment(FormView):
         return datetime.datetime.fromtimestamp(datetime_val, tz=pytz.UTC)
 
 
-    def form_valid(self, form):
-        form_data = form.cleaned_data
+    def post(self, request, *args, **kwargs):
         stripe.api_key = STRIPE_SECRET_KEY
-        token = form_data['stripeToken']
+        old_card = self.request.POST.get('old_card_value_checked')
         user = User.objects.get(email=self.request.user)
         plan = SubscriptionPlan.objects.filter(is_active=True).order_by("-id").first()
+        params = {"customer": user.stripe_customer, "items": [{"price": plan.plan_id}, ]}
+        print(old_card)
 
 
         try:
@@ -203,65 +197,132 @@ class ViewPayment(FormView):
                 return HttpResponseRedirect(redirect("list"))
 
             try:
-
-                # CREATE CARD IN STRIPE
-                card = stripe.Customer.create_source(
-                    user.stripe_customer,
-                    source=token,
-                )
-
-                # ACTIVITY LOG ENTRY FOR CARD CREATED SUCCESSFULLY
-                ActivityLog.objects.create(**{
-                    "event": "CUSTOMER_CARD_CREATED",
-                    "date": timezone.now(),
-                    "description": "Card is created successfully",
-                    "log_detail": card.id,
-                })
-
-                params = {"customer": user.stripe_customer, "items": [{"price": plan.plan_id},]}
-
                 if "coupon" in self.request.session:
                     params['coupon'] = self.request.session['coupon']['name']
+
+
+                if old_card:
+                    card_id = self.request.user.card_id
+                    ActivityLog.objects.create(**{
+                        "event": "CUSTOMER_CARD_RENEWED",
+                        "date": timezone.now(),
+                        "description": user.email+" uses the previous card ("+card_id+") for renew subscription",
+                        "log_detail": card_id,
+                    })
+                else:
+                    # CREATE CARD IN STRIPE
+                    token = self.request.POST.get('stripeToken')
+                    if token:
+                        try:
+                            card = stripe.Customer.create_source(
+                                user.stripe_customer,
+                                source=token,
+                            )
+                            card_id = card.id
+
+                            user.card_id = card_id
+                            user.credit_card_number = card.last4
+                            user.save()
+
+                            # ACTIVITY LOG ENTRY FOR CARD CREATED SUCCESSFULLY
+                            ActivityLog.objects.create(**{
+                                "event": "CUSTOMER_CARD_CREATED",
+                                "date": timezone.now(),
+                                "description": "Card ("+card_id+") is created successfully of "+user.email,
+                                "log_detail": card_id,
+                            })
+                        except Exception as e:
+                            ActivityLog.objects.create(**{
+                                "event": "CARD_ERROR",
+                                "date": timezone.now(),
+                                "description": e.__str__(),
+                            })
+                            messages.error(self.request, "Please enter the valid credit/debit card number.")
+                            return HttpResponseRedirect("/payment")
+                    else:
+                        messages.error(self.request, "Please enter the valid credit/debit card number.")
+                        return HttpResponseRedirect("/payment")
+
+
+
+
 
                 try:
                     # CREATE SUBSCRIPTION IN STRIPE
                     from coupon.models import Coupon
 
-                    subscription_charge = stripe.Subscription.create(**params)
 
+                    if old_card:
+                        subscription_modify = Subscription.objects.filter(
+                            user=self.request.user).first()
+                        subscription_charge = stripe.Subscription.retrieve(subscription_modify.subs_id)
+                    else:
+                        subscription_charge = stripe.Subscription.create(**params)
 
+                    subscription_params = {
+                        "subs_id": subscription_charge.id,
+                        "user": user,
+                        "plan": plan,
+                        "start_date": self.datetime_converter(subscription_charge.start_date),
+                        "expiration": self.datetime_converter(subscription_charge.current_period_end),
+                        "cancelled": False
+                    }
 
+                    if "coupon" in self.request.session:
+                        coupon = Coupon.objects.filter(name=self.request.session['coupon']['name']).first()
+                        amount = self.request.session['coupon']['discounted_price']
+                        subscription_params["amount_paid"] = amount
+                        subscription_params["coupon"] = coupon
+                    else:
+                        amount = float(plan.price)
+                        subscription_params["amount_paid"] = amount
 
 
                     # ENTRY OF SUBSCRIPTION CREATED SUCCESSFULLY IN MODELS (Subscription, ActivityLog)
                     if subscription_charge.status == "active":
 
-                        subscription_params = {
-                            "subs_id": subscription_charge.id,
-                            "user": user,
-                            "plan": plan,
-                            "start_date": self.datetime_converter(subscription_charge.start_date),
-                            "expiration": self.datetime_converter(subscription_charge.current_period_end),
-                            "status": subscription_charge.status,
-                            "cancelled": False
-                        }
+                        subscription_params["status"] = subscription_charge.status
 
-                        if "coupon" in self.request.session:
-                            coupon = Coupon.objects.filter(name=self.request.session['coupon']['name']).first()
-                            amount = self.request.session['coupon']['discounted_price']
-                            subscription_params["amount_paid"]=amount
-                            subscription_params["coupon"]= coupon
-                        else:
-                            amount = float(plan.price)
-                            subscription_params["amount_paid"]= amount
+
 
                         # Subscription Created
-                        customer,created = Subscription.objects.get_or_create(**subscription_params)
+                        subscription_created,created = Subscription.objects.get_or_create(**subscription_params)
 
                         # Activation mail send
-                        customer.send_activation_subscription_email()
+                        subscription_created.send_activation_subscription_email()
 
-                        return render(self.request, "success.html", context={"message": "Subscription created successfully", "data":customer})
+                        messages.success(self.request, "Subscription created successfully. Click on subscription menu and check your details")
+                        return HttpResponseRedirect("/list")
+                    elif subscription_charge.status in ['unpaid', 'canceled', 'past_due']:
+
+                        subscription_charge = stripe.Subscription.create(**params)
+
+                        subscription_modify.subs_id = subscription_charge['id']
+                        subscription_modify.status = subscription_charge['status']
+                        subscription_modify.amount_paid = subscription_params['amount_paid']
+                        subscription_modify.start_date = self.datetime_converter(subscription_charge['current_period_start'])
+                        subscription_modify.expiration = self.datetime_converter(subscription_charge['current_period_end'])
+                        subscription_modify.cancelled = False
+
+                        if "coupon" in self.request.session:
+                            coupon = subscription_params['coupon']
+                            subscription_modify.coupon = coupon
+                        else:
+                            subscription_modify.coupon = None
+
+                        subscription_modify.save()
+
+                        ActivityLog.objects.create(**{
+                            "event": "SUBSCRIPTION_RENEWED",
+                            "date": self.datetime_converter(subscription_charge['current_period_start']),
+                            "end_at": self.datetime_converter(subscription_charge['current_period_end']),
+                            "description": "Subscription status: " + subscription_charge['status'],
+                            "log_detail": subscription_charge['id']
+                        })
+                        messages.success(self.request,
+                                         "Subscription updated successfully. Click on subscription menu and check your details")
+                        return HttpResponseRedirect("/list")
+
                     else:
                         ActivityLog.objects.create(**{
                             "event": "SUBSCRIPTION_ERROR",
@@ -270,7 +331,7 @@ class ViewPayment(FormView):
                             "description": "Subscription status: "+subscription_charge['status'],
                             "log_detail": subscription_charge['id']
                         })
-                        messages.error(self.request, "Issue cause in subscription or payment")
+                        messages.error(self.request, "Subscription error. Please your bank account/card details.")
                         return HttpResponseRedirect("/payment")
                 except Exception as e:
                     # LOG FOR SUBSCRIPTION NOT CREATED
@@ -279,7 +340,7 @@ class ViewPayment(FormView):
                         "date": timezone.now(),
                         "description": e.__str__(),
                     })
-                    messages.error(self.request, "Issue cause in subscription or payment")
+                    messages.error(self.request, "Subscription error. Please your bank account/card details.")
                     return HttpResponseRedirect("/payment")
             except Exception as e:
                 # LOG FOR CUSTOMER CARD ERROR
@@ -288,7 +349,7 @@ class ViewPayment(FormView):
                     "date": timezone.now(),
                     "description": e.__str__(),
                 })
-                messages.error(self.request, "Issue cause in subscription or payment")
+                messages.error(self.request, "Card error. Check your card details please.")
                 return HttpResponseRedirect("/payment")
         except Exception as e:
             # ERROR LOG
@@ -297,5 +358,5 @@ class ViewPayment(FormView):
                 "date": timezone.now(),
                 "description": e.__str__(),
             })
-            messages.error(self.request, "Issue cause in subscription or payment")
+            messages.error(self.request, "Server error. Please try after some time.")
             return HttpResponseRedirect("/payment")

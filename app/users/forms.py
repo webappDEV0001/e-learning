@@ -79,12 +79,13 @@ class ChangePasswordForm(ChangePasswordForm):
 
 class SignUpForm(SignupForm):
 
-    username = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Username'}))
+    name = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Name'}))
     surname  = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Surname'}))
 
     def save(self, request):
         user = super(SignUpForm, self).save(request)
         user.surname = self.cleaned_data.get("surname")
+        user.name = self.cleaned_data.get("name")
         user.save()
         return user
 

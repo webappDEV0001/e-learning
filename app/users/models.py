@@ -42,7 +42,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 	MEMBER_TYPE = (("Team Member", "Team Member"), ("Manager", "Manager"),)
 	email = models.EmailField(max_length=254, unique=True)
 	name = models.CharField(max_length=254,null=True,blank=True)
-	username = models.CharField(max_length=254, help_text="username of the user")
+	username = models.CharField(max_length=254, help_text="username of the user",null=True ,blank=True)
 	surname = models.CharField(max_length=254, help_text="surname of the user")
 	is_staff = models.BooleanField(default=False)
 	is_superuser = models.BooleanField(default=False)
@@ -54,7 +54,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 	manager = models.EmailField(max_length=254, null=True, blank=True)
 	member_type = models.CharField(max_length=254, choices=MEMBER_TYPE, default=[0][0])
 	stripe_customer = models.CharField(max_length=254, blank=True, null=True)
-	card = models.CharField(max_length=250, null=True, blank=True, help_text="Enter the card stripe id")
+	card_id = models.CharField(max_length=250, null=True, blank=True, help_text="Enter the card stripe id")
+	credit_card_number = models.CharField(max_length=250, null=True, blank=True, help_text="Enter the credit card last four digits")
 
 	USERNAME_FIELD = 'email'
 	EMAIL_FIELD = 'email'
@@ -89,7 +90,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 	def create_stripe_customer(self, source_token=None):
 		import stripe
 		from subscription.models import ActivityLog
-		import pytz
 
 		if not self.stripe_customer:
 			stripe.api_key = STRIPE_SECRET_KEY
