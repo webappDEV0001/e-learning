@@ -67,7 +67,9 @@
       {% block messages %}
 			{% include 'messages.html' %}
 		{% endblock messages %}
+      <div class="container" >
       {% block content %}{% endblock content %}
+        </div>
 
       {% if not hide_references %}
        {% block subfooter %}

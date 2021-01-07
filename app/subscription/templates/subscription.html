@@ -24,7 +24,7 @@
         <br><br>
         <div style="text-align: center;display: inline">
         {% if data.cancelled %}
-        <p class="alert alert-danger">You cancelled your subscription but you can access this Dashboard till {{ data.expiration|datetime_format }}</p>
+        <p class="alert alert-danger">You cancelled your subscription but you can access this content till {{ data.expiration|datetime_format }}</p>
         {% else %}
         <div id="cancelbtn" class="btn btn-outline-danger w-25">UNSUBSCRIBE</div>
         {% endif %}

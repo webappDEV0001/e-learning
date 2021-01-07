@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'subscription',
     'elearning',
     'presentations',
+    'coupon',
     'sites',
     # 'import_export',
     'django.contrib.sitemaps',
@@ -116,15 +117,17 @@ TEMP_DIR = os.path.join(STATICFILES_DIRS[0], 'temp')
 
 AUTH_USER_MODEL = 'users.User'
 
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/list'
 
 # ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 ACCOUNT_ADAPTER = 'users.adapter.MyAccountAdapter'
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION=True
+ACCOUNT_EMAIL_SUBJECT_PREFIX = "Hello, "
+
 
 ACCOUNT_FORMS = {
     "login": "users.forms.LoginForm",
@@ -165,6 +168,7 @@ RECAPTCHA_VERIFICATION_URL = 'https://www.google.com/recaptcha/api/siteverify'
 # STRIPE CREDENTTIALS
 STRIPE_PUBLISHABLE_KEY = 'pk_test_mwh4P1bnlM1JW0xb1HOJdba500vgeBJvJ4'
 STRIPE_SECRET_KEY = "sk_test_Mw5S0H1d5052miS8TaHmVrZo00i7c0WyJJ" #Test Key
+STRIPE_ENDPOINT_SECRET = "whsec_MTukq3TIdyqbT6n7F9VO3HBgHWvf0UCh"
 STRIPE_PRODUCT_ID = "price_1I1nNVHgNODZOvfzWVoTxgXR"
 
 # STRIPE ACCESS FOR READ AND WRITE
