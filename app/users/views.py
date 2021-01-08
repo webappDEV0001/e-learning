@@ -14,6 +14,7 @@ from users.models import User
 from django.core.mail import EmailMessage
 from django.contrib.auth.mixins import LoginRequiredMixin, AccessMixin
 from users.forms import UserImportForm, FormPayment
+from django.db.models import Q
 import pandas
 import stripe
 from subscription.models import SubscriptionPlan, ActivityLog, Subscription
@@ -188,7 +189,6 @@ class ViewPayment(View):
         user = User.objects.get(email=self.request.user)
         plan = SubscriptionPlan.objects.filter(is_active=True).order_by("-id").first()
         params = {"customer": user.stripe_customer, "items": [{"price": plan.plan_id}, ]}
-        print(old_card)
 
 
         try:
@@ -202,24 +202,31 @@ class ViewPayment(View):
 
 
                 if old_card:
+
                     card_id = self.request.user.card_id
+
                     ActivityLog.objects.create(**{
                         "event": "CUSTOMER_CARD_RENEWED",
                         "date": timezone.now(),
                         "description": user.email+" uses the previous card ("+card_id+") for renew subscription",
                         "log_detail": card_id,
                     })
+
                 else:
+
                     # CREATE CARD IN STRIPE
                     token = self.request.POST.get('stripeToken')
+
                     if token:
+
                         try:
+
                             card = stripe.Customer.create_source(
                                 user.stripe_customer,
                                 source=token,
                             )
-                            card_id = card.id
 
+                            card_id = card.id
                             user.card_id = card_id
                             user.credit_card_number = card.last4
                             user.save()
@@ -231,12 +238,15 @@ class ViewPayment(View):
                                 "description": "Card ("+card_id+") is created successfully of "+user.email,
                                 "log_detail": card_id,
                             })
+
                         except Exception as e:
+
                             ActivityLog.objects.create(**{
                                 "event": "CARD_ERROR",
                                 "date": timezone.now(),
                                 "description": e.__str__(),
                             })
+
                             messages.error(self.request, "Please enter the valid credit/debit card number.")
                             return HttpResponseRedirect("/payment")
                     else:
@@ -254,7 +264,7 @@ class ViewPayment(View):
 
                     if old_card:
                         subscription_modify = Subscription.objects.filter(
-                            user=self.request.user).first()
+                            Q(user=self.request.user) & ~Q(status="active")).order_by("-id").first()
                         subscription_charge = stripe.Subscription.retrieve(subscription_modify.subs_id)
                     else:
                         subscription_charge = stripe.Subscription.create(**params)

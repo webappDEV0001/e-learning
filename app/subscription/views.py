@@ -104,7 +104,8 @@ def stripe_webhook(request):
 
         user = User.objects.filter(stripe_customer = response.id).first()
 
-        user.delete()
+        if user is not None:
+            user.delete()
 
         ActivityLog.objects.create(**{
             "event": "CUSTOMER_DELETED",
@@ -126,9 +127,9 @@ def stripe_webhook(request):
     elif event.type == "customer.subscription.deleted":
         subscription = Subscription.objects.filter(subs_id=response.id).first()
 
-        subscription.status = response.status
-
-        subscription.save()
+        if subscription is not None:
+            subscription.status = response.status
+            subscription.save()
 
         ActivityLog.objects.create(**{
             "event": "SUBSCRIPTION_DELETED",
@@ -208,8 +209,11 @@ def stripe_webhook(request):
     elif event.type == "invoice.payment_failed" or event.type == "invoice.finalization_failed":
 
         subscription = Subscription.objects.filter(subs_id=event.subscription).first()
-        subscription.status = "cancelled"
-        subscription.save()
+
+        if subscription is not None:
+            subscription.status = "cancelled"
+            subscription.save()
+
         ActivityLog.objects.create(**{
             "event": "PAYMENT_UNSUCCESSFUL",
             "date": timezone.now(),
