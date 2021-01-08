@@ -83,8 +83,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         """
 
 		# create a strip customer when one is not available
-		# if not self.stripe_customer:
-			# self.create_stripe_customer()
+		if not self.stripe_customer:
+			self.create_stripe_customer()
 		super(User, self).save(*args, **kwargs)
 
 	def create_stripe_customer(self, source_token=None):
