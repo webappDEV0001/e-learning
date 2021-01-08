@@ -379,13 +379,15 @@ section.actuaries_academy_data h2 {
 }
 button.navbar-toggler {
     background: #333;
-    margin-top: 15px;
+    margin-top: 2px;
     display: flex;
     justify-content: flex-end;
     width: 100%;
-    border-radius: 0;
+    border-radius: 3px;
     outline: none;
     box-shadow: none;
+    padding: 7px 10px !important;
+    color: #fff !important;
 }
 .header nav.navbar {
     padding: 10px 0px 0px;
@@ -461,6 +463,14 @@ section.actuaries_academy_data h2 {
 .header ul.navbar-nav li.nav-item:last-child a.nav-link {
 	border-bottom: none;
 }
+.col-6.mx-auto.login_forms_data {
+    max-width: 100%;
+    flex: 0 0 100%;
+}
+.login_forms_data .col-md-4.pd2 {
+    padding: 0;
+}
+
 
 }
 

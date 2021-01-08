@@ -54,8 +54,6 @@ class LoginForm(LoginForm):
             )
         )
 
-        self.helper.label_class = 'col-xs-2 hide'
-        self.helper.field_class = 'col-md-4 pd2'
 
 
 class ChangePasswordForm(ChangePasswordForm):

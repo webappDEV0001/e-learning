@@ -7,12 +7,12 @@
         <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
             {% csrf_token %}
             <div class="row">
-                <div class="col-6 mx-auto">
+                <div class="col-6 mx-auto login_forms_data">
                     {{ form.email|as_crispy_field }}
                 </div>
             </div>
             <div class="row">
-                <div class="col-6 mx-auto">
+                <div class="col-6 mx-auto login_forms_data">
                     {{ form.name|as_crispy_field }}
                 </div>
             </div>
@@ -20,29 +20,29 @@
             <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
             {% endif %}
             <div class="row">
-                <div class="col-6 mx-auto">
+                <div class="col-6 mx-auto login_forms_data">
                     {{ form.surname|as_crispy_field }}
                 </div>
             </div>
             <div class="row">
-                <div class="col-6 mx-auto">
+                <div class="col-6 mx-auto login_forms_data">
                     {{ form.password1|as_crispy_field }}
                 </div>
             </div>
             <div class="row">
-                <div class="col-6 mx-auto">
+                <div class="col-6 mx-auto login_forms_data">
                     {{ form.password2|as_crispy_field }}
                 </div>
             </div>
             <div class="row">
-                <div class="col-6 mx-auto">
+                <div class="col-6 mx-auto login_forms_data">
                     <input type="checkbox" name="termandconditions" required="true">&nbsp;&nbsp;Do you accept
                     <a href="{% url 'terms-condition' %}"><u> Terms & Conditions</u></a>
                 </div>
             </div>
             <br>
             <div class="row">
-                <div class="col-6 mx-auto">
+                <div class="col-6 mx-auto login_forms_data">
                     <button type="submit" class="btn btn-primary">Sign up</button>
                     <p>
                         {% blocktrans %}
