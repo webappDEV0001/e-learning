@@ -106,7 +106,7 @@
 <script type="text/javascript">
 
     // Create a Stripe client.
-    var stripe = Stripe('pk_test_mwh4P1bnlM1JW0xb1HOJdba500vgeBJvJ4');
+    var stripe = Stripe('{{ stripe_publishable_key }}');
 
     // Create an instance of Elements.
     var elements = stripe.elements();

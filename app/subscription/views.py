@@ -231,3 +231,44 @@ def stripe_webhook(request):
         })
 
     return HttpResponse(status=200)
+
+
+def render_to_pdf(template_src, context_dict={}):
+    from xhtml2pdf import pisa
+    from io import BytesIO
+    from django.template.loader import get_template
+
+    template = get_template(template_src)
+    html = template.render(context_dict)
+    result = BytesIO()
+    pdf = pisa.pisaDocument(BytesIO(html.encode("cp1252")), result)
+    if not pdf.err:
+        return HttpResponse(result.getvalue(), content_type='application/pdf')
+    return None
+
+@login_required
+@payment_required
+def downloadinvoice(request):
+    import random
+
+    invoice_data=Subscription.objects.get(user=request.user)
+    print(invoice_data)
+
+    context={}
+    context['tax_date']=invoice_data.start_date
+    context['invoice_number']=invoice_data.id
+    context['user_name']=request.user.name
+    context['user_surname']=request.user.surname
+    context['net_price_percent']=float(invoice_data.amount_paid-(invoice_data.amount_paid*77/100))
+    context['vat_price_percent']=float(invoice_data.amount_paid-(invoice_data.amount_paid*23/100))
+    context['total_price']=invoice_data.amount_paid
+    context['currency']=invoice_data.plan.currency
+
+
+    pdf = render_to_pdf('invoice.html', context)
+    response = HttpResponse(pdf, content_type='application/pdf')
+    filename = 'Invoice_{}.pdf'.format(str(random.randint(10000, 99999)))
+    content = "attachment; filename={}".format(filename)
+    response['Content-Disposition'] = content
+    return response
+

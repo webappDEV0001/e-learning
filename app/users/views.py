@@ -167,6 +167,7 @@ class ViewPayment(View):
     def get(self, request, *args, **kwargs):
         context = dict()
         context["plans"] = SubscriptionPlan.objects.filter(is_active=True).order_by("-id").first()
+        context["stripe_publishable_key"] = STRIPE_PUBLISHABLE_KEY
 
         # Applies coupon in session
         if "coupon" in self.request.session:
