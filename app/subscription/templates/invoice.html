@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zxx" class="no-js">
+<head>
+    <title>invoice-{{ request.user.get_name }}</title>
+    <style>
+        * {
+            font-size:13px;
+        }
+        p {
+            line-height:10px;
+        }
+    </style>
+</head>
+
+<body>
+<p>================== INVOICE ==================</p>
+<p>Tax date:       {{ tax_date }}</p>
+<p>Invoice number: FV/{{ invoice_number }}/01/2021</p>
+<br>
+<p>This message is for your records, payment will occur automatically, and no</p>
+<p>action is necessary on your part.</p>
+<br>
+<p>Invoice from:</p>
+<p>4actuaries sp. z.o.o [Ltd.]</p>
+<p>11 Dywizjonu Artylerii Konnej 12/24</p>
+<p>Bydgoszcz, 85-324, Poland</p>
+<p>VAT No.: PL 9671432576</p>
+<br>
+<p>Invoice to:</p>
+<p style="text-transform: capitalize;">{{ user_name }}</p>
+<p style="text-transform: capitalize;">{{ user_surname }}</p>
+<br>
+<p>Invoice for: Access to Actuarial E-learnings</p>
+<br>
+<p>Net price: {{ net_price_percent }} {{ currency }}</p>
+<p>VAT 23%: {{ vat_price_percent }} {{ currency }}</p>
+<br>
+<p>Total price: {{ total_price }} {{ currency }}</p>
+<br>
+<p>=================================================</p>
+<p>A Product from:</p>
+<br>
+<p>4actuaries sp. z.o.o [Ltd.]</p>
+<p>11 Dywizjonu Artylerii Konnej 12/24</p>
+<p>Bydgoszcz, 85-324, Poland</p>
+<p>VAT No.: PL 9671432576</p>
+<p>email: contact@4actuaries.com</p>
+<p>REGON:385215713</p>
+<p>KRS:0000822039</p>
+
+</body>
+
+</html>
