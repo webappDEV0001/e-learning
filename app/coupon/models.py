@@ -3,6 +3,7 @@ from users.models import User
 from django.utils import timezone
 from config.common import STRIPE_SECRET_KEY
 from django.contrib import messages
+from django.db.models.signals import pre_delete
 import json
 
 
@@ -59,8 +60,16 @@ class Coupon(models.Model):
                 "date": timezone.now(),
                 "description": e.__str__(),
             })
-
             raise ObjectDoesNotExist("Error in creating coupon: "+e.__str__())
+
+def remove_books(sender, instance, **kwargs):
+    import stripe
+    stripe.api_key = STRIPE_SECRET_KEY
+    name = instance.name
+    stripe.Coupon.delete(
+        name,
+    )
+pre_delete.connect(remove_books, sender=Coupon)
 
 
 
